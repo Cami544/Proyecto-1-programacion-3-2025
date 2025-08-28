@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Proyecto-1-programacion-3-2025:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Proyecto_1_programacion_3_2025_jar</output-path>
+    <root id="archive" name="Proyecto-1-programacion-3-2025.jar">
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/j2ee.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

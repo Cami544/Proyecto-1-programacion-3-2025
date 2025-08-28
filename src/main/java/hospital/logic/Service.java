@@ -1,5 +1,4 @@
 package hospital.logic;
-import java.util.List;
 
 public class Service {
     private static Service theInstance;

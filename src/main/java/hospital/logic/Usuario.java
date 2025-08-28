@@ -5,9 +5,7 @@ public abstract class Usuario {
     protected String nombre;
 
 
-    public Usuario() {
-
-    }
+    public Usuario() {}
 
     public Usuario(String id, String nombre) {
         this.id = id;

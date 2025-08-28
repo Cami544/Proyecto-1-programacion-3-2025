@@ -1,20 +1,33 @@
 package hospital.logic;
 
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import java.time.LocalDate;
+
+
+@XmlRootElement(name="paciente")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Paciente extends Usuario {
-    private String fechaNacimiento;
+
+  @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    private LocalDate fechaNacimiento;
     private String numeroTelefono;
 
-    public Paciente() {this("","","","");}
+    public Paciente(){}
 
-    public Paciente(String id, String nombre, String fechaNacimiento, String numeroTelefono) {
+    public Paciente(String id, String nombre, LocalDate fechaNacimiento, String numeroTelefono) {
         this.id = id;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.numeroTelefono = numeroTelefono;
     }
 
-    public String getFechaNacimiento() {return fechaNacimiento;}
-    public void setFechaNacimiento(String fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;}
+    public LocalDate getFechaNacimiento() {return fechaNacimiento;}
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {this.fechaNacimiento = fechaNacimiento;}
     public String getNumeroTelefono() {return numeroTelefono;}
     public void setNumeroTelefono(String numeroTelefono) {this.numeroTelefono = numeroTelefono;}
 

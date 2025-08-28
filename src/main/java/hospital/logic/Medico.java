@@ -1,5 +1,4 @@
 package hospital.logic;
-import java.util.Objects;
 
 public class Medico extends Usuario {
     private String clave;
