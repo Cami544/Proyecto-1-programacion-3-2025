@@ -88,17 +88,22 @@ public class Service {
         }
     }
 
-//    public void create(Medico e) throws Exception {
-//        Medico result = ListaMedicos.getMedicos().stream()
-//                .filter(i -> i.getId().equals(e.getId()))
-//                .findFirst()
-//                .orElse(null);
-//        if (result == null) {
-//            ListaMedicos.getMedicos().add(e);
-//        } else {
-//            throw new Exception("Persona ya existe");
-//        }
-//    }
+    public void create(Medico e) throws Exception {
+        // Crear una instancia de ListaMedicos
+        ListaMedicos listaMedicos = new ListaMedicos();
+
+        Medico result = listaMedicos.getMedicos().stream()
+                .filter(medico -> medico.getId().equals(e.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (result == null) {
+            listaMedicos.getMedicos().add(e);
+            gestorMedicos.guardar(listaMedicos.getMedicos());
+        } else {
+            throw new Exception("Persona ya existe");
+        }
+    }
 
     public List<Medico> findAllMedicos() {
         return gestorMedicos.cargar();
@@ -132,9 +137,10 @@ public class Service {
     }
 
 
-//    public List<Medico> findAll() {
-//        return ListaMedicos.getMedicos();
-//    }
+    public List<Medico> findAll() {
+        ListaMedicos listaMedicos = new ListaMedicos();
+        return listaMedicos.getMedicos();
+    }
 
 
 }

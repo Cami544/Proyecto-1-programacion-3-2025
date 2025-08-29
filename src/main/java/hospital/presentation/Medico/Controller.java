@@ -10,14 +10,11 @@ public class Controller {
     public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
-
-
-        //--------------
-        //Falta hacer el View para descomentar estos
-        //view.setController(this);
-        //view.setModel(model);
-        //---------------
+//        view.setController(this);
+//        view.setModel(model);
     }
+
+
 
     public void save(Medico medico) throws Exception {
         try {
@@ -32,11 +29,11 @@ public class Controller {
         model.setFiltered(Service.instance().findAllMedicos());
     }
 
-//    public void create(Medico e) throws  Exception{
-//        Service.instance().create(e);
-//        model.setCurrent(new Medico());
-//        model.setList(Service.instance().findAll());
-//    }
+    public void create(Medico e) throws  Exception{
+        Service.instance().create(e);
+        model.setCurrent(new Medico());
+        model.setList(Service.instance().findAll());
+    }
 
     public void search(String id) throws Exception {
         try {
