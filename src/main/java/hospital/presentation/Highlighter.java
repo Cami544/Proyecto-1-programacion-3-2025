@@ -13,7 +13,6 @@ public class Highlighter extends MouseAdapter implements MouseListener{
         this.color = color;
     }
 
-
     public void mouseEntered(MouseEvent evt) {
         Component source = (Component) evt.getSource();
         original = source.getBackground();

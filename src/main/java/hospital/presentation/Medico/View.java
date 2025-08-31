@@ -73,6 +73,7 @@ public class View implements PropertyChangeListener {
             }
         });
 
+
         limpiarButton.addActionListener(e -> {
             clear();
             controller.clear();
