@@ -46,7 +46,20 @@ public class Application {
 
        tabbedPane.addTab("Pacientes",pacienteView.getPanel());
 
-        window.setSize(900,450);
+
+       Model medicoModel = new Model();
+       View medicoView = new View();
+       Controller medicoController = new Controller(medicoView, medicoModel);
+
+       try{
+           medicoModel.setList(Service.instance().findAllMedicos());
+           medicoModel.setFiltered(Service.instance().findAllMedicos());
+       }catch(Exception e){
+           System.err.println("Error en medicos:"+e.getMessage());
+       }
+       tabbedPane.addTab("Medicos",medicoView.getPanel());
+
+        window.setSize(1000,600);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setTitle("HOSPITAL");

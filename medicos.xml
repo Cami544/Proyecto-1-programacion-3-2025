@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<medicos>
+    <medico>
+        <id>111</id>
+        <nombre>hewr</nombre>
+        <clave>111</clave>
+        <especialidad>asd</especialidad>
+    </medico>
+    <medico>
+        <id>222</id>
+        <nombre>ggg</nombre>
+        <clave>222</clave>
+        <especialidad>jjj</especialidad>
+    </medico>
+</medicos>

@@ -2,58 +2,39 @@ package hospital.presentation.Medico;
 
 import hospital.Application;
 import hospital.logic.Medico;
-import hospital.presentation.Highlighter;
 
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class View implements PropertyChangeListener {
-
-    private JLabel idLabel;
-    private JLabel nombreLabel;
-    private JTable table1;
-    private JLabel listadoLabel;
-    private JLabel busquedaLabel;
-    private JLabel especialidadLabel;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JButton guardarButton;
     private JPanel panel;
+    private JLabel idLabel;
+    private JTextField idText;
+    private JLabel nombreLabel;
+    private JTextField nombreText;
+    private JLabel especialidadLabel;
+    private JTextField especialidadText;
+    private JLabel busquedaLabel;
+    private JTextField busquedaText;
+    private JTable table;
+    private JButton guardarButton;
+    private JButton limpiarButton;
+    private JButton borrarButton;
+    private JButton buscarButton;
+    private JButton reporteButton;
 
-    public View(){
+    private Controller controller;
+    private Model model;
 
-        guardarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (validate()) {
-                    Medico n = take();
-                    try {
-                        controller.create(n);
-                        JOptionPane.showMessageDialog(panel, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(panel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                }
-            }
-        });
-
-        Highlighter highlighter = new Highlighter(Color.green);
-        idLabel.addMouseListener(highlighter);
-        nombreLabel.addMouseListener(highlighter);
-        busquedaLabel.addMouseListener(highlighter);
-        especialidadLabel.addMouseListener(highlighter);
-        listadoLabel.addMouseListener(highlighter);
-        guardarButton.addMouseListener(highlighter);
-
-
+    public View() {
+        setupEventHandlers();
     }
 
     public JPanel getPanel() {
@@ -69,63 +50,195 @@ public class View implements PropertyChangeListener {
         model.addPropertyChangeListener(this);
     }
 
+    private void setupEventHandlers() {
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validate()) {
+                    Medico medico = take();
+                    try {
+                        controller.save(medico);
+                        JOptionPane.showMessageDialog(panel,
+                                "Médico guardado exitosamente",
+                                "Éxito",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clear();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(panel,
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
 
+        limpiarButton.addActionListener(e -> {
+            clear();
+            controller.clear();
+        });
+
+        borrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (model.getCurrent() == null || model.getCurrent().getId() == null ||
+                        model.getCurrent().getId().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Seleccione un médico de la lista para eliminar",
+                            "Advertencia",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(panel,
+                        "¿Está seguro de eliminar al médico " + model.getCurrent().getNombre() + "?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        controller.delete();
+                        JOptionPane.showMessageDialog(panel,
+                                "Médico eliminado exitosamente",
+                                "Éxito",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clear();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(panel,
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
+        buscarButton.addActionListener(e -> {
+            String criterio = busquedaText.getText().trim();
+            controller.filter(criterio);
+        });
+
+        reporteButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(panel,
+                    "Función de reporte en desarrollo",
+                    "Información",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        // Doble clic en tabla para editar
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = table.getSelectedRow();
+                    if (row >= 0) {
+                        TableModel tableModel = (TableModel) table.getModel();
+                        Medico medico = tableModel.getRowAt(row);
+                        model.setCurrent(medico);
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case Model.LIST:
-                int[] cols = {TableModel.ID, TableModel.NOMBRE, TableModel.ESPECIALIDAD};
-                table1.setModel(new TableModel(cols, model.getList()));
+                updateTable();
+                break;
+            case Model.FILTERED:
+                updateFilteredTable();
                 break;
             case Model.CURRENT:
-                idLabel.setText(model.getCurrent().getId());
-                nombreLabel.setText(model.getCurrent().getNombre());
-                especialidadLabel.setText(model.getCurrent().getEspecialidad());
-
-                idLabel.setBackground(null);
-                idLabel.setToolTipText(null);
-                nombreLabel.setBackground(null);
-                nombreLabel.setToolTipText(null);
-                especialidadLabel.setBackground(null);
-                especialidadLabel.setToolTipText(null);
+                updateCurrentFields();
                 break;
         }
         this.panel.revalidate();
     }
 
-    public Medico take() {
-        Medico e = new Medico();
-        e.setId(idLabel.getText());
-        e.setNombre(nombreLabel.getText());
-        e.setEspecialidad(especialidadLabel.getText());
-
-        return e;
+    private void updateTable() {
+        int[] cols = {TableModel.ID, TableModel.NOMBRE, TableModel.ESPECIALIDAD};
+        table.setModel(new TableModel(cols, model.getList()));
+        table.setRowHeight(25);
+        adjustColumnWidths();
     }
 
-    Controller controller;
-    Model model;
+    private void updateFilteredTable() {
+        int[] cols = {TableModel.ID, TableModel.NOMBRE, TableModel.ESPECIALIDAD};
+        table.setModel(new TableModel(cols, model.getFiltered()));
+        table.setRowHeight(25);
+        adjustColumnWidths();
+    }
+
+    private void adjustColumnWidths() {
+        if (table.getColumnModel().getColumnCount() > 0) {
+            TableColumnModel columnModel = table.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(80);   // ID
+            columnModel.getColumn(1).setPreferredWidth(200);  // Nombre
+            columnModel.getColumn(2).setPreferredWidth(150);  // Especialidad
+        }
+    }
+
+    private void updateCurrentFields() {
+        if (model.getCurrent() != null) {
+            idText.setText(model.getCurrent().getId() != null ? model.getCurrent().getId() : "");
+            nombreText.setText(model.getCurrent().getNombre() != null ? model.getCurrent().getNombre() : "");
+            especialidadText.setText(model.getCurrent().getEspecialidad() != null ? model.getCurrent().getEspecialidad() : "");
+        }
+        clearValidationErrors();
+    }
+
     private boolean validate() {
         boolean valid = true;
-        if (idLabel.getText().isEmpty()) {
+        clearValidationErrors();
+
+        if (idText.getText().trim().isEmpty()) {
+            setFieldError(idText, "ID requerido");
             valid = false;
-            idLabel.setBackground(Application.BACKGROUND_ERROR);
-            idLabel.setToolTipText("id requerido");
-        } else {
-            idLabel.setBackground(null);
-            idLabel.setToolTipText(null);
         }
 
-        if (nombreLabel.getText().isEmpty()) {
+        if (nombreText.getText().trim().isEmpty()) {
+            setFieldError(nombreText, "Nombre requerido");
             valid = false;
-            nombreLabel.setBackground(Application.BACKGROUND_ERROR);
-            nombreLabel.setToolTipText("Nombre requerido");
-        } else {
-            nombreLabel.setBackground(null);
-            nombreLabel.setToolTipText(null);
         }
+
+        if (especialidadText.getText().trim().isEmpty()) {
+            setFieldError(especialidadText, "Especialidad requerida");
+            valid = false;
+        }
+
         return valid;
     }
 
+    private void setFieldError(JTextField field, String message) {
+        field.setBackground(Application.BACKGROUND_ERROR);
+        field.setToolTipText(message);
+        field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+    }
 
+    private void clearValidationErrors() {
+        JTextField[] fields = {idText, nombreText, especialidadText};
+        for (JTextField field : fields) {
+            field.setBackground(Color.WHITE);
+            field.setToolTipText(null);
+            field.setBorder(UIManager.getBorder("TextField.border"));
+        }
+    }
+
+    private Medico take() {
+        Medico medico = new Medico();
+        medico.setId(idText.getText().trim());
+        medico.setNombre(nombreText.getText().trim());
+        medico.setEspecialidad(especialidadText.getText().trim());
+        return medico;
+    }
+
+    private void clear() {
+        idText.setText("");
+        nombreText.setText("");
+        especialidadText.setText("");
+        busquedaText.setText("");
+        clearValidationErrors();
+    }
 }

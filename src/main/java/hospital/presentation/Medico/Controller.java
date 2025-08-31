@@ -10,11 +10,16 @@ public class Controller {
     public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
-//        view.setController(this);
-//        view.setModel(model);
+        view.setController(this);
+        view.setModel(model);
+
+        try {
+            model.setList(Service.instance().findAllMedicos());
+            model.setFiltered(Service.instance().findAllMedicos());
+        } catch (Exception e) {
+            System.err.println("Error cargando médicos iniciales: " + e.getMessage());
+        }
     }
-
-
 
     public void save(Medico medico) throws Exception {
         try {
@@ -27,12 +32,6 @@ public class Controller {
         model.setCurrent(new Medico());
         model.setList(Service.instance().findAllMedicos());
         model.setFiltered(Service.instance().findAllMedicos());
-    }
-
-    public void create(Medico e) throws  Exception{
-        Service.instance().create(e);
-        model.setCurrent(new Medico());
-        model.setList(Service.instance().findAllMedicos());
     }
 
     public void search(String id) throws Exception {
@@ -54,7 +53,7 @@ public class Controller {
             model.setList(Service.instance().findAllMedicos());
             model.setFiltered(Service.instance().findAllMedicos());
         } else {
-            throw new Exception("Seleccione un médico para eliminar");
+            throw new Exception("Seleccione un medico para eliminar");
         }
     }
 
@@ -63,6 +62,10 @@ public class Controller {
     }
 
     public void filter(String criterio) {
-        model.setFiltered(Service.instance().searchMedicos(criterio));
+        try {
+            model.setFiltered(Service.instance().searchMedicos(criterio));
+        } catch (Exception e) {
+            System.err.println("Error filtrando medicos: " + e.getMessage());
+        }
     }
 }
