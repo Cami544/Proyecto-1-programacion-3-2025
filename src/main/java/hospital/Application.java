@@ -59,7 +59,7 @@ public class Application {
        }
        tabbedPane.addTab("Medicos",medicoView.getPanel());
 
-        window.setSize(1000,600);
+        window.setSize(800,600);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setTitle("HOSPITAL");

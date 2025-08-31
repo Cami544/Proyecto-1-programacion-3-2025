@@ -13,6 +13,7 @@ public class Controller {
         view.setController(this);
         view.setModel(model);
 
+
         try {
             model.setList(Service.instance().findAllMedicos());
             model.setFiltered(Service.instance().findAllMedicos());
