@@ -32,7 +32,7 @@ public class Controller {
     public void create(Medico e) throws  Exception{
         Service.instance().create(e);
         model.setCurrent(new Medico());
-        model.setList(Service.instance().findAll());
+        model.setList(Service.instance().findAllMedicos());
     }
 
     public void search(String id) throws Exception {

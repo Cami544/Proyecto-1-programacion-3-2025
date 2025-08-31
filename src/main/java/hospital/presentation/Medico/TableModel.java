@@ -36,17 +36,5 @@ public class TableModel extends AbstractTableModel<Medico> implements javax.swin
         colNames[ESPECIALIDAD] = "Especialidad";
     }
 
-    @Override
-    protected Object getPropetyAt(Medico medico, int col) {
-        switch (cols[col]) {
-            case ID:
-                return medico.getId();
-            case NOMBRE:
-                return medico.getNombre();
-            case ESPECIALIDAD:
-                return medico.getEspecialidad();
-            default:
-                return "";
-        }
-    }
+
 }

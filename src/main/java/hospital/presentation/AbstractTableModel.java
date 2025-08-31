@@ -1,6 +1,7 @@
 package hospital.presentation;
 
 import hospital.logic.Medico;
+import hospital.logic.Paciente;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
     protected int[] cols;
     protected String[] colNames;
 
-    public AbstractTableModel(int[] cols, List<E> rows){
+    public AbstractTableModel(int[] cols, List<E> rows) {
         this.cols = cols;
         this.rows = rows;
         initColNames();
@@ -19,13 +20,14 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
         return cols.length;
     }
 
-    public String getColumnName(int col){
+    public String getColumnName(int col) {
         return colNames[cols[col]];
     }
 
-    public Class<?> getColumnClass(int col){
-        switch (cols[col]){
-            default: return super.getColumnClass(col);
+    public Class<?> getColumnClass(int col) {
+        switch (cols[col]) {
+            default:
+                return super.getColumnClass(col);
         }
     }
 
@@ -46,5 +48,4 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
 
     protected abstract void initColNames();
 
-    protected abstract Object getPropetyAt(Medico medico, int col);
 }

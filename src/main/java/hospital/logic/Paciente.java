@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Paciente extends Usuario {
 
-  @XmlJavaTypeAdapter(LocalDateAdapter.class)
+  @XmlJavaTypeAdapter(LocalDateAdapter.class) //Realmente es necesario?, pienso que seria mejor solo en DetalleReceta
     private LocalDate fechaNacimiento;
     private String numeroTelefono;
 

@@ -1,10 +1,7 @@
 
 package hospital.logic;
 
-import hospital.data.GestorDatosMedicos;
-import hospital.data.GestorDatosMedicamentos;
-import hospital.data.ListaMedicamentos;
-import hospital.data.ListaMedicos;
+import hospital.data.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,10 +11,12 @@ public class Service {
     private static Service theInstance;
     private GestorDatosMedicos gestorMedicos;
     private GestorDatosMedicamentos gestorMedicamentos;
+    private GestorDatosPaciente gestorPaciente;
 
     private Service() {
         gestorMedicos = new GestorDatosMedicos();
         gestorMedicamentos = new GestorDatosMedicamentos();
+        gestorPaciente = new GestorDatosPaciente();
     }
 
     public static Service instance() {
@@ -127,20 +126,92 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // =============== MEDICAMENTOS ===============
-    public List<Medicamento> findAllMedicamentos() {
-        return gestorMedicamentos.cargar();
+    // =============== PACIENTES ===============
+
+    public List<Paciente> findAllPacientes() {return gestorPaciente.cargar();}
+
+    public void savePacientes(List<Paciente> pacientes) throws IOException {
+        gestorPaciente.guardar(pacientes);
     }
 
-    public void saveMedicamentos(List<Medicamento> medicamentos) throws IOException {
-        gestorMedicamentos.guardar(medicamentos);
+    public void createPaciente (Paciente paciente) throws Exception {
+        List<Paciente> pacientes = gestorPaciente.cargar();
+
+        Paciente existente = pacientes.stream()
+                .filter(m -> m.getId().equals(paciente.getId()))
+                .findFirst()
+                .orElse(null);
+/* Me parece que el paciente como tal no tiene clave, revisar
+        if (existente == null) {
+            // Al crear un médico, la clave inicial es igual al ID
+            medico.setClave(medico.getId());
+            medicos.add(medico);
+            gestorMedicos.guardar(medicos);
+        } else {
+            throw new Exception("Médico ya existe");
+        }
+        */
+
     }
 
+    public Paciente readPaciente(String id) throws Exception {
+        List<Paciente> pacientes = gestorPaciente.cargar();
 
-    public List<Medico> findAll() {
-        ListaMedicos listaMedicos = new ListaMedicos();
-        return listaMedicos.getMedicos();
+        Paciente result = pacientes.stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (result != null) {
+            return result;
+        } else {
+            throw new Exception("Paciente no existe");
+        }
     }
 
+    public void updatePaciente(Paciente paciente) throws Exception {
+        List<Paciente> pacientes = gestorPaciente.cargar();
 
+        for (int i = 0; i < pacientes.size(); i++) {
+            if (pacientes.get(i).getId().equals(paciente.getId())) {
+                pacientes.set(i, paciente);
+                gestorPaciente.guardar(pacientes);
+                return;
+            }
+        }
+        throw new Exception("Paciente no encontrado para actualizar");
+    }
+
+    public void deletePaciente(String id) throws Exception {
+        List<Paciente> pacientes = gestorPaciente.cargar();
+
+        Paciente toRemove = pacientes.stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (toRemove != null) {
+            pacientes.remove(toRemove);
+            gestorPaciente.guardar(pacientes);
+        } else {
+            throw new Exception("Paciente no encontrado para eliminar");
+        }
+    }
+
+    public void create(Paciente e) throws Exception {
+        // Crear una instancia de ListaPaciente
+        ListaPacientes listaPacientes= new ListaPacientes();
+
+        Paciente result = listaPacientes.getPacicentes().stream()
+                .filter(paciente -> paciente.getId().equals(e.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (result == null) {
+            listaPacientes.getPacicentes().add(e);
+            gestorPaciente.guardar(listaPacientes.getPacicentes());
+        } else {
+            throw new Exception("Persona tipo paciente ya existe");
+        }
+    }
 }
