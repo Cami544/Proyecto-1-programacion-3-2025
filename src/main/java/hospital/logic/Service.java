@@ -1,4 +1,3 @@
-
 package hospital.logic;
 
 import hospital.data.*;
@@ -12,11 +11,13 @@ public class Service {
     private GestorDatosMedicos gestorMedicos;
     private GestorDatosMedicamentos gestorMedicamentos;
     private GestorDatosPaciente gestorPaciente;
+    private GestorDatosFarmaceutas gestorFarmaceutas;
 
     private Service() {
         gestorMedicos = new GestorDatosMedicos();
         gestorMedicamentos = new GestorDatosMedicamentos();
         gestorPaciente = new GestorDatosPaciente();
+        gestorFarmaceutas = new GestorDatosFarmaceutas();
     }
 
     public static Service instance() {
@@ -203,6 +204,90 @@ public class Service {
                 .filter(m ->
                         m.getId().toLowerCase().contains(criterioBusqueda) ||
                                 m.getNombre().toLowerCase().contains(criterioBusqueda)
+                )
+                .collect(Collectors.toList());
+    }
+
+    // =============== FARMACEUTAS ===============
+    public void createFarmaceuta(Farmaceuta farmaceuta) throws Exception {
+        List<Farmaceuta> farmaceutas = gestorFarmaceutas.cargar();
+
+        Farmaceuta existente = farmaceutas.stream()
+                .filter(f -> f.getId().equals(farmaceuta.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existente == null) {
+            // Al crear un farmaceuta, la clave inicial es igual al ID
+            farmaceuta.setClave(farmaceuta.getId());
+            farmaceutas.add(farmaceuta);
+            gestorFarmaceutas.guardar(farmaceutas);
+        } else {
+            throw new Exception("Farmaceuta ya existe");
+        }
+    }
+
+    public Farmaceuta readFarmaceuta(String id) throws Exception {
+        List<Farmaceuta> farmaceutas = gestorFarmaceutas.cargar();
+
+        Farmaceuta result = farmaceutas.stream()
+                .filter(f -> f.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (result != null) {
+            return result;
+        } else {
+            throw new Exception("Farmaceuta no existe");
+        }
+    }
+
+    public void updateFarmaceuta(Farmaceuta farmaceuta) throws Exception {
+        List<Farmaceuta> farmaceutas = gestorFarmaceutas.cargar();
+
+        for (int i = 0; i < farmaceutas.size(); i++) {
+            if (farmaceutas.get(i).getId().equals(farmaceuta.getId())) {
+                farmaceutas.set(i, farmaceuta);
+                gestorFarmaceutas.guardar(farmaceutas);
+                return;
+            }
+        }
+        throw new Exception("Farmaceuta no encontrado para actualizar");
+    }
+
+    public void deleteFarmaceuta(String id) throws Exception {
+        List<Farmaceuta> farmaceutas = gestorFarmaceutas.cargar();
+
+        Farmaceuta toRemove = farmaceutas.stream()
+                .filter(f -> f.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (toRemove != null) {
+            farmaceutas.remove(toRemove);
+            gestorFarmaceutas.guardar(farmaceutas);
+        } else {
+            throw new Exception("Farmaceuta no encontrado para eliminar");
+        }
+    }
+
+    public List<Farmaceuta> findAllFarmaceutas() {
+        return gestorFarmaceutas.cargar();
+    }
+
+    public List<Farmaceuta> searchFarmaceutas(String criterio) {
+        List<Farmaceuta> farmaceutas = gestorFarmaceutas.cargar();
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return farmaceutas;
+        }
+
+        String criterioBusqueda = criterio.toLowerCase().trim();
+
+        return farmaceutas.stream()
+                .filter(f ->
+                        f.getId().toLowerCase().contains(criterioBusqueda) ||
+                                f.getNombre().toLowerCase().contains(criterioBusqueda)
                 )
                 .collect(Collectors.toList());
     }

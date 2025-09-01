@@ -45,9 +45,16 @@ public class Application {
 
         hospital.presentation.Medico.Model medicModel = new hospital.presentation.Medico.Model();
         hospital.presentation.Medico.View medicoView = new hospital.presentation.Medico.View();
+        medicoControllers = new hospital.presentation.Medico.Controller(medicoView, medicModel);
+
+        hospital.presentation.Farmaceuta.Model farmaceutaModel = new hospital.presentation.Farmaceuta.Model();
+        hospital.presentation.Farmaceuta.View farmaceutaView = new hospital.presentation.Farmaceuta.View();
+        farmaceutaControllers = new hospital.presentation.Farmaceuta.Controller(farmaceutaView, farmaceutaModel);
+
 
         tabbedPane.addTab("Médicos",medicoView.getPanel());
        tabbedPane.addTab("Pacientes",pacienteView.getPanel());
+        tabbedPane.addTab("Farmaceutas", farmaceutaView.getPanel());
 
 
         window.setSize(800,600);
@@ -61,6 +68,7 @@ public class Application {
     //Controller de todas las clases
     public static hospital.presentation.Paciente.Controller pacientesControllers;
     public static hospital.presentation.Medico.Controller medicoControllers;
+    public static hospital.presentation.Farmaceuta.Controller farmaceutaControllers;
 
 
     public static JFrame window;

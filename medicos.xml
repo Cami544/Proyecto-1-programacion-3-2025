@@ -2,14 +2,14 @@
 <medicos>
     <medico>
         <id>111</id>
-        <nombre>hewr</nombre>
+        <nombre>javier</nombre>
         <clave>111</clave>
-        <especialidad>asd</especialidad>
+        <especialidad>ahha</especialidad>
     </medico>
     <medico>
         <id>222</id>
-        <nombre>ggg</nombre>
+        <nombre>diana</nombre>
         <clave>222</clave>
-        <especialidad>jjj</especialidad>
+        <especialidad>asdfa</especialidad>
     </medico>
 </medicos>

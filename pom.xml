@@ -16,6 +16,12 @@
       <version>4.0.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.lgooddatepicker</groupId>
+      <artifactId>LGoodDatePicker</artifactId>
+      <version>11.2.1</version>
+    </dependency>
+
     <!-- Implementación de referencia (EclipseLink MOXy o Glassfish JAXB) -->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
