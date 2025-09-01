@@ -43,21 +43,12 @@ public class Application {
         pacientesControllers = new hospital.presentation.Paciente.Controller(pacienteView, pacienteModel);
         //Aqui luego se pone el icono
 
+        hospital.presentation.Medico.Model medicModel = new hospital.presentation.Medico.Model();
+        hospital.presentation.Medico.View medicoView = new hospital.presentation.Medico.View();
 
+        tabbedPane.addTab("Médicos",medicoView.getPanel());
        tabbedPane.addTab("Pacientes",pacienteView.getPanel());
 
-
-       Model medicoModel = new Model();
-       View medicoView = new View();
-       Controller medicoController = new Controller(medicoView, medicoModel);
-
-       try{
-           medicoModel.setList(Service.instance().findAllMedicos());
-           medicoModel.setFiltered(Service.instance().findAllMedicos());
-       }catch(Exception e){
-           System.err.println("Error en medicos:"+e.getMessage());
-       }
-       tabbedPane.addTab("Medicos",medicoView.getPanel());
 
         window.setSize(800,600);
         window.setResizable(false);
@@ -69,6 +60,7 @@ public class Application {
 
     //Controller de todas las clases
     public static hospital.presentation.Paciente.Controller pacientesControllers;
+    public static hospital.presentation.Medico.Controller medicoControllers;
 
 
     public static JFrame window;
