@@ -76,7 +76,7 @@ public class View implements PropertyChangeListener {
 
         limpiarButton.addActionListener(e -> {
             clear();
-            controller.clear();
+            controller.clear(); //crea un nuevo paciente con datos para setear
         });
 
         borrarButton.addActionListener(new ActionListener() {

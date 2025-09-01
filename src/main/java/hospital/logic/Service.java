@@ -130,28 +130,21 @@ public class Service {
 
     public List<Paciente> findAllPacientes() {return gestorPaciente.cargar();}
 
-    public void savePacientes(List<Paciente> pacientes) throws IOException {
-        gestorPaciente.guardar(pacientes);
-    }
 
-    public void createPaciente (Paciente paciente) throws Exception {
+    public void createPaciente(Paciente paciente) throws Exception {
         List<Paciente> pacientes = gestorPaciente.cargar();
 
         Paciente existente = pacientes.stream()
                 .filter(m -> m.getId().equals(paciente.getId()))
                 .findFirst()
                 .orElse(null);
-/* Me parece que el paciente como tal no tiene clave, revisar
-        if (existente == null) {
-            // Al crear un médico, la clave inicial es igual al ID
-            medico.setClave(medico.getId());
-            medicos.add(medico);
-            gestorMedicos.guardar(medicos);
-        } else {
-            throw new Exception("Médico ya existe");
-        }
-        */
 
+        if (existente != null) {
+            throw new Exception("Paciente ya existe con ese ID");
+        }
+
+        pacientes.add(paciente);
+        gestorPaciente.guardar(pacientes);
     }
 
     public Paciente readPaciente(String id) throws Exception {
@@ -198,20 +191,19 @@ public class Service {
         }
     }
 
-    public void create(Paciente e) throws Exception {
-        // Crear una instancia de ListaPaciente
-        ListaPacientes listaPacientes= new ListaPacientes();
+    public List<Paciente> searchPaciente(String criterio) { //general para id y nomPaciente
+        List<Paciente> pacientes = gestorPaciente.cargar();
 
-        Paciente result = listaPacientes.getPacicentes().stream()
-                .filter(paciente -> paciente.getId().equals(e.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (result == null) {
-            listaPacientes.getPacicentes().add(e);
-            gestorPaciente.guardar(listaPacientes.getPacicentes());
-        } else {
-            throw new Exception("Persona tipo paciente ya existe");
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return pacientes;
         }
+        String criterioBusqueda = criterio.toLowerCase().trim();
+
+        return pacientes.stream()
+                .filter(m ->
+                        m.getId().toLowerCase().contains(criterioBusqueda) ||
+                                m.getNombre().toLowerCase().contains(criterioBusqueda)
+                )
+                .collect(Collectors.toList());
     }
 }

@@ -65,58 +65,8 @@ public class Application {
         window.setTitle("HOSPITAL");
         window.setVisible(true);
 
-        List<Paciente> list= new ArrayList<>();
-
-        GestorDatosPaciente gestorDatosPaciente = new GestorDatosPaciente();
-        list= gestorDatosPaciente.cargar();
-        for(Paciente m: list){
-            System.out.println(m.toString());
-        }
-
-        /*
-        View view = new View();
-        Model model = new Model();
-        Controller controller = new Controller(view, model);
-
-        //model.addPropertyChangeListener(view);
-
-        List<Medicamento> lista = new ArrayList<>();
-        lista.add(new Medicamento("001", "Paracetamol", "Tableta"));
-        lista.add(new Medicamento("002", "Ibuprofeno", "Cápsula"));
-
-
-        GestorDatosMedicamentos gestor = new GestorDatosMedicamentos();
-        gestor.guardar(lista);
-        System.out.println("Medicamentos guardados en medicamentos.xml");
-        List<Medicamento> cargados = gestor.cargar();
-        System.out.println("Medicamentos cargados:");
-        for (Medicamento m : cargados) {
-            System.out.println("Código: " + m.getCodigo() +
-                    ", Nombre: " + m.getNombre() +
-                    ", Presentación: " + m.getPresentacion());
-        }
-
-        JFrame window = new JFrame();
-        window.setSize(800, 600);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setTitle("Hospital - Gestion de Medicos");
-        window.setContentPane(view.getPanel());
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-
-        try {
-            model.setList(hospital.logic.Service.instance().findAllMedicos());
-            model.setFiltered(hospital.logic.Service.instance().findAllMedicos());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(window,
-                    "Error al cargar datos: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
     }
-*/
 
-    }
     //Controller de todas las clases
     public static hospital.presentation.Paciente.Controller pacientesControllers;
 

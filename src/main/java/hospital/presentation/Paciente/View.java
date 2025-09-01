@@ -1,6 +1,7 @@
 package hospital.presentation.Paciente;
 
 import hospital.Application;
+import hospital.logic.Medico;
 import hospital.logic.Paciente;
 
 import javax.swing.*;
@@ -32,6 +33,7 @@ public class View implements PropertyChangeListener {
     private JTextField buscarNomText;
     private JButton filtrarButton;
     private JTextField fechNacimientoTtext;
+    private JPanel Busqueda;
 
     public JPanel getPanel() { return panel; }
 
@@ -40,20 +42,66 @@ public class View implements PropertyChangeListener {
         pacienteList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int row=pacienteList.getSelectedRow();
+                if (e.getClickCount() == 2) {
+                    int row = pacienteList.getSelectedRow();
+                    if (row >= 0) {
+                        TableModel tableModel = (TableModel) pacienteList.getModel();
+                        Paciente paciente = tableModel.getRowAt(row);
+                        model.setCurrent(paciente);
+                    }
+                }
+                /*int row=pacienteList.getSelectedRow(); es por la nueva structura del xml
                 controller.edit(row);
                 super.mouseClicked(e);
+
+                 */
             }
         });
         generarPdfButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-            }
+                try {
+                    controller.generarReporte();
+                    JOptionPane.showMessageDialog(panel, "Reporte PDF generado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+                catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel, "Error al generar el reporte: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                            }
         });
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (model.getCurrent() == null || model.getCurrent().getId() == null ||
+                        model.getCurrent().getId().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Seleccione un paciente de la lista para eliminar",
+                            "Advertencia",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(panel,
+                        "¿Está seguro de eliminar a este paciente " + model.getCurrent().getNombre() + "?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        controller.delete();
+                        JOptionPane.showMessageDialog(panel,
+                                "Paciente eliminado exitosamente",
+                                "Éxito",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clear();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(panel,
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+
 
             }
         });
@@ -64,6 +112,11 @@ public class View implements PropertyChangeListener {
                 Paciente paciente = take();
                 try{
                     controller.save(paciente);
+                    JOptionPane.showMessageDialog(panel,
+                            "Paciente guardado exitosamente",
+                            "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    clear();
                 }catch (Exception ex){
                     JOptionPane.showMessageDialog(panel,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }
@@ -73,54 +126,59 @@ public class View implements PropertyChangeListener {
         filtrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String criterio = buscarNomText.getText().trim();
+                controller.filter(criterio);
             }
         });
     }
-
     private boolean validate(){
         boolean valid = true;
-// Resetear labels
-        idLabel.setBorder(null);
-        nombreLabel.setBorder(null);
-        fechaNacimiLabel.setBorder(null);
-        telefonoLabel.setBorder(null);
+        clearValidationErrors();
 
-        // Validar ID
         if (idText.getText().trim().isEmpty()) {
-            idText.setBorder(BorderFactory.createLineBorder(Color.RED));
-            idText.setText("El ID no puede estar vacío");
-            //  idLabel.setToolTipText("El ID no puede estar vacío");
+            setFieldError(idText, "El ID no puede estar vacío");
             valid = false;
         }
-
-        // Validar Nombre
         if (nombreText.getText().trim().isEmpty()) {
-            nombreLabel.setBorder(BorderFactory.createLineBorder(Color.RED));
-            nombreLabel.setToolTipText("El nombre no puede estar vacío");
+            setFieldError(nombreText, "El nombre no puede estar vacío");
             valid = false;
         }
-
-        // Validar Fecha
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate.parse(fechNacimientoTtext.getText().trim(), formatter);
         } catch (Exception e) {
-            fechaNacimiLabel.setBorder(BorderFactory.createLineBorder(Color.RED));
-            fechaNacimiLabel.setToolTipText("Formato de fecha inválido (dd/MM/yyyy)");
+            setFieldError(fechNacimientoTtext, "Formato de fecha inválido (dd/MM/yyyy)");
             valid = false;
         }
-
-        // Validar Teléfono
         if (telefonoText.getText().trim().isEmpty()) {
-            telefonoLabel.setBorder(BorderFactory.createLineBorder(Color.RED));
-            telefonoLabel.setToolTipText("El teléfono no puede estar vacío");
+            setFieldError(telefonoText, "El teléfono no puede estar vacío");
             valid = false;
         }
 
         return valid;
     }
 
+    private void setFieldError(JTextField field, String message) {
+        field.setBackground(Color.PINK);
+        field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        field.setToolTipText(message);
+    }
+
+    private void clearValidationErrors() {
+        JTextField[] fields = {idText, nombreText, fechNacimientoTtext, telefonoText};
+        for (JTextField field : fields) {
+            field.setBackground(Color.WHITE);
+            field.setBorder(UIManager.getBorder("TextField.border"));
+            field.setToolTipText(null);
+        }
+    }
+
+public void clear(){
+        idText.setText("");
+        nombreText.setText("");
+        fechNacimientoTtext.setText("");
+        telefonoText.setText("");
+}
 
     public Paciente take(){
         Paciente p = new Paciente();
@@ -153,6 +211,8 @@ public class View implements PropertyChangeListener {
                 TableColumnModel columnModel = pacienteList.getColumnModel();
                 columnModel.getColumn(0).setPreferredWidth(150);
                 columnModel.getColumn(1).setPreferredWidth(150);
+                columnModel.getColumn(2).setPreferredWidth(150);
+                columnModel.getColumn(3).setPreferredWidth(150);
                 break;
             case Model.CURRENT:
                 if (model.getCurrent() != null) {
@@ -168,13 +228,13 @@ public class View implements PropertyChangeListener {
                     }
 
                     telefonoText.setText(model.getCurrent().getNumeroTelefono());
-
+//revisar
                     if (model.getModel() == Application.MODE_EDIT) {
                         idText.setEnabled(false);
-                        nombreText.setEnabled(true);
+                        eliminarButton.setEnabled(true);
                     } else {
                         idText.setEnabled(true);
-                        nombreText.setEnabled(true);
+                        eliminarButton.setEnabled(true);
                     }
                     idLabel.setBorder(null);
                     idLabel.setToolTipText(null);
@@ -184,7 +244,8 @@ public class View implements PropertyChangeListener {
                     break;
             case Model.FILTER:
                 //revisar
-                  //  buscarNomText.setText(model.getFiltro().getNombre());
+               //controller.filter(String.valueOf(buscarNomText));
+                //buscarNomText.setText(model.getFiltered());
                break;
                 }
                     this.panel.revalidate();

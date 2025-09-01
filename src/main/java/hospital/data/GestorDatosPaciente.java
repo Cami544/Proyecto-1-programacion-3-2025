@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GestorDatosPaciente {
-    private File archivo = new File("medicos.xml");
+    private File archivo = new File("pacientes.xml");
 
     public void guardar(List<Paciente> lista) {
         try {
-            JAXBContext ctx = JAXBContext.newInstance(ListaMedicos.class);
+            JAXBContext ctx = JAXBContext.newInstance(ListaPacientes.class);
             Marshaller m = ctx.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.marshal(new ListaPacientes(lista), archivo);
@@ -27,7 +27,7 @@ public class GestorDatosPaciente {
     public List<Paciente> cargar() {
         if (!archivo.exists()) return new ArrayList<>();
         try {
-            JAXBContext ctx = JAXBContext.newInstance(ListaMedicos.class);
+            JAXBContext ctx = JAXBContext.newInstance(ListaPacientes.class);
             Unmarshaller um = ctx.createUnmarshaller();
             return ((ListaPacientes) um.unmarshal(archivo)).getPacicentes();
         } catch (Exception e) {
