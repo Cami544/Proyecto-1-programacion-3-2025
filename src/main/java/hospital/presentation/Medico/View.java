@@ -120,10 +120,15 @@ public class View implements PropertyChangeListener {
         });
 
         reporteButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(panel,
-                    "Función de reporte en desarrollo",
-                    "Información",
-                    JOptionPane.INFORMATION_MESSAGE);
+            try {
+                controller.generarReporte();
+                JOptionPane.showMessageDialog(panel,
+                        "Reporte listo",
+                        "Información",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         // Doble clic en tabla para editar
