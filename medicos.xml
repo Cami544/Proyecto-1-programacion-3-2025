@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <medicos>
     <medico>
-        <id>111</id>
-        <nombre>javier</nombre>
-        <clave>111</clave>
-        <especialidad>ahha</especialidad>
-    </medico>
-    <medico>
         <id>222</id>
-        <nombre>diana</nombre>
-        <clave>222</clave>
-        <especialidad>asdfa</especialidad>
+        <nombre>juan</nombre>
+        <clave></clave>
+        <especialidad>khgfdcfg</especialidad>
     </medico>
 </medicos>

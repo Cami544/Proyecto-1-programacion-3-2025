@@ -52,9 +52,13 @@ public class Application {
         farmaceutaControllers = new hospital.presentation.Farmaceuta.Controller(farmaceutaView, farmaceutaModel);
 
 
+        hospital.presentation.Historico.View historicoView = new hospital.presentation.Historico.View();
+
+
         tabbedPane.addTab("Médicos",medicoView.getPanel());
        tabbedPane.addTab("Pacientes",pacienteView.getPanel());
         tabbedPane.addTab("Farmaceutas", farmaceutaView.getPanel());
+        //tabbedPane.addTab("Historico", historicoView.getPanel());
 
 
         window.setSize(800,600);

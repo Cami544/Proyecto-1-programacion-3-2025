@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="hospital.presentation.Dashboard.View">
+  <grid id="27dc6" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
+    <constraints>
+      <xy x="20" y="20" width="552" height="421"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="d17f1" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Datos"/>
+        <children>
+          <grid id="6a18a" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="139e8" class="javax.swing.JComboBox" binding="hastaAnio">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="2000"/>
+                    <item value="2001"/>
+                    <item value="2002"/>
+                    <item value="2003"/>
+                    <item value="2004"/>
+                    <item value="2005"/>
+                    <item value="2006"/>
+                    <item value="2007"/>
+                    <item value="2008"/>
+                    <item value="2009"/>
+                    <item value="2010"/>
+                    <item value="2011"/>
+                    <item value="2012"/>
+                    <item value="2013"/>
+                    <item value="2014"/>
+                    <item value="2015"/>
+                    <item value="2016"/>
+                    <item value="2017"/>
+                    <item value="2018"/>
+                    <item value="2019"/>
+                    <item value="2020"/>
+                    <item value="2021"/>
+                    <item value="2022"/>
+                    <item value="2023"/>
+                    <item value="2024"/>
+                    <item value="2025"/>
+                    <item value="2026"/>
+                    <item value="2027"/>
+                    <item value="2028"/>
+                    <item value="2029"/>
+                    <item value="2030"/>
+                    <item value="2031"/>
+                    <item value="2032"/>
+                    <item value="2033"/>
+                    <item value="2034"/>
+                    <item value="2035"/>
+                    <item value="2036"/>
+                    <item value="2037"/>
+                    <item value="2038"/>
+                    <item value="2039"/>
+                    <item value="2040"/>
+                    <item value="2041"/>
+                    <item value="2042"/>
+                    <item value="2043"/>
+                    <item value="2044"/>
+                    <item value="2045"/>
+                    <item value="2046"/>
+                    <item value="2047"/>
+                    <item value="2048"/>
+                    <item value="2049"/>
+                    <item value="2050"/>
+                    <item value="2051"/>
+                    <item value="2052"/>
+                    <item value="2053"/>
+                    <item value="2054"/>
+                    <item value="2055"/>
+                    <item value="2056"/>
+                    <item value="2057"/>
+                    <item value="2058"/>
+                    <item value="2059"/>
+                    <item value="2060"/>
+                    <item value="2061"/>
+                    <item value="2062"/>
+                    <item value="2063"/>
+                    <item value="2064"/>
+                    <item value="2065"/>
+                    <item value="2066"/>
+                    <item value="2067"/>
+                    <item value="2068"/>
+                    <item value="2069"/>
+                    <item value="2070"/>
+                    <item value="2071"/>
+                    <item value="2072"/>
+                    <item value="2073"/>
+                    <item value="2074"/>
+                    <item value="2075"/>
+                    <item value="2076"/>
+                    <item value="2077"/>
+                    <item value="2078"/>
+                    <item value="2079"/>
+                    <item value="2080"/>
+                    <item value="2081"/>
+                    <item value="2082"/>
+                    <item value="2083"/>
+                    <item value="2084"/>
+                    <item value="2085"/>
+                    <item value="2086"/>
+                    <item value="2087"/>
+                    <item value="2088"/>
+                    <item value="2089"/>
+                    <item value="2090"/>
+                    <item value="2091"/>
+                    <item value="2092"/>
+                    <item value="2093"/>
+                    <item value="2094"/>
+                    <item value="2095"/>
+                    <item value="2096"/>
+                    <item value="2097"/>
+                    <item value="2098"/>
+                    <item value="2099"/>
+                    <item value="2100"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="9fbf4" class="javax.swing.JComboBox" binding="hastaMes">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="1-Enero"/>
+                    <item value="2-Febrero"/>
+                    <item value="3-Marzo"/>
+                    <item value="4-Abril"/>
+                    <item value="5-Mayo"/>
+                    <item value="6-Junio"/>
+                    <item value="7-Julio"/>
+                    <item value="8-Agosto"/>
+                    <item value="9-Septiembre"/>
+                    <item value="10-Octubre"/>
+                    <item value="11-Noviembre"/>
+                    <item value="12-Diciembre"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="9c32e" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Medicamentos"/>
+                </properties>
+              </component>
+              <component id="28659" class="javax.swing.JComboBox" binding="medicamentoBox">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="Acetaminofen"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="346ca" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Hasta"/>
+                </properties>
+              </component>
+              <component id="9e874" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Desde "/>
+                </properties>
+              </component>
+              <component id="7de60" class="javax.swing.JButton" binding="button1" default-binding="true">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <icon value="proyecto 1 icons/icons8-checkmark-24.png"/>
+                  <margin top="0" left="0" bottom="0" right="0"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="28365" class="javax.swing.JComboBox" binding="desdeAnio">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="2000"/>
+                    <item value="2001"/>
+                    <item value="2002"/>
+                    <item value="2003"/>
+                    <item value="2004"/>
+                    <item value="2005"/>
+                    <item value="2006"/>
+                    <item value="2007"/>
+                    <item value="2008"/>
+                    <item value="2009"/>
+                    <item value="2010"/>
+                    <item value="2011"/>
+                    <item value="2012"/>
+                    <item value="2013"/>
+                    <item value="2014"/>
+                    <item value="2015"/>
+                    <item value="2016"/>
+                    <item value="2017"/>
+                    <item value="2018"/>
+                    <item value="2019"/>
+                    <item value="2020"/>
+                    <item value="2021"/>
+                    <item value="2022"/>
+                    <item value="2023"/>
+                    <item value="2024"/>
+                    <item value="2025"/>
+                    <item value="2026"/>
+                    <item value="2027"/>
+                    <item value="2028"/>
+                    <item value="2029"/>
+                    <item value="2030"/>
+                    <item value="2031"/>
+                    <item value="2032"/>
+                    <item value="2033"/>
+                    <item value="2034"/>
+                    <item value="2035"/>
+                    <item value="2036"/>
+                    <item value="2037"/>
+                    <item value="2038"/>
+                    <item value="2039"/>
+                    <item value="2040"/>
+                    <item value="2041"/>
+                    <item value="2042"/>
+                    <item value="2043"/>
+                    <item value="2044"/>
+                    <item value="2045"/>
+                    <item value="2046"/>
+                    <item value="2047"/>
+                    <item value="2048"/>
+                    <item value="2049"/>
+                    <item value="2050"/>
+                    <item value="2051"/>
+                    <item value="2052"/>
+                    <item value="2053"/>
+                    <item value="2054"/>
+                    <item value="2055"/>
+                    <item value="2056"/>
+                    <item value="2057"/>
+                    <item value="2058"/>
+                    <item value="2059"/>
+                    <item value="2060"/>
+                    <item value="2061"/>
+                    <item value="2062"/>
+                    <item value="2063"/>
+                    <item value="2064"/>
+                    <item value="2065"/>
+                    <item value="2066"/>
+                    <item value="2067"/>
+                    <item value="2068"/>
+                    <item value="2069"/>
+                    <item value="2070"/>
+                    <item value="2071"/>
+                    <item value="2072"/>
+                    <item value="2073"/>
+                    <item value="2074"/>
+                    <item value="2075"/>
+                    <item value="2076"/>
+                    <item value="2077"/>
+                    <item value="2078"/>
+                    <item value="2079"/>
+                    <item value="2080"/>
+                    <item value="2081"/>
+                    <item value="2082"/>
+                    <item value="2083"/>
+                    <item value="2084"/>
+                    <item value="2085"/>
+                    <item value="2086"/>
+                    <item value="2087"/>
+                    <item value="2088"/>
+                    <item value="2089"/>
+                    <item value="2090"/>
+                    <item value="2091"/>
+                    <item value="2092"/>
+                    <item value="2093"/>
+                    <item value="2094"/>
+                    <item value="2095"/>
+                    <item value="2096"/>
+                    <item value="2097"/>
+                    <item value="2098"/>
+                    <item value="2099"/>
+                    <item value="2100"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="b01e" class="javax.swing.JComboBox" binding="desdeMes">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="1-Enero"/>
+                    <item value="2-Febrero"/>
+                    <item value="3-Marzo"/>
+                    <item value="4-Abril"/>
+                    <item value="5-Mayo"/>
+                    <item value="6-Junio"/>
+                    <item value="7-Julio"/>
+                    <item value="8-Agosto"/>
+                    <item value="9-Septiembre"/>
+                    <item value="10-Octubre"/>
+                    <item value="11-Noviembre"/>
+                    <item value="12-Diciembre"/>
+                  </model>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="230a8" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="91a5">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="18494" class="javax.swing.JTable" binding="table1" default-binding="true">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="9f83a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Medicamentos"/>
+        <children/>
+      </grid>
+      <grid id="160af" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Recetas"/>
+        <children/>
+      </grid>
+    </children>
+  </grid>
+</form>
