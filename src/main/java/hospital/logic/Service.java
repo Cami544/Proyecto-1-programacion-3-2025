@@ -3,6 +3,8 @@ package hospital.logic;
 import hospital.data.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,17 +14,20 @@ public class Service {
     private GestorDatosMedicamentos gestorMedicamentos;
     private GestorDatosPaciente gestorPaciente;
     private GestorDatosFarmaceutas gestorFarmaceutas;
+    private List<Receta> recetasEnMemoria = new ArrayList<>();
 
     private Service() {
         gestorMedicos = new GestorDatosMedicos();
         gestorMedicamentos = new GestorDatosMedicamentos();
         gestorPaciente = new GestorDatosPaciente();
         gestorFarmaceutas = new GestorDatosFarmaceutas();
+
     }
 
     public static Service instance() {
         if (theInstance == null) theInstance = new Service();
         return theInstance;
+
     }
 
     // =============== MÉDICOS ===============
@@ -218,7 +223,6 @@ public class Service {
                 .orElse(null);
 
         if (existente == null) {
-            // Al crear un farmaceuta, la clave inicial es igual al ID
             farmaceuta.setClave(farmaceuta.getId());
             farmaceutas.add(farmaceuta);
             gestorFarmaceutas.guardar(farmaceutas);
@@ -290,5 +294,114 @@ public class Service {
                                 f.getNombre().toLowerCase().contains(criterioBusqueda)
                 )
                 .collect(Collectors.toList());
+    }
+
+    // =============== MEDICAMENTOS ===============
+    public void createMedicamento(Medicamento medicamento) throws Exception {
+        List<Medicamento> medicamentos = gestorMedicamentos.cargar();
+
+        Medicamento existente = medicamentos.stream()
+                .filter(m -> m.getCodigo().equals(medicamento.getCodigo()))
+                .findFirst()
+                .orElse(null);
+
+        if (existente == null) {
+            medicamentos.add(medicamento);
+            gestorMedicamentos.guardar(medicamentos);
+        } else {
+            throw new Exception("Medicamento ya existe con ese código");
+        }
+    }
+
+    public Medicamento readMedicamento(String codigo) throws Exception {
+        List<Medicamento> medicamentos = gestorMedicamentos.cargar();
+
+        Medicamento result = medicamentos.stream()
+                .filter(m -> m.getCodigo().equals(codigo))
+                .findFirst()
+                .orElse(null);
+
+        if (result != null) {
+            return result;
+        } else {
+            throw new Exception("Medicamento no existe");
+        }
+    }
+
+    public void updateMedicamento(Medicamento medicamento) throws Exception {
+        List<Medicamento> medicamentos = gestorMedicamentos.cargar();
+
+        for (int i = 0; i < medicamentos.size(); i++) {
+            if (medicamentos.get(i).getCodigo().equals(medicamento.getCodigo())) {
+                medicamentos.set(i, medicamento);
+                gestorMedicamentos.guardar(medicamentos);
+                return;
+            }
+        }
+        throw new Exception("Medicamento no encontrado para actualizar");
+    }
+
+    public void deleteMedicamento(String codigo) throws Exception {
+        List<Medicamento> medicamentos = gestorMedicamentos.cargar();
+
+        Medicamento toRemove = medicamentos.stream()
+                .filter(m -> m.getCodigo().equals(codigo))
+                .findFirst()
+                .orElse(null);
+
+        if (toRemove != null) {
+            medicamentos.remove(toRemove);
+            gestorMedicamentos.guardar(medicamentos);
+        } else {
+            throw new Exception("Medicamento no encontrado para eliminar");
+        }
+    }
+
+    public List<Medicamento> findAllMedicamentos() {
+        return gestorMedicamentos.cargar();
+    }
+
+    public List<Medicamento> searchMedicamentos(String criterio) {
+        List<Medicamento> medicamentos = gestorMedicamentos.cargar();
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return medicamentos;
+        }
+
+        String criterioBusqueda = criterio.toLowerCase().trim();
+
+        return medicamentos.stream()
+                .filter(m ->
+                        m.getCodigo().toLowerCase().contains(criterioBusqueda) ||
+                                m.getNombre().toLowerCase().contains(criterioBusqueda) ||
+                                m.getPresentacion().toLowerCase().contains(criterioBusqueda)
+                )
+                .collect(Collectors.toList());
+    }
+
+    // =============== RECETAS ===============
+    public void guardarReceta(Receta receta, LocalDate fechaRetiro) throws Exception {
+        readPaciente(receta.getPacienteId());
+
+        for (DetalleReceta detalle : receta.getDetalles()) {
+            readMedicamento(detalle.getMedicamentoCodigo());
+        }
+
+        recetasEnMemoria.add(receta);
+
+        System.out.println("Receta guardada: " + receta.getId() +
+                " para paciente: " + receta.getPacienteId() +
+                " fecha retiro: " + fechaRetiro);
+    }
+
+    public List<Receta> findRecetasByPaciente(String pacienteId) {
+        return recetasEnMemoria.stream()
+                .filter(r -> r.getPacienteId().equals(pacienteId))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<Receta> findAllRecetas() {
+        return new ArrayList<>(recetasEnMemoria);
     }
 }

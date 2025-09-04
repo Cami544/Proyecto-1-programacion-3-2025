@@ -59,8 +59,8 @@ public class View implements PropertyChangeListener {
                     try {
                         controller.save(medico);
                         JOptionPane.showMessageDialog(panel,
-                                "Médico guardado exitosamente",
-                                "Éxito",
+                                "Medico guardado exitosamente",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -76,7 +76,7 @@ public class View implements PropertyChangeListener {
 
         limpiarButton.addActionListener(e -> {
             clear();
-            controller.clear(); //crea un nuevo paciente con datos para setear
+            controller.clear();
         });
 
         borrarButton.addActionListener(new ActionListener() {
@@ -85,14 +85,14 @@ public class View implements PropertyChangeListener {
                 if (model.getCurrent() == null || model.getCurrent().getId() == null ||
                         model.getCurrent().getId().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(panel,
-                            "Seleccione un médico de la lista para eliminar",
+                            "Seleccione un medico de la lista para eliminar",
                             "Advertencia",
                             JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
-                        "¿Está seguro de eliminar al médico " + model.getCurrent().getNombre() + "?",
+                        "Esta seguro de eliminar al medico " + model.getCurrent().getNombre() + "?",
                         "Confirmar eliminación",
                         JOptionPane.YES_NO_OPTION);
 
@@ -100,8 +100,8 @@ public class View implements PropertyChangeListener {
                     try {
                         controller.delete();
                         JOptionPane.showMessageDialog(panel,
-                                "Médico eliminado exitosamente",
-                                "Éxito",
+                                "Medico eliminado exitosamente",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -121,12 +121,11 @@ public class View implements PropertyChangeListener {
 
         reporteButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(panel,
-                    "Función de reporte en desarrollo",
+                    "Funcion de reporte en desarrollo",
                     "Información",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
-        // Doble clic en tabla para editar
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -175,9 +174,9 @@ public class View implements PropertyChangeListener {
     private void adjustColumnWidths() {
         if (table.getColumnModel().getColumnCount() > 0) {
             TableColumnModel columnModel = table.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(80);   // ID
-            columnModel.getColumn(1).setPreferredWidth(200);  // Nombre
-            columnModel.getColumn(2).setPreferredWidth(150);  // Especialidad
+            columnModel.getColumn(0).setPreferredWidth(80);
+            columnModel.getColumn(1).setPreferredWidth(200);
+            columnModel.getColumn(2).setPreferredWidth(150);
         }
     }
 

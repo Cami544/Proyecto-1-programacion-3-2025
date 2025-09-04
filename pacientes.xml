@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<pacientes/>
+<pacientes>
+    <paciente>
+        <id>111</id>
+        <nombre>javier</nombre>
+        <fechaNacimiento>2001-12-12</fechaNacimiento>
+        <numeroTelefono>123</numeroTelefono>
+    </paciente>
+    <paciente>
+        <id>222</id>
+        <nombre>Fernando</nombre>
+        <fechaNacimiento>2000-12-12</fechaNacimiento>
+        <numeroTelefono>123</numeroTelefono>
+    </paciente>
+</pacientes>
