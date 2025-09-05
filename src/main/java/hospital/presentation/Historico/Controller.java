@@ -25,14 +25,14 @@ public class Controller {
     }
 
     public void cargarTodasLasRecetas() throws Exception {
-        List<Receta> recetas = Service.instance().findAllRecetas();
+        List<Receta> recetas = Service.instance().getRecetas();
         model.setRecetas(recetas);
         model.setRecetasFiltradas(recetas);
         model.setCriterioFiltro("");
     }
 
     public void refrescarRecetas() throws Exception {
-        List<Receta> todasLasRecetas = Service.instance().findAllRecetas();
+        List<Receta> todasLasRecetas = Service.instance().getRecetas();
         model.setRecetas(todasLasRecetas);
         model.setRecetasFiltradas(todasLasRecetas);
         model.setCriterioFiltro("");
@@ -50,7 +50,7 @@ public class Controller {
 
         String criterioBusqueda = criterio.toLowerCase().trim();
 
-        List<Paciente> pacientesEncontrados = Service.instance().searchPaciente(criterioBusqueda);
+        List<Paciente> pacientesEncontrados = Service.instance().searchPacientes(criterioBusqueda);
 
         if (pacientesEncontrados.isEmpty()) {
             List<Receta> recetasFiltradas = model.getRecetas().stream()

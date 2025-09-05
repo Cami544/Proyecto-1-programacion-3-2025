@@ -32,7 +32,7 @@ public class Model extends AbstractModel {
     }
 
     public Model(){
-        init(hospital.logic.Service.instance().findAllPacientes());
+        init(hospital.logic.Service.instance().getPacientes());
     }
 
     public List<Paciente> getList() { return list; }

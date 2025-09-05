@@ -20,7 +20,7 @@ public class Controller {
     }
 
     public void buscarPaciente(String criterio) throws Exception {
-        List<Paciente> pacientes = Service.instance().searchPaciente(criterio);
+        List<Paciente> pacientes = Service.instance().searchPacientes(criterio);
         if (pacientes.isEmpty()) {
             throw new Exception("No se encontraron pacientes con el criterio: " + criterio);
         }
@@ -32,7 +32,7 @@ public class Controller {
     }
 
     public List<Paciente> obtenerTodosPacientes() throws Exception {
-        return Service.instance().findAllPacientes();
+        return Service.instance().getPacientes();
     }
 
     public List<Medicamento> obtenerMedicamentos() {
@@ -143,7 +143,7 @@ public class Controller {
 
         receta.setDetalles(model.getDetallesReceta());
 
-        Service.instance().guardarReceta(receta, model.getFechaRetiro());
+        Service.instance().createReceta(receta, model.getFechaRetiro());
 
         if (hospital.Application.historicoController != null) {
             try {
@@ -163,7 +163,7 @@ public class Controller {
 
     private void cargarMedicamentos() {
         try {
-            List<Medicamento> medicamentos = Service.instance().findAllMedicamentos();
+            List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             model.setMedicamentosDisponibles(medicamentos);
         } catch (Exception e) {
             System.err.println("Error cargando medicamentos: " + e.getMessage());

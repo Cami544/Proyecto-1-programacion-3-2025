@@ -77,7 +77,7 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
         try {
-            List<Receta> recetas = Service.instance().findAllRecetas();
+            List<Receta> recetas = Service.instance().getRecetas();
 
             List<Receta> recetasFiltradas = recetas.stream()
                     .filter(r -> !r.getFecha().isBefore(desde) && !r.getFecha().isAfter(hasta))
@@ -137,7 +137,7 @@ public class Controller {
         Map<String, Integer> estadisticas = new HashMap<>();
 
         try {
-            List<Receta> todasRecetas = Service.instance().findAllRecetas();
+            List<Receta> todasRecetas = Service.instance().getRecetas();
 
             estadisticas.put("Confeccionadas", (int) (todasRecetas.size() * 0.4));
             estadisticas.put("En Proceso", (int) (todasRecetas.size() * 0.3));
@@ -182,7 +182,7 @@ public class Controller {
 
     private void cargarMedicamentos() {
         try {
-            List<Medicamento> medicamentos = Service.instance().findAllMedicamentos();
+            List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             model.setMedicamentosDisponibles(medicamentos);
         } catch (Exception e) {
             System.err.println("Error cargando medicamentos: " + e.getMessage());

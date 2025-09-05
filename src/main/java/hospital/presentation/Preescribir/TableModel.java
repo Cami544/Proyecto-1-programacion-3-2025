@@ -44,7 +44,7 @@ public class TableModel extends AbstractTableModel<DetalleReceta> implements jav
 
     private String obtenerNombreMedicamento(String codigo) {
         try {
-            List<Medicamento> medicamentos = Service.instance().findAllMedicamentos();
+            List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             for (Medicamento med : medicamentos) {
                 if (med.getCodigo().equals(codigo)) {
                     return med.getNombre();
@@ -58,7 +58,7 @@ public class TableModel extends AbstractTableModel<DetalleReceta> implements jav
 
     private String obtenerPresentacionMedicamento(String codigo) {
         try {
-            List<Medicamento> medicamentos = Service.instance().findAllMedicamentos();
+            List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             for (Medicamento med : medicamentos) {
                 if (med.getCodigo().equals(codigo)) {
                     return med.getPresentacion();

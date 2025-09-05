@@ -15,7 +15,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Receta {
     private String id;
-    private String pacienteId;
+    private String pacienteId; //revisar si es mejor tipo Paciente
     @XmlJavaTypeAdapter(LocalDateAdapter.class) //para que lo type de manera correcta
     private LocalDate fecha;
     //Revisar anteriores

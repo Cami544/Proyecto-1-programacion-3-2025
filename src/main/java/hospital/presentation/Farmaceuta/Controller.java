@@ -14,8 +14,8 @@ public class Controller {
         view.setModel(model);
 
         try {
-            model.setList(Service.instance().findAllFarmaceutas());
-            model.setFiltered(Service.instance().findAllFarmaceutas());
+            model.setList(Service.instance().getFarmaceutas());
+            model.setFiltered(Service.instance().getFarmaceutas());
         } catch (Exception e) {
             System.err.println("Error cargando farmaceutas iniciales: " + e.getMessage());
         }
@@ -30,8 +30,8 @@ public class Controller {
         }
 
         model.setCurrent(new Farmaceuta());
-        model.setList(Service.instance().findAllFarmaceutas());
-        model.setFiltered(Service.instance().findAllFarmaceutas());
+        model.setList(Service.instance().getFarmaceutas());
+        model.setFiltered(Service.instance().getFarmaceutas());
     }
 
     public void search(String id) throws Exception {
@@ -50,8 +50,8 @@ public class Controller {
         if (model.getCurrent().getId() != null && !model.getCurrent().getId().trim().isEmpty()) {
             Service.instance().deleteFarmaceuta(model.getCurrent().getId());
             model.setCurrent(new Farmaceuta());
-            model.setList(Service.instance().findAllFarmaceutas());
-            model.setFiltered(Service.instance().findAllFarmaceutas());
+            model.setList(Service.instance().getFarmaceutas());
+            model.setFiltered(Service.instance().getFarmaceutas());
         } else {
             throw new Exception("Seleccione un farmaceuta para eliminar");
         }

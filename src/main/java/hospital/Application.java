@@ -1,23 +1,10 @@
 package hospital;
 
-import hospital.data.GestorDatosMedicamentos;
-import hospital.data.GestorDatosPaciente;
-import hospital.logic.Medicamento;
-import hospital.logic.Paciente;
-import hospital.logic.Service;
-import hospital.presentation.Medico.Controller;
-import hospital.presentation.Medico.Model;
-import hospital.presentation.Medico.View;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class Application {
     public static void main(String[] args) {

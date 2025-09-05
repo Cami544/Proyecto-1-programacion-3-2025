@@ -53,8 +53,8 @@ public class Controller {
         }
 
         model.setCurrent(new Paciente());
-        model.setList(Service.instance().findAllPacientes());
-        model.setFiltered(Service.instance().findAllPacientes());
+        model.setList(Service.instance().getPacientes());
+        model.setFiltered(Service.instance().getPacientes());
     }
 
 
@@ -72,8 +72,8 @@ public class Controller {
         if (model.getCurrent().getId() != null && !model.getCurrent().getId().trim().isEmpty()) {
             Service.instance().deletePaciente(model.getCurrent().getId());
             model.setCurrent(new Paciente());
-            model.setList(Service.instance().findAllPacientes());
-            model.setFiltered(Service.instance().findAllPacientes());
+            model.setList(Service.instance().getPacientes());
+            model.setFiltered(Service.instance().getPacientes());
         } else {
             throw new Exception("Seleccione un paciente para eliminar");
         }
@@ -87,7 +87,7 @@ public class Controller {
 
     public void filter(String criterio) {
         try {
-            model.setFiltered(Service.instance().searchPaciente(criterio));
+            model.setFiltered(Service.instance().searchPacientes(criterio));
         } catch (Exception e) {
             System.err.println("Error filtrando pacientes: " + e.getMessage());
         }
