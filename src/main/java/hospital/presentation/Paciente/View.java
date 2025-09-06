@@ -1,7 +1,7 @@
 package hospital.presentation.Paciente;
 
+import com.github.lgooddatepicker.components.DatePicker;
 import hospital.Application;
-import hospital.logic.Medico;
 import hospital.logic.Paciente;
 
 import javax.swing.*;
@@ -32,13 +32,22 @@ public class View implements PropertyChangeListener {
     private JLabel buscarNomLabel;
     private JTextField buscarNomText;
     private JButton filtrarButton;
-    private JTextField fechNacimientoTtext;
     private JPanel Busqueda;
+    private DatePicker DatePicker;
 
-    public JPanel getPanel() { return panel; }
+    private Model model;
+    private Controller controller;
+
+    public JPanel getPanel() {
+        return panel;
+    }
 
     public View() {
+        setupEventHandlers();
+        ajustarTamanosCampos();
+    }
 
+    private void setupEventHandlers() {
         pacienteList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -50,25 +59,27 @@ public class View implements PropertyChangeListener {
                         model.setCurrent(paciente);
                     }
                 }
-                /*int row=pacienteList.getSelectedRow(); es por la nueva structura del xml
-                controller.edit(row);
-                super.mouseClicked(e);
-
-                 */
             }
         });
+
         generarPdfButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     controller.generarReporte();
-                    JOptionPane.showMessageDialog(panel, "Reporte PDF generado con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(panel,
+                            "Reporte PDF generado con éxito.",
+                            "Información",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al generar el reporte: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-                catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, "Error al generar el reporte: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                            }
+            }
         });
+
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,7 +93,7 @@ public class View implements PropertyChangeListener {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
-                        "¿Está seguro de eliminar a este paciente " + model.getCurrent().getNombre() + "?",
+                        "Esta seguro de eliminar a este paciente " + model.getCurrent().getNombre() + "?",
                         "Confirmar eliminación",
                         JOptionPane.YES_NO_OPTION);
 
@@ -91,7 +102,7 @@ public class View implements PropertyChangeListener {
                         controller.delete();
                         JOptionPane.showMessageDialog(panel,
                                 "Paciente eliminado exitosamente",
-                                "Éxito",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -101,28 +112,31 @@ public class View implements PropertyChangeListener {
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
-
-
             }
         });
+
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            if(validate()){
-                Paciente paciente = take();
-                try{
-                    controller.save(paciente);
-                    JOptionPane.showMessageDialog(panel,
-                            "Paciente guardado exitosamente",
-                            "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    clear();
-                }catch (Exception ex){
-                    JOptionPane.showMessageDialog(panel,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                if(validate()){
+                    Paciente paciente = take();
+                    try{
+                        controller.save(paciente);
+                        JOptionPane.showMessageDialog(panel,
+                                "Paciente guardado exitosamente",
+                                "exito",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clear();
+                    }catch (Exception ex){
+                        JOptionPane.showMessageDialog(panel,
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
-            }
         });
+
         filtrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,27 +145,53 @@ public class View implements PropertyChangeListener {
             }
         });
     }
+
+    private void ajustarTamanosCampos() {
+        java.awt.Dimension tamanoPreferido = new java.awt.Dimension(150, 25);
+        java.awt.Dimension tamanoMinimo = new java.awt.Dimension(100, 25);
+
+        if (idText != null) {
+            idText.setPreferredSize(tamanoPreferido);
+            idText.setMinimumSize(tamanoMinimo);
+        }
+
+        if (nombreText != null) {
+            nombreText.setPreferredSize(tamanoPreferido);
+            nombreText.setMinimumSize(tamanoMinimo);
+        }
+
+        if (telefonoText != null) {
+            telefonoText.setPreferredSize(tamanoPreferido);
+            telefonoText.setMinimumSize(tamanoMinimo);
+        }
+
+        if (panel != null) {
+            panel.revalidate();
+            panel.repaint();
+        }
+    }
+
     private boolean validate(){
         boolean valid = true;
         clearValidationErrors();
 
         if (idText.getText().trim().isEmpty()) {
-            setFieldError(idText, "El ID no puede estar vacío");
+            setFieldError(idText, "El ID no puede estar vacio");
             valid = false;
         }
         if (nombreText.getText().trim().isEmpty()) {
-            setFieldError(nombreText, "El nombre no puede estar vacío");
+            setFieldError(nombreText, "El nombre no puede estar vacio");
             valid = false;
         }
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate.parse(fechNacimientoTtext.getText().trim(), formatter);
-        } catch (Exception e) {
-            setFieldError(fechNacimientoTtext, "Formato de fecha inválido (dd/MM/yyyy)");
+
+        if (DatePicker.getDate() == null) {
+            DatePicker.setBackground(Application.BACKGROUND_ERROR);
+            DatePicker.setToolTipText("Debe seleccionar una fecha de nacimiento");
             valid = false;
         }
+
         if (telefonoText.getText().trim().isEmpty()) {
-            setFieldError(telefonoText, "El teléfono no puede estar vacío");
+            setFieldError(telefonoText, "El telefono no puede estar vacio");
             valid = false;
         }
 
@@ -159,97 +199,112 @@ public class View implements PropertyChangeListener {
     }
 
     private void setFieldError(JTextField field, String message) {
-        field.setBackground(Color.PINK);
+        field.setBackground(Application.BACKGROUND_ERROR);
         field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         field.setToolTipText(message);
     }
 
     private void clearValidationErrors() {
-        JTextField[] fields = {idText, nombreText, fechNacimientoTtext, telefonoText};
+        JTextField[] fields = {idText, nombreText, telefonoText};
         for (JTextField field : fields) {
-            field.setBackground(Color.WHITE);
-            field.setBorder(UIManager.getBorder("TextField.border"));
-            field.setToolTipText(null);
+            if (field != null) {
+                field.setBackground(Color.WHITE);
+                field.setBorder(UIManager.getBorder("TextField.border"));
+                field.setToolTipText(null);
+            }
+        }
+
+        if (DatePicker != null) {
+            DatePicker.setBackground(Color.WHITE);
+            DatePicker.setToolTipText(null);
         }
     }
 
-public void clear(){
+    public void clear(){
         idText.setText("");
         nombreText.setText("");
-        fechNacimientoTtext.setText("");
         telefonoText.setText("");
-}
+
+        DatePicker.setDate(null);
+
+        clearValidationErrors();
+    }
 
     public Paciente take(){
         Paciente p = new Paciente();
-        p.setId(idText.getText());
-        p.setNombre(nombreText.getText());
-        //fecha de nacimiento,con restricción
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        p.setFechaNacimiento(LocalDate.parse(fechNacimientoTtext.getText(), formatter));
-        p.setNumeroTelefono( telefonoText.getText());
+        p.setId(idText.getText().trim());
+        p.setNombre(nombreText.getText().trim());
+
+        LocalDate fechaNacimiento = DatePicker.getDate();
+        p.setFechaNacimiento(fechaNacimiento);
+
+        p.setNumeroTelefono(telefonoText.getText().trim());
         return p;
     }
-
-    //MVC
-    Model model;
-    Controller controller;
 
     public void setModel(Model model){
         this.model = model;
         model.addPropertyChangeListener(this);
     }
-    public void setController(Controller controller){ this.controller = controller; }
+
+    public void setController(Controller controller){
+        this.controller = controller;
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()){
             case Model.LIST:
-                int[] cols= {TableModel.ID, TableModel.NOMBRE, TableModel.NACIMIENTO, TableModel.TELEFONO};
-                pacienteList.setModel(new TableModel(cols,model.getList()));
-                pacienteList.setRowHeight(30);
-                TableColumnModel columnModel = pacienteList.getColumnModel();
-                columnModel.getColumn(0).setPreferredWidth(150);
-                columnModel.getColumn(1).setPreferredWidth(150);
-                columnModel.getColumn(2).setPreferredWidth(150);
-                columnModel.getColumn(3).setPreferredWidth(150);
+                updateTableWithList();
+                break;
+            case Model.FILTER:
+                updateTableWithFiltered();
                 break;
             case Model.CURRENT:
-                if (model.getCurrent() != null) {
-                    idText.setText(model.getCurrent().getId());
-                    nombreText.setText(model.getCurrent().getNombre());
-
-                    //Ver que se hace con la fecha de nacimiento
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    if (model.getCurrent().getFechaNacimiento() != null) {
-                        fechNacimientoTtext.setText(model.getCurrent().getFechaNacimiento().format(formatter));
-                    } else {
-                        fechNacimientoTtext.setText("");
-                    }
-
-                    telefonoText.setText(model.getCurrent().getNumeroTelefono());
-//revisar
-                    if (model.getModel() == Application.MODE_EDIT) {
-                        idText.setEnabled(false);
-                        eliminarButton.setEnabled(true);
-                    } else {
-                        idText.setEnabled(true);
-                        eliminarButton.setEnabled(true);
-                    }
-                    idLabel.setBorder(null);
-                    idLabel.setToolTipText(null);
-                    nombreLabel.setBorder(null);
-                    nombreLabel.setToolTipText(null);
-                }
-                    break;
-            case Model.FILTER:
-                //revisar
-               //controller.filter(String.valueOf(buscarNomText));
-                //buscarNomText.setText(model.getFiltered());
-               break;
-                }
-                    this.panel.revalidate();
+                updateCurrentFields();
+                break;
         }
-
+        this.panel.revalidate();
     }
 
+    private void updateTableWithList() {
+        int[] cols = {TableModel.ID, TableModel.NOMBRE, TableModel.NACIMIENTO, TableModel.TELEFONO};
+        pacienteList.setModel(new TableModel(cols, model.getList()));
+        pacienteList.setRowHeight(30);
+        adjustColumnWidths();
+    }
+
+    private void updateTableWithFiltered() {
+        int[] cols = {TableModel.ID, TableModel.NOMBRE, TableModel.NACIMIENTO, TableModel.TELEFONO};
+        pacienteList.setModel(new TableModel(cols, model.getFiltered()));
+        pacienteList.setRowHeight(30);
+        adjustColumnWidths();
+    }
+
+    private void adjustColumnWidths() {
+        if (pacienteList.getColumnModel().getColumnCount() > 0) {
+            TableColumnModel columnModel = pacienteList.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(100);
+            columnModel.getColumn(1).setPreferredWidth(200);
+            columnModel.getColumn(2).setPreferredWidth(120);
+            columnModel.getColumn(3).setPreferredWidth(120);
+        }
+    }
+
+    private void updateCurrentFields() {
+        if (model.getCurrent() != null) {
+            idText.setText(model.getCurrent().getId() != null ? model.getCurrent().getId() : "");
+            nombreText.setText(model.getCurrent().getNombre() != null ? model.getCurrent().getNombre() : "");
+
+            if (model.getCurrent().getFechaNacimiento() != null) {
+                DatePicker.setDate(model.getCurrent().getFechaNacimiento());
+            } else {
+                DatePicker.setDate(null);
+            }
+
+            telefonoText.setText(model.getCurrent().getNumeroTelefono() != null ? model.getCurrent().getNumeroTelefono() : "");
+
+            clearValidationErrors();
+        }
+    }
+}

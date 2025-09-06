@@ -4,6 +4,7 @@ import hospital.logic.Paciente;
 import hospital.logic.Receta;
 import hospital.logic.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,25 +50,58 @@ public class Controller {
         }
 
         String criterioBusqueda = criterio.toLowerCase().trim();
+        List<Receta> todasLasRecetas = model.getRecetas();
+        List<Receta> recetasFiltradas = new ArrayList<>();
 
-        List<Paciente> pacientesEncontrados = Service.instance().searchPacientes(criterioBusqueda);
+        // Primero buscar por ID de receta directamente
+        for (Receta receta : todasLasRecetas) {
+            if (receta.getId().toLowerCase().contains(criterioBusqueda)) {
+                recetasFiltradas.add(receta);
+            }
+        }
 
-        if (pacientesEncontrados.isEmpty()) {
-            List<Receta> recetasFiltradas = model.getRecetas().stream()
-                    .filter(r -> r.getId().toLowerCase().contains(criterioBusqueda))
-                    .collect(Collectors.toList());
+        // Si no encontró por ID de receta, buscar por paciente
+        if (recetasFiltradas.isEmpty()) {
+            // Buscar por ID exacto de paciente
+            for (Receta receta : todasLasRecetas) {
+                if (receta.getPacienteId().toLowerCase().equals(criterioBusqueda)) {
+                    recetasFiltradas.add(receta);
+                }
+            }
 
-            model.setRecetasFiltradas(recetasFiltradas);
-        } else {
-            List<String> idsLPacientes = pacientesEncontrados.stream()
-                    .map(Paciente::getId)
-                    .collect(Collectors.toList());
+            // Si aún no encuentra, buscar por nombre de paciente
+            if (recetasFiltradas.isEmpty()) {
+                try {
+                    List<Paciente> pacientesEncontrados = Service.instance().searchPacientes(criterioBusqueda);
 
-            List<Receta> recetasFiltradas = model.getRecetas().stream()
-                    .filter(r -> idsLPacientes.contains(r.getPacienteId()))
-                    .collect(Collectors.toList());
+                    if (!pacientesEncontrados.isEmpty()) {
+                        List<String> idsLPacientes = pacientesEncontrados.stream()
+                                .map(Paciente::getId)
+                                .collect(Collectors.toList());
 
-            model.setRecetasFiltradas(recetasFiltradas);
+                        recetasFiltradas = todasLasRecetas.stream()
+                                .filter(r -> idsLPacientes.contains(r.getPacienteId()))
+                                .collect(Collectors.toList());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error buscando pacientes: " + e.getMessage());
+                }
+            }
+        }
+
+        model.setRecetasFiltradas(recetasFiltradas);
+
+        // Debug: mostrar información sobre la búsqueda
+        System.out.println("Criterio de búsqueda: " + criterio);
+        System.out.println("Total recetas en sistema: " + todasLasRecetas.size());
+        System.out.println("Recetas encontradas: " + recetasFiltradas.size());
+
+        if (todasLasRecetas.size() > 0) {
+            System.out.println("Ejemplos de recetas existentes:");
+            for (int i = 0; i < Math.min(3, todasLasRecetas.size()); i++) {
+                Receta r = todasLasRecetas.get(i);
+                System.out.println("  - ID: " + r.getId() + ", Paciente: " + r.getPacienteId());
+            }
         }
     }
 

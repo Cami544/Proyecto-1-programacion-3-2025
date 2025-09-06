@@ -29,7 +29,7 @@ public class Model extends AbstractModel {
         this.recetaActual = null;
         this.detallesReceta = new ArrayList<>();
         this.medicamentosDisponibles = new ArrayList<>();
-        this.fechaRetiro = LocalDate.now().plusDays(1);
+        this.fechaRetiro = LocalDate.now().plusDays(1); // Por defecto: mañana
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Model extends AbstractModel {
         this.pacienteSeleccionado = null;
         this.recetaActual = null;
         this.detallesReceta.clear();
-        this.fechaRetiro = LocalDate.now().plusDays(1);
+        this.fechaRetiro = LocalDate.now().plusDays(1); // Resetear a mañana
         firePropertyChange(PACIENTE_SELECCIONADO);
         firePropertyChange(RECETA_ACTUAL);
         firePropertyChange(DETALLES_RECETA);
@@ -121,13 +121,14 @@ public class Model extends AbstractModel {
         if (pacienteSeleccionado != null) {
             String recetaId = generarIdReceta();
             this.recetaActual = new Receta(recetaId, pacienteSeleccionado.getId(), LocalDate.now());
+            this.recetaActual.setFechaRetiro(this.fechaRetiro);
             this.recetaActual.setDetalles(new ArrayList<>(this.detallesReceta));
             firePropertyChange(RECETA_ACTUAL);
         }
     }
 
     private String generarIdReceta() {
-        return "REC-" + LocalDate.now().toString().replace("-", "") +
-                "-" + System.currentTimeMillis() % 100000;
+        long timestamp = System.currentTimeMillis();
+        return "REC-" + LocalDate.now().toString().replace("-", "") + "-" + (timestamp % 10000);
     }
 }

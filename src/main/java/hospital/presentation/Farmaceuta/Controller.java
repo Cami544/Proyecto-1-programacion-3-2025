@@ -63,7 +63,11 @@ public class Controller {
 
     public void filter(String criterio) {
         try {
-            model.setFiltered(Service.instance().searchFarmaceutas(criterio));
+            if (criterio == null || criterio.trim().isEmpty()) {
+                model.setFiltered(Service.instance().getFarmaceutas());
+            } else {
+                model.setFiltered(Service.instance().searchFarmaceutas(criterio));
+            }
         } catch (Exception e) {
             System.err.println("Error filtrando farmaceutas: " + e.getMessage());
         }

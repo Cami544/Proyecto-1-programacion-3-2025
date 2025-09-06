@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data>
+    <pacientes>
+        <paciente>
+            <id>111</id>
+            <nombre>Javier</nombre>
+            <fechaNacimiento>2003-12-12</fechaNacimiento>
+            <numeroTelefono>213</numeroTelefono>
+        </paciente>
+        <paciente>
+            <id>222</id>
+            <nombre>Diana</nombre>
+            <fechaNacimiento>1998-09-21</fechaNacimiento>
+            <numeroTelefono>123123</numeroTelefono>
+        </paciente>
+    </pacientes>
+    <medicos>
+        <medico>
+            <id>123</id>
+            <nombre>Fernando</nombre>
+            <clave></clave>
+            <especialidad>Cardiólogo</especialidad>
+        </medico>
+    </medicos>
+    <farmaceutas/>
+    <medicamentos>
+        <medicamento>
+            <codigo>222</codigo>
+            <nombre>ibuprofeno</nombre>
+            <presentacion>300ml</presentacion>
+        </medicamento>
+    </medicamentos>
+    <recetas>
+        <receta>
+            <id>REC-20250905-8596</id>
+            <pacienteId>111</pacienteId>
+            <fecha>2025-10-05</fecha>
+            <fechaRetiro>2025-09-26</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>222</medicamentoCodigo>
+                <cantidad>2</cantidad>
+                <indicaciones>Tomar cada 12 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250905-8595</id>
+            <pacienteId>111</pacienteId>
+            <fecha>2025-09-05</fecha>
+            <fechaRetiro>2025-09-26</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>222</medicamentoCodigo>
+                <cantidad>33</cantidad>
+                <indicaciones>Tomar cada 12 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250906-4546</id>
+            <pacienteId>222</pacienteId>
+            <fecha>2025-09-06</fecha>
+            <fechaRetiro>2025-11-01</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>222</medicamentoCodigo>
+                <cantidad>2</cantidad>
+                <indicaciones>Tomar cada 24 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250906-2482</id>
+            <pacienteId>222</pacienteId>
+            <fecha>2025-09-06</fecha>
+            <fechaRetiro>2025-09-25</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>222</medicamentoCodigo>
+                <cantidad>1</cantidad>
+                <indicaciones>Tomar cada 2 horas</indicaciones>
+            </detalles>
+        </receta>
+    </recetas>
+</data>

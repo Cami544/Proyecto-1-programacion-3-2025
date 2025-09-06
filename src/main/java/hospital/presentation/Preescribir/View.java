@@ -1,9 +1,9 @@
 package hospital.presentation.Preescribir;
 
+import com.github.lgooddatepicker.components.DatePicker;
 import hospital.logic.DetalleReceta;
 import hospital.logic.Medicamento;
 import hospital.logic.Paciente;
-import hospital.logic.Service;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -23,6 +23,7 @@ public class View implements PropertyChangeListener {
     private JButton guardarButton;
     private JButton limpiarButton;
     private JPanel panel;
+    private DatePicker datePicker;
 
     // MVC
     private Model model;
@@ -31,8 +32,36 @@ public class View implements PropertyChangeListener {
     public View() {
         setupEventHandlers();
         inicializarTabla();
+        inicializarDatePicker();
         agregarMedicamentoButton.setEnabled(false);
         guardarButton.setEnabled(false);
+    }
+
+    private void createUIComponents() {
+        datePicker = new DatePicker();
+        // Establecer fecha por defecto al día siguiente
+        LocalDate fechaPorDefecto = LocalDate.now().plusDays(1);
+        datePicker.setDate(fechaPorDefecto);
+    }
+
+    private void inicializarDatePicker() {
+        if (datePicker != null) {
+            // Establecer fecha por defecto al día siguiente
+            LocalDate fechaPorDefecto = LocalDate.now().plusDays(1);
+            datePicker.setDate(fechaPorDefecto);
+
+            // Agregar listener para validar fecha mínima
+            datePicker.addDateChangeListener(event -> {
+                LocalDate fechaSeleccionada = datePicker.getDate();
+                if (fechaSeleccionada != null && fechaSeleccionada.isBefore(LocalDate.now())) {
+                    JOptionPane.showMessageDialog(panel,
+                            "La fecha de retiro no puede ser anterior a hoy",
+                            "Fecha inválida",
+                            JOptionPane.WARNING_MESSAGE);
+                    datePicker.setDate(LocalDate.now().plusDays(1));
+                }
+            });
+        }
     }
 
     public JPanel getPanel() {
@@ -97,10 +126,35 @@ public class View implements PropertyChangeListener {
 
     private void mostrarDialogoBuscarPaciente() {
         try {
-            String criterio = JOptionPane.showInputDialog(panel, "Ingrese nombre o ID del paciente:");
-            if (criterio != null && !criterio.trim().isEmpty()) {
-                controller.buscarPaciente(criterio.trim());
+            List<Paciente> todosPacientes = controller.obtenerTodosPacientes();
+
+            if (todosPacientes.isEmpty()) {
+                JOptionPane.showMessageDialog(panel,
+                        "No hay pacientes registrados en el sistema",
+                        "Sin pacientes",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            String[] opciones = todosPacientes.stream()
+                    .map(p -> p.getId() + " - " + p.getNombre())
+                    .toArray(String[]::new);
+
+            String seleccion = (String) JOptionPane.showInputDialog(
+                    panel,
+                    "Seleccione un paciente:",
+                    "Buscar Paciente",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    opciones,
+                    opciones.length > 0 ? opciones[0] : null
+            );
+
+            if (seleccion != null) {
+                String idPaciente = seleccion.split(" - ")[0];
+                controller.buscarPaciente(idPaciente);
+            }
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(panel,
                     ex.getMessage(),
@@ -136,7 +190,6 @@ public class View implements PropertyChangeListener {
                 return;
             }
 
-            // Crear array para JOptionPane
             String[] opciones = medicamentos.stream()
                     .map(m -> m.getCodigo() + " - " + m.getNombre() + " " + m.getPresentacion())
                     .toArray(String[]::new);
@@ -177,12 +230,12 @@ public class View implements PropertyChangeListener {
 
             JOptionPane.showMessageDialog(panel,
                     "Medicamento agregado exitosamente",
-                    "exito",
+                    "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(panel,
-                    "La cantidad debe ser un numero valido",
+                    "La cantidad debe ser un número válido",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
@@ -227,10 +280,30 @@ public class View implements PropertyChangeListener {
 
     private void guardarReceta() {
         try {
-            controller.setFechaRetiro(LocalDate.now().plusDays(1));
+
+            LocalDate fechaRetiro = datePicker.getDate();
+
+            if (fechaRetiro == null) {
+                JOptionPane.showMessageDialog(panel,
+                        "Debe seleccionar una fecha de retiro",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (fechaRetiro.isBefore(LocalDate.now())) {
+                JOptionPane.showMessageDialog(panel,
+                        "La fecha de retiro no puede ser anterior a hoy",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            controller.setFechaRetiro(fechaRetiro);
 
             int confirm = JOptionPane.showConfirmDialog(panel,
-                    "Confirma guardar la receta para " + model.getPacienteSeleccionado().getNombre() + "?",
+                    "¿Confirma guardar la receta para " + model.getPacienteSeleccionado().getNombre() +
+                            " con fecha de retiro " + fechaRetiro.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "?",
                     "Confirmar",
                     JOptionPane.YES_NO_OPTION);
 
@@ -258,6 +331,8 @@ public class View implements PropertyChangeListener {
 
         if (confirm == JOptionPane.YES_OPTION) {
             controller.limpiarReceta();
+            // Restablecer la fecha por defecto
+            datePicker.setDate(LocalDate.now().plusDays(1));
             JOptionPane.showMessageDialog(panel,
                     "Receta limpiada",
                     "Información",
@@ -275,7 +350,9 @@ public class View implements PropertyChangeListener {
                 actualizarTablaReceta();
                 break;
             case Model.MEDICAMENTOS_DISPONIBLES:
-                // Los medicamentos se actualizan cuando se necesitan
+                break;
+            case Model.FECHA_RETIRO:
+                actualizarFechaRetiro();
                 break;
         }
         this.panel.revalidate();
@@ -307,6 +384,13 @@ public class View implements PropertyChangeListener {
             columnModel.getColumn(1).setPreferredWidth(120);
             columnModel.getColumn(2).setPreferredWidth(80);
             columnModel.getColumn(3).setPreferredWidth(250);
+        }
+    }
+
+    private void actualizarFechaRetiro() {
+        LocalDate fechaRetiro = model.getFechaRetiro();
+        if (fechaRetiro != null) {
+            datePicker.setDate(fechaRetiro);
         }
     }
 }

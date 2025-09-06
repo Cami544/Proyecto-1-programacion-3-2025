@@ -19,8 +19,8 @@ public class Application {
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                // Service.instance().stop();
+                hospital.logic.Service.instance().stop();
+                System.exit(0);
             }
         });
 
@@ -36,6 +36,10 @@ public class Application {
         hospital.presentation.Farmaceuta.View farmaceutaView = new hospital.presentation.Farmaceuta.View();
         farmaceutaControllers = new hospital.presentation.Farmaceuta.Controller(farmaceutaView, farmaceutaModel);
 
+        hospital.presentation.Medicamento.Model medicamentoModel = new hospital.presentation.Medicamento.Model();
+        hospital.presentation.Medicamento.View medicamentoView = new hospital.presentation.Medicamento.View();
+        medicamentoController = new hospital.presentation.Medicamento.Controller(medicamentoView, medicamentoModel);
+
         hospital.presentation.Dashboard.Model dashboardModel = new hospital.presentation.Dashboard.Model();
         hospital.presentation.Dashboard.View dashboardView = new hospital.presentation.Dashboard.View();
         dashboardController = new hospital.presentation.Dashboard.Controller(dashboardView, dashboardModel);
@@ -48,24 +52,26 @@ public class Application {
         hospital.presentation.Preescribir.View preescribirView = new hospital.presentation.Preescribir.View();
         preescribirController = new hospital.presentation.Preescribir.Controller(preescribirView, preescribirModel);
 
-
         tabbedPane.addTab("Medicos", medicoView.getPanel());
         tabbedPane.addTab("Pacientes", pacienteView.getPanel());
         tabbedPane.addTab("Farmaceutas", farmaceutaView.getPanel());
+        tabbedPane.addTab("Medicamentos", medicamentoView.getPanel());
         tabbedPane.addTab("Preescribir", preescribirView.getPanel());
         tabbedPane.addTab("Dashboard", dashboardView.getPanel());
         tabbedPane.addTab("Historico", historicoView.getPanel());
 
-        window.setSize(900, 700);
+        window.setSize(850, 600);
         window.setResizable(true);
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("HOSPITAL - Sistema de Prescripción y Despacho");
+
         window.setVisible(true);
     }
 
     public static hospital.presentation.Paciente.Controller pacientesControllers;
     public static hospital.presentation.Medico.Controller medicoControllers;
     public static hospital.presentation.Farmaceuta.Controller farmaceutaControllers;
+    public static hospital.presentation.Medicamento.Controller medicamentoController;
     public static hospital.presentation.Dashboard.Controller dashboardController;
     public static hospital.presentation.Historico.Controller historicoController;
     public static hospital.presentation.Preescribir.Controller preescribirController;

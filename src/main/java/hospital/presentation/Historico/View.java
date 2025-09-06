@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.format.DateTimeFormatter;
 
 public class View implements PropertyChangeListener {
     private JPanel panel1;
@@ -18,7 +19,6 @@ public class View implements PropertyChangeListener {
     private JTable table1;
     private JButton buscarButton;
 
-    // MVC
     private Model model;
     private Controller controller;
 
@@ -119,16 +119,27 @@ public class View implements PropertyChangeListener {
             String nombrePaciente = controller.obtenerNombrePaciente(receta.getPacienteId());
             String detallesMedicamentos = controller.obtenerDetallesMedicamentos(receta);
 
+            // Formatear las fechas
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaConfeccion = receta.getFecha() != null ?
+                    receta.getFecha().format(formatter) : "Sin fecha";
+            String fechaRetiro = receta.getFechaRetiro() != null ?
+                    receta.getFechaRetiro().format(formatter) :
+                    (receta.getFecha() != null ? receta.getFecha().plusDays(1).format(formatter) : "Sin fecha");
+
             String mensaje = String.format(
-                    "═══════════ DETALLES DE RECETA ═══════════\n\n" +
+                    "═══════════════ DETALLES DE RECETA ═══════════════\n\n" +
                             "ID Receta: %s\n" +
                             "Paciente: %s (ID: %s)\n" +
-                            "Fecha Confección: %s\n\n" +
+                            "Fecha Confección: %s\n" +
+                            "Fecha Retiro: %s\n" +
+                            "Estado: Confeccionada\n\n" +
                             "═══ MEDICAMENTOS PRESCRITOS ═══\n\n%s",
                     receta.getId(),
                     nombrePaciente,
                     receta.getPacienteId(),
-                    receta.getFecha().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    fechaConfeccion,
+                    fechaRetiro,
                     detallesMedicamentos
             );
 
@@ -180,13 +191,13 @@ public class View implements PropertyChangeListener {
         }
         this.panel1.revalidate();
     }
-/// ///
+
     public void refrescarDatos() {
         if (controller != null) {
             try {
                 controller.refrescarRecetas();
             } catch (Exception e) {
-                System.err.println("Error refrescando historico: " + e.getMessage());
+                System.err.println("Error refrescando histórico: " + e.getMessage());
             }
         }
     }

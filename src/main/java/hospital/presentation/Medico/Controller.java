@@ -17,7 +17,7 @@ public class Controller {
             model.setList(Service.instance().getMedicos());
             model.setFiltered(Service.instance().getMedicos());
         } catch (Exception e) {
-            System.err.println("Error cargando médicos iniciales: " + e.getMessage());
+            System.err.println("Error cargando medicos iniciales: " + e.getMessage());
         }
     }
 
@@ -63,7 +63,11 @@ public class Controller {
 
     public void filter(String criterio) {
         try {
-            model.setFiltered(Service.instance().searchMedicos(criterio));
+            if (criterio == null || criterio.trim().isEmpty()) {
+                model.setFiltered(Service.instance().getMedicos());
+            } else {
+                model.setFiltered(Service.instance().searchMedicos(criterio));
+            }
         } catch (Exception e) {
             System.err.println("Error filtrando medicos: " + e.getMessage());
         }

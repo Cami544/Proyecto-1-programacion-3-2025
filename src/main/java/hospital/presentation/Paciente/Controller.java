@@ -10,8 +10,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import hospital.Application;
-import hospital.logic.Medico;
 import hospital.logic.Paciente;
 import hospital.logic.Service;
 import com.itextpdf.layout.Document;
@@ -21,16 +19,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class Controller {
-    View view;
-    Model model;
+    private View view;
+    private Model model;
 
     public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
         view.setController(this);
         view.setModel(model);
-    }
 
+        try {
+            model.setList(Service.instance().getPacientes());
+            model.setFiltered(Service.instance().getPacientes());
+        } catch (Exception e) {
+            System.err.println("Error cargando pacientes iniciales: " + e.getMessage());
+        }
+    }
 
     public void search(String id) throws Exception {
         try {
@@ -57,16 +61,17 @@ public class Controller {
         model.setFiltered(Service.instance().getPacientes());
     }
 
-
     public void edit(int row){
-        Paciente e = model.getList().get(row);
-        try {
-            model.setCurrent(Service.instance().readPaciente(e.getId()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        List<Paciente> currentList = model.getFiltered().isEmpty() ? model.getList() : model.getFiltered();
+        if (row >= 0 && row < currentList.size()) {
+            Paciente paciente = currentList.get(row);
+            try {
+                model.setCurrent(Service.instance().readPaciente(paciente.getId()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
-
 
     public void delete() throws Exception {
         if (model.getCurrent().getId() != null && !model.getCurrent().getId().trim().isEmpty()) {
@@ -79,31 +84,30 @@ public class Controller {
         }
     }
 
-
     public void clear() {
-      //  model.setMode(Application.MODE_CREATE);
         model.setCurrent(new Paciente());
     }
 
     public void filter(String criterio) {
         try {
-            model.setFiltered(Service.instance().searchPacientes(criterio));
+            if (criterio == null || criterio.trim().isEmpty()) {
+                model.setFiltered(Service.instance().getPacientes());
+            } else {
+                model.setFiltered(Service.instance().searchPacientes(criterio));
+            }
         } catch (Exception e) {
             System.err.println("Error filtrando pacientes: " + e.getMessage());
         }
     }
 
-
     public void generarReporte() throws Exception {
-        String pdfPath = "reporte_Paciente.pdf";
+        String pdfPath = "reporte_Pacientes.pdf";
 
         PdfWriter writer = new PdfWriter(pdfPath);
         PdfDocument pdfDoc = new PdfDocument(writer);
         Document document = new Document(pdfDoc);
         document.setMargins(20, 25, 20, 25);
 
-
-        // Titulo
         Paragraph titulo = new Paragraph("Reporte de Pacientes")
                 .setTextAlignment(TextAlignment.CENTER)
                 .setFontSize(16)
@@ -111,21 +115,18 @@ public class Controller {
                 .setMarginBottom(20);
         document.add(titulo);
 
-        // Crear la tabla
-        Table table = new Table(UnitValue.createPercentArray(new float[]{2, 4, 4, 4})); // Proporciones
+        Table table = new Table(UnitValue.createPercentArray(new float[]{2, 4, 4, 4}));
         table.setWidth(UnitValue.createPercentValue(100));
 
-        // Encabezados con estilo
         String[] headers = {"ID", "Nombre", "Fecha de nacimiento", "Teléfono"};
         for (String h : headers) {
             Cell headerCell = new Cell().add(new Paragraph(h).setBold())
-                    .setBackgroundColor(new DeviceRgb(230, 230, 230)) // gris claro
+                    .setBackgroundColor(new DeviceRgb(230, 230, 230))
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBorder(new SolidBorder(ColorConstants.BLACK, 1));
             table.addHeaderCell(headerCell);
         }
 
-        // Llenar tabla
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         List<Paciente> pacientes = model.getList();
 
@@ -139,12 +140,10 @@ public class Controller {
             table.addCell(new Cell().add(new Paragraph(paciente.getNumeroTelefono()))
                     .setTextAlignment(TextAlignment.CENTER));
         }
-        // Añadir tabla al doc.
+
         document.add(table);
         document.close();
 
-        // Confirmación
         System.out.println("Reporte de pacientes PDF generado en: " + new File(pdfPath).getAbsolutePath());
     }
 }
-

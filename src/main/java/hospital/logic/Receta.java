@@ -1,6 +1,5 @@
 package hospital.logic;
 
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -11,21 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name="receta")
-// nombre del objeto deltro del archivo
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Receta {
     private String id;
-    private String pacienteId; //revisar si es mejor tipo Paciente
-    @XmlJavaTypeAdapter(LocalDateAdapter.class) //para que lo type de manera correcta
+    private String pacienteId;
+
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate fecha;
-    //Revisar anteriores
+
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
+    private LocalDate fechaRetiro;
+
     private List<DetalleReceta> detalles = new ArrayList<>();
 
     public Receta() {}
+
     public Receta(String id, String pacienteId, LocalDate fecha) {
         this.id = id;
         this.pacienteId = pacienteId;
         this.fecha = fecha;
+        this.fechaRetiro = fecha.plusDays(1);
     }
 
     public String getId() {
@@ -52,6 +56,14 @@ public class Receta {
         this.fecha = fecha;
     }
 
+    public LocalDate getFechaRetiro() {
+        return fechaRetiro;
+    }
+
+    public void setFechaRetiro(LocalDate fechaRetiro) {
+        this.fechaRetiro = fechaRetiro;
+    }
+
     public List<DetalleReceta> getDetalles() {
         return detalles;
     }
@@ -59,5 +71,4 @@ public class Receta {
     public void setDetalles(List<DetalleReceta> detalles) {
         this.detalles = detalles;
     }
-
 }

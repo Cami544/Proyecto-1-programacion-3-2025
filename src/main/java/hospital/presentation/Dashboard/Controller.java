@@ -176,6 +176,7 @@ public class Controller {
         try {
             return Service.instance().readMedicamento(codigo).getNombre();
         } catch (Exception e) {
+            System.err.println("Error obteniendo medicamento con código: " + codigo);
             return codigo;
         }
     }
@@ -184,6 +185,7 @@ public class Controller {
         try {
             List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             model.setMedicamentosDisponibles(medicamentos);
+            System.out.println("Medicamentos cargados: " + medicamentos.size());
         } catch (Exception e) {
             System.err.println("Error cargando medicamentos: " + e.getMessage());
             model.setMedicamentosDisponibles(new ArrayList<>());

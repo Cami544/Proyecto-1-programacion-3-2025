@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Controller {
     private View view;
     private Model model;
@@ -20,14 +19,30 @@ public class Controller {
     }
 
     public void buscarPaciente(String criterio) throws Exception {
+        if (criterio == null || criterio.trim().isEmpty()) {
+            throw new Exception("Debe ingresar un criterio de búsqueda");
+        }
+
+        try {
+            Paciente paciente = Service.instance().readPaciente(criterio.trim());
+            model.setPacienteSeleccionado(paciente);
+            model.nuevaReceta();
+            return;
+        } catch (Exception e) {
+        }
+
         List<Paciente> pacientes = Service.instance().searchPacientes(criterio);
         if (pacientes.isEmpty()) {
             throw new Exception("No se encontraron pacientes con el criterio: " + criterio);
         }
 
         Paciente pacienteSeleccionado = pacientes.get(0);
-        model.setPacienteSeleccionado(pacienteSeleccionado);
 
+        if (pacientes.size() > 1) {
+            System.out.println("Se encontraron " + pacientes.size() + " pacientes, seleccionando: " + pacienteSeleccionado.getNombre());
+        }
+
+        model.setPacienteSeleccionado(pacienteSeleccionado);
         model.nuevaReceta();
     }
 
@@ -89,7 +104,7 @@ public class Controller {
 
         List<DetalleReceta> detalles = model.getDetallesReceta();
         if (index < 0 || index >= detalles.size()) {
-            throw new Exception("indice de medicamento invalido");
+            throw new Exception("Índice de medicamento inválido");
         }
 
         DetalleReceta detalle = detalles.get(index);
@@ -102,7 +117,7 @@ public class Controller {
     public void eliminarMedicamento(int index) throws Exception {
         List<DetalleReceta> detalles = model.getDetallesReceta();
         if (index < 0 || index >= detalles.size()) {
-            throw new Exception("indice de medicamento invalido");
+            throw new Exception("Índice de medicamento inválido");
         }
 
         model.removerDetalle(index);
@@ -119,8 +134,6 @@ public class Controller {
 
         model.setFechaRetiro(fecha);
     }
-
-
 
     public void guardarReceta() throws Exception {
         if (model.getPacienteSeleccionado() == null) {
@@ -141,7 +154,14 @@ public class Controller {
             receta = model.getRecetaActual();
         }
 
-        receta.setDetalles(model.getDetallesReceta());
+        receta.setDetalles(new ArrayList<>(model.getDetallesReceta()));
+
+        System.out.println("Guardando receta:");
+        System.out.println("  - ID: " + receta.getId());
+        System.out.println("  - Paciente ID: " + receta.getPacienteId());
+        System.out.println("  - Fecha confección (hoy): " + LocalDate.now());
+        System.out.println("  - Fecha retiro seleccionada: " + model.getFechaRetiro());
+        System.out.println("  - Medicamentos: " + receta.getDetalles().size());
 
         Service.instance().createReceta(receta, model.getFechaRetiro());
 

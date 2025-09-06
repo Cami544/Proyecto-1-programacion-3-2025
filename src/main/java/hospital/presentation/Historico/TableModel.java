@@ -32,7 +32,13 @@ public class TableModel extends AbstractTableModel<Receta> implements javax.swin
             case FECHA_CONFECCION:
                 return receta.getFecha().format(formatter);
             case FECHA_RETIRO:
-                return receta.getFecha().plusDays(1).format(formatter);
+                if (receta.getFechaRetiro() != null) {
+                    return receta.getFechaRetiro().format(formatter);
+                }
+                else {
+                    return receta.getFecha() != null ?
+                            receta.getFecha().plusDays(1).format(formatter) : "Sin fecha";
+                }
             case ESTADO:
                 return "Confeccionada";
             case NUM_MEDICAMENTOS:
