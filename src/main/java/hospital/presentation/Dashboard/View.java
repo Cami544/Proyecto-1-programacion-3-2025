@@ -4,17 +4,19 @@ import hospital.logic.Medicamento;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class View implements PropertyChangeListener {
@@ -23,16 +25,11 @@ public class View implements PropertyChangeListener {
     private JComboBox<String> hastaAnio;
     private JComboBox<String> hastaMes;
     private JComboBox<String> medicamentoBox;
-    private JButton seleccionaUnoButton;
+    private JButton button1;
     private JTable table1;
     private JPanel panel;
     private JPanel panelGraficoLineas;
     private JPanel panelGraficoBarras;
-    private JButton seleccionaTodoButton;
-    private JButton eliminarTodoButton;
-    private JScrollPane eleminarTodoButton;
-    private JButton eliminarUnoButton;
-    private JPanel datosPanel;
 
     // MVC
     private Model model;
@@ -57,52 +54,17 @@ public class View implements PropertyChangeListener {
     }
 
     private void setupEventHandlers() {
-        seleccionaUnoButton.addActionListener(new ActionListener() {
+        button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 actualizarDashboard();
             }
         });
-        seleccionaTodoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        });
         medicamentoBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 seleccionarMedicamento();
-            }
-        });
-        eliminarUnoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int col = table1.getSelectedColumn();
-                if (col >= 0) {
-                    TableColumnModel columnModel = table1.getColumnModel();
-                    columnModel.removeColumn(columnModel.getColumn(col));
-                    // refrescar gráficos con los datos actuales
-                    actualizarGraficoLineas();
-                    actualizarGraficoPastel();
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Seleccione una columna para eliminar",
-                            "Advertencia", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-        eliminarTodoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    model.setDatosEstadisticas(new ArrayList<>()); // lista vacía
-                    actualizarTablaEstadisticas();
-                    actualizarGraficoLineas();
-                    actualizarGraficoPastel();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, "Error al eliminar todas las columnas: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
             }
         });
     }
@@ -163,11 +125,6 @@ public class View implements PropertyChangeListener {
         } catch (Exception ex) {
             System.err.println("Error seleccionando medicamento: " + ex.getMessage());
         }
-        try {
-            controller.actualizarEstadisticas();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private LocalDate obtenerFechaDesde() throws Exception {
@@ -219,8 +176,6 @@ public class View implements PropertyChangeListener {
         }
         if (panel != null) {
             this.panel.revalidate();
-            panelGraficoLineas.repaint();
-            panelGraficoBarras.repaint();
         }
     }
 
