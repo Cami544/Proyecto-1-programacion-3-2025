@@ -4,14 +4,11 @@ import hospital.logic.Medicamento;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -25,11 +22,14 @@ public class View implements PropertyChangeListener {
     private JComboBox<String> hastaAnio;
     private JComboBox<String> hastaMes;
     private JComboBox<String> medicamentoBox;
-    private JButton button1;
+    private JButton seleccionarUnoButton;
     private JTable table1;
     private JPanel panel;
     private JPanel panelGraficoLineas;
     private JPanel panelGraficoBarras;
+    private JButton seleccionarTodoButton;
+    private JButton borrarUnoButton;
+    private JButton borrarTodoButton;
 
     // MVC
     private Model model;
@@ -54,17 +54,34 @@ public class View implements PropertyChangeListener {
     }
 
     private void setupEventHandlers() {
-        button1.addActionListener(new ActionListener() {
+        seleccionarUnoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 actualizarDashboard();
             }
         });
+        borrarTodoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+            }
+        });
         medicamentoBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 seleccionarMedicamento();
+            }
+        });
+        borrarUnoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        seleccionarTodoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
