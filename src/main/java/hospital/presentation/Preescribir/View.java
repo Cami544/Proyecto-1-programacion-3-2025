@@ -24,6 +24,7 @@ public class View implements PropertyChangeListener {
     private JButton limpiarButton;
     private JPanel panel;
     private DatePicker datePicker;
+    private JPanel receta;
 
     // MVC
     private Model model;

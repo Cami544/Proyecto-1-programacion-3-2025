@@ -134,7 +134,7 @@ public class Controller {
     }
 
     private Map<String, Integer> generarEstadisticasRecetas() {
-        Map<String, Integer> estadisticas = new HashMap<>();
+       /* Map<String, Integer> estadisticas = new HashMap<>();
 
         try {
             List<Receta> todasRecetas = Service.instance().getRecetas();
@@ -151,7 +151,52 @@ public class Controller {
             estadisticas.put("Entregadas", 12);
         }
 
+        return estadisticas;*/
+        Map<String, Integer> estadisticas = new HashMap<>();
+
+        try {
+            List<Receta> todasRecetas = Service.instance().getRecetas();
+
+            LocalDate desde = model.getFechaDesde();
+            LocalDate hasta = model.getFechaHasta();
+
+            // Filtrar por rango de fechas
+            List<Receta> recetasFiltradas = todasRecetas.stream()
+                    .filter(r -> !r.getFecha().isBefore(desde) && !r.getFecha().isAfter(hasta))
+                    .collect(Collectors.toList());
+
+            // Contadores por estado
+            int confeccionadas = 0;
+            int enProceso = 0;
+            int listas = 0;
+            int entregadas = 0;
+
+            for (Receta r : recetasFiltradas) {
+                switch (r.getEstadoReceta()) {
+                    case "Confeccionada" -> confeccionadas++;
+                    case "En proceso" -> enProceso++;
+                    case "Lista" -> listas++;
+                    case "Entregada" -> entregadas++;
+                }
+            }
+
+            // Guardar en el Map
+            estadisticas.put("Confeccionadas", confeccionadas);
+            estadisticas.put("En Proceso", enProceso);
+            estadisticas.put("Listas", listas);
+            estadisticas.put("Entregadas", entregadas);
+
+        } catch (Exception e) {
+            // fallback si algo falla
+            estadisticas.put("Confeccionadas", 0);
+            estadisticas.put("En Proceso", 0);
+            estadisticas.put("Listas", 0);
+            estadisticas.put("Entregadas", 0);
+            System.err.println("Error generando estadísticas de recetas: " + e.getMessage());
+        }
+
         return estadisticas;
+
     }
 
     private List<Object[]> generarDatosSimulados(LocalDate desde, LocalDate hasta, Medicamento medicamento) {

@@ -284,12 +284,27 @@ public class Service {
         else throw new Exception("Receta no existe");
     }
 
-    public void updateReceta(Receta r) throws Exception {
+    /*public void updateReceta(Receta r) throws Exception {
         Receta result = this.readReceta(r);
         data.getRecetas().remove(result);
         data.getRecetas().add(r);
         stop();
+    }*/
+    public Receta updateReceta(Receta r) throws Exception {
+        Receta result = this.readReceta(r);
+        if (result == null) {
+            throw new Exception("Receta no existe");
+        }
+        result.setFarmaceutaId(r.getFarmaceutaId());
+        result.setEstadoReceta(r.getEstadoReceta());
+        result.setFecha(r.getFecha());
+        result.setFechaRetiro(r.getFechaRetiro());
+        result.setPacienteId(r.getPacienteId());
+        result.setDetalles(r.getDetalles());
+        stop();
+        return result;
     }
+
 
     public void deleteReceta(Receta r) throws Exception {
         Receta result = this.readReceta(r);

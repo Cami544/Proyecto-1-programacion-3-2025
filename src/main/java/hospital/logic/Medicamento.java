@@ -22,9 +22,6 @@ public class Medicamento {
         this.presentacion = presentacion;
     }
 
-    //agregar getters y setters con el generate
-
-
     public String getCodigo() {
         return codigo;
     }
@@ -48,6 +45,4 @@ public class Medicamento {
     public void setPresentacion(String presentacion) {
         this.presentacion = presentacion;
     }
-
-
 }

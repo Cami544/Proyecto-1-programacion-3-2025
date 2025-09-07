@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class View implements PropertyChangeListener {
     private JPanel panel;
@@ -34,6 +33,9 @@ public class View implements PropertyChangeListener {
     private JButton filtrarButton;
     private JPanel Busqueda;
     private DatePicker DatePicker;
+    private JPanel paciente;
+    private JButton limpiarButton;
+    private JPanel listado;
 
     private Model model;
     private Controller controller;

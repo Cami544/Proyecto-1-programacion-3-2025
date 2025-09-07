@@ -1,14 +1,23 @@
 package hospital.presentation.Dashboard;
 
 import hospital.logic.Medicamento;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class View implements PropertyChangeListener {
     private JComboBox<String> desdeAnio;
@@ -19,6 +28,8 @@ public class View implements PropertyChangeListener {
     private JButton button1;
     private JTable table1;
     private JPanel panel;
+    private JPanel panelGraficoLineas;
+    private JPanel panelGraficoBarras;
 
     // MVC
     private Model model;
@@ -157,14 +168,17 @@ public class View implements PropertyChangeListener {
                 break;
             case Model.DATOS_ESTADISTICAS:
                 actualizarTablaEstadisticas();
+                actualizarGraficoLineas();
                 break;
             case Model.ESTADISTICAS_RECETAS:
+                actualizarGraficoPastel();
                 break;
         }
         if (panel != null) {
             this.panel.revalidate();
         }
     }
+
 
     private void actualizarComboMedicamentos() {
         medicamentoBox.removeAllItems();
@@ -174,6 +188,50 @@ public class View implements PropertyChangeListener {
             String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
             medicamentoBox.addItem(item);
         }
+    }
+
+    private void actualizarGraficoLineas() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (Object[] fila : model.getDatosEstadisticas()) {
+            String periodo = (String) fila[0];          // MM/yyyy
+            String medicamento = (String) fila[1];      // nombre medicamento
+            Integer cantidad = (Integer) fila[2];       // cantidad prescrita
+
+            dataset.addValue(cantidad, medicamento, periodo);
+        }
+
+        JFreeChart chart = ChartFactory.createLineChart(
+                "Medicamentos prescritos por mes",
+                "Mes",
+                "Cantidad",
+                dataset
+        );
+
+        panelGraficoLineas.removeAll();
+        panelGraficoLineas.add(new ChartPanel(chart));
+        panelGraficoLineas.revalidate();
+
+    }
+
+    private void actualizarGraficoPastel() {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+
+        for (Map.Entry<String, Integer> entry : model.getEstadisticasRecetas().entrySet()) {
+            dataset.setValue(entry.getKey(), entry.getValue());
+        }
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Estados de las Recetas",
+                dataset,
+                true,   // incluir leyenda
+                true,
+                false
+        );
+
+        panelGraficoBarras.removeAll();
+        panelGraficoBarras.add(new ChartPanel(chart));
+        panelGraficoBarras.revalidate();
     }
 
     private void actualizarTablaEstadisticas() {
@@ -189,11 +247,10 @@ public class View implements PropertyChangeListener {
 
         if (table1.getColumnModel().getColumnCount() > 0) {
             TableColumnModel columnModel = table1.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(80);
-            columnModel.getColumn(1).setPreferredWidth(150);
-            columnModel.getColumn(2).setPreferredWidth(120);
-            columnModel.getColumn(3).setPreferredWidth(100);
+            columnModel.getColumn(0).setPreferredWidth(50);
+            columnModel.getColumn(1).setPreferredWidth(80);
+            columnModel.getColumn(2).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(80);
         }
     }
-
 }

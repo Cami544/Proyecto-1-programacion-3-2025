@@ -19,6 +19,7 @@ public class Application {
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                //super.windowClosing(e);
                 hospital.logic.Service.instance().stop();
                 System.exit(0);
             }
@@ -52,19 +53,24 @@ public class Application {
         hospital.presentation.Preescribir.View preescribirView = new hospital.presentation.Preescribir.View();
         preescribirController = new hospital.presentation.Preescribir.Controller(preescribirView, preescribirModel);
 
+        hospital.presentation.Despacho.Model despachoModel = new hospital.presentation.Despacho.Model();
+        hospital.presentation.Despacho.View despachoView = new hospital.presentation.Despacho.View();
+        despachoController = new  hospital.presentation.Despacho.Controller(despachoView, despachoModel);
+
         tabbedPane.addTab("Medicos", medicoView.getPanel());
         tabbedPane.addTab("Pacientes", pacienteView.getPanel());
         tabbedPane.addTab("Farmaceutas", farmaceutaView.getPanel());
         tabbedPane.addTab("Medicamentos", medicamentoView.getPanel());
         tabbedPane.addTab("Preescribir", preescribirView.getPanel());
+        tabbedPane.addTab("Despachos", despachoView.getPanel());
         tabbedPane.addTab("Dashboard", dashboardView.getPanel());
         tabbedPane.addTab("Historico", historicoView.getPanel());
 
-        window.setSize(850, 600);
+        window.setSize(1000, 600);
         window.setResizable(true);
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("HOSPITAL - Sistema de Prescripción y Despacho");
-
+        window.setLocationRelativeTo(null); //para centrar
         window.setVisible(true);
     }
 
@@ -75,6 +81,7 @@ public class Application {
     public static hospital.presentation.Dashboard.Controller dashboardController;
     public static hospital.presentation.Historico.Controller historicoController;
     public static hospital.presentation.Preescribir.Controller preescribirController;
+    public static  hospital.presentation.Despacho.Controller despachoController;
 
     public static JFrame window;
     public final static int MODE_CREATE = 1;

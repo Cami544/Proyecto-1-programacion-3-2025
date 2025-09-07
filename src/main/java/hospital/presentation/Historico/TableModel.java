@@ -40,7 +40,7 @@ public class TableModel extends AbstractTableModel<Receta> implements javax.swin
                             receta.getFecha().plusDays(1).format(formatter) : "Sin fecha";
                 }
             case ESTADO:
-                return "Confeccionada";
+                return receta.getEstadoReceta();
             case NUM_MEDICAMENTOS:
                 return receta.getDetalles() != null ? receta.getDetalles().size() : 0;
             default:
