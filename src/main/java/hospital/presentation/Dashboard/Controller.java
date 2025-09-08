@@ -134,24 +134,7 @@ public class Controller {
     }
 
     private Map<String, Integer> generarEstadisticasRecetas() {
-       /* Map<String, Integer> estadisticas = new HashMap<>();
-
-        try {
-            List<Receta> todasRecetas = Service.instance().getRecetas();
-
-            estadisticas.put("Confeccionadas", (int) (todasRecetas.size() * 0.4));
-            estadisticas.put("En Proceso", (int) (todasRecetas.size() * 0.3));
-            estadisticas.put("Listas", (int) (todasRecetas.size() * 0.2));
-            estadisticas.put("Entregadas", (int) (todasRecetas.size() * 0.1));
-
-        } catch (Exception e) {
-            estadisticas.put("Confeccionadas", 15);
-            estadisticas.put("En Proceso", 8);
-            estadisticas.put("Listas", 5);
-            estadisticas.put("Entregadas", 12);
-        }
-
-        return estadisticas;*/
+      
         Map<String, Integer> estadisticas = new HashMap<>();
 
         try {

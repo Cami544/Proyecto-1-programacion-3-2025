@@ -71,7 +71,7 @@
             <id>REC-20250906-1913</id>
             <pacienteId>k87</pacienteId>
             <farmaceutaId>Cami</farmaceutaId>
-            <estadoReceta>Lista</estadoReceta>
+            <estadoReceta>Entregada</estadoReceta>
             <fecha>2025-09-06</fecha>
             <fechaRetiro>2025-09-12</fechaRetiro>
             <detalles>
@@ -96,8 +96,8 @@
         <receta>
             <id>REC-20250907-3636</id>
             <pacienteId>675</pacienteId>
-            <farmaceutaId>Sin asignar</farmaceutaId>
-            <estadoReceta>Confeccionada</estadoReceta>
+            <farmaceutaId>Cami</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
             <fecha>2025-09-07</fecha>
             <fechaRetiro>2025-09-08</fechaRetiro>
             <detalles>
