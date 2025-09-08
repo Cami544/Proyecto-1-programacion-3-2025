@@ -118,7 +118,7 @@ public class Controller {
         Table table = new Table(UnitValue.createPercentArray(new float[]{2, 4, 4, 4}));
         table.setWidth(UnitValue.createPercentValue(100));
 
-        String[] headers = {"ID", "Nombre", "Fecha de nacimiento", "Teléfono"};
+        String[] headers = {"ID", "Nombre", "Fecha de nacimiento", "Telefono"};
         for (String h : headers) {
             Cell headerCell = new Cell().add(new Paragraph(h).setBold())
                     .setBackgroundColor(new DeviceRgb(230, 230, 230))

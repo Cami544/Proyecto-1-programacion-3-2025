@@ -22,16 +22,25 @@ public class Controller {
     }
 
     public void save(Farmaceuta farmaceuta) throws Exception {
+        boolean esNuevo = false;
+
         try {
             Farmaceuta existing = Service.instance().readFarmaceuta(farmaceuta.getId());
+            farmaceuta.setClave(existing.getClave());
             Service.instance().updateFarmaceuta(farmaceuta);
         } catch (Exception e) {
+            farmaceuta.setClave(farmaceuta.getId());
             Service.instance().createFarmaceuta(farmaceuta);
+            esNuevo = true;
         }
 
         model.setCurrent(new Farmaceuta());
         model.setList(Service.instance().getFarmaceutas());
         model.setFiltered(Service.instance().getFarmaceutas());
+
+        if (esNuevo) {
+            view.mostrarClaveAsignada(farmaceuta);
+        }
     }
 
     public void search(String id) throws Exception {

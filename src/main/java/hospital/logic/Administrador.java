@@ -4,21 +4,21 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "farmaceuta")
+@XmlRootElement(name = "administrador")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Farmaceuta extends Usuario {
+public class Administrador extends Usuario {
     private String clave;
 
-    public Farmaceuta() {
-        this("", "", "", "FAR");
+    public Administrador() {
+        this("", "", "", "ADM");
     }
 
-    public Farmaceuta(String id, String nombre, String clave) {
-        super(id, nombre, "FAR");
+    public Administrador(String id, String nombre, String clave) {
+        super(id, nombre, "ADM");
         this.clave = clave;
     }
 
-    public Farmaceuta(String id, String nombre, String clave, String rol) {
+    public Administrador(String id, String nombre, String clave, String rol) {
         super(id, nombre, rol);
         this.clave = clave;
     }

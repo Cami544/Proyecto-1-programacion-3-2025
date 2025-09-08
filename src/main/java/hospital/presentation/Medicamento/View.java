@@ -91,8 +91,8 @@ public class View implements PropertyChangeListener {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
-                        "¿Está seguro de eliminar el medicamento " + model.getCurrent().getNombre() + "?",
-                        "Confirmar eliminación",
+                        "Esta seguro de eliminar el medicamento " + model.getCurrent().getNombre() + "?",
+                        "Confirmar eliminacion",
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {
@@ -100,7 +100,7 @@ public class View implements PropertyChangeListener {
                         controller.delete();
                         JOptionPane.showMessageDialog(panel,
                                 "Medicamento eliminado exitosamente",
-                                "Éxito",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class View implements PropertyChangeListener {
 
         reporteButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(panel,
-                    "Función de reporte en desarrollo",
+                    "Funcion de reporte en desarrollo",
                     "Información",
                     JOptionPane.INFORMATION_MESSAGE);
         });
@@ -193,7 +193,7 @@ public class View implements PropertyChangeListener {
         clearValidationErrors();
 
         if (codigoText.getText().trim().isEmpty()) {
-            setFieldError(codigoText, "Código requerido");
+            setFieldError(codigoText, "Codigo requerido");
             valid = false;
         }
 
@@ -203,7 +203,7 @@ public class View implements PropertyChangeListener {
         }
 
         if (presentacionText.getText().trim().isEmpty()) {
-            setFieldError(presentacionText, "Presentación requerida");
+            setFieldError(presentacionText, "Presentacion requerida");
             valid = false;
         }
 

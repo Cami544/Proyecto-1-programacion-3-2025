@@ -7,7 +7,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="medicamento")
 @XmlAccessorType(XmlAccessType.FIELD)
-//Marciar dentro del xml
 public class Medicamento {
     private String codigo;
     private String nombre;

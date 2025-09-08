@@ -70,7 +70,7 @@ public class View implements PropertyChangeListener {
                 try {
                     controller.generarReporte();
                     JOptionPane.showMessageDialog(panel,
-                            "Reporte PDF generado con éxito.",
+                            "Reporte PDF generado con exito.",
                             "Información",
                             JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
@@ -96,7 +96,7 @@ public class View implements PropertyChangeListener {
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
                         "Esta seguro de eliminar a este paciente " + model.getCurrent().getNombre() + "?",
-                        "Confirmar eliminación",
+                        "Confirmar eliminacion",
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {

@@ -48,6 +48,19 @@ public class View implements PropertyChangeListener {
         model.addPropertyChangeListener(this);
     }
 
+    public void mostrarClaveAsignada(Farmaceuta farmaceuta) {
+        String mensaje = "Farmaceuta creado exitosamente\n\n" +
+                "ID: " + farmaceuta.getId() + "\n" +
+                "Clave: " + farmaceuta.getClave();
+
+        JOptionPane.showMessageDialog(
+                panel,
+                mensaje,
+                "Clave Asignada",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
     private void setupEventHandlers() {
         guardarButton.addActionListener(new ActionListener() {
             @Override
@@ -55,11 +68,7 @@ public class View implements PropertyChangeListener {
                 if (validate()) {
                     Farmaceuta farmaceuta = take();
                     try {
-                        controller.save(farmaceuta);
-                        JOptionPane.showMessageDialog(panel,
-                                "Farmaceuta guardado exitosamente",
-                                "exito",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        controller.save(farmaceuta); // El controller coordina, la vista muestra
                         clear();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(panel,
@@ -89,7 +98,7 @@ public class View implements PropertyChangeListener {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
-                        "¿Esta seguro de eliminar al farmaceuta " + model.getCurrent().getNombre() + "?",
+                        "¿Está seguro de eliminar al farmaceuta " + model.getCurrent().getNombre() + "?",
                         "Confirmar eliminación",
                         JOptionPane.YES_NO_OPTION);
 
@@ -98,7 +107,7 @@ public class View implements PropertyChangeListener {
                         controller.delete();
                         JOptionPane.showMessageDialog(panel,
                                 "Farmaceuta eliminado exitosamente",
-                                "exito",
+                                "Éxito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -123,7 +132,6 @@ public class View implements PropertyChangeListener {
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
-        /// ///
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

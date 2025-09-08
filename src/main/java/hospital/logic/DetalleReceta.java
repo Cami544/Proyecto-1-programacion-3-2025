@@ -6,7 +6,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="detalleReceta")
-// nombre del objeto deltro del archivo
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DetalleReceta {
     private String medicamentoCodigo;

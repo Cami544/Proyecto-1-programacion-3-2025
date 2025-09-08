@@ -333,4 +333,108 @@ public class Service {
 
         System.out.println("Todos los datos han sido eliminados");
     }
+
+    // ====================== ADMINISTRADORES ======================
+
+    public void createAdministrador(Administrador a) throws Exception {
+        boolean exists = false;
+
+        try {
+            readMedico(a.getId());
+            exists = true;
+        } catch (Exception e) {}
+
+        if (!exists) {
+            try {
+                readFarmaceuta(a.getId());
+                exists = true;
+            } catch (Exception e) {}
+        }
+
+        if (!exists) {
+            try {
+                readAdministrador(a.getId());
+                exists = true;
+            } catch (Exception e) {}
+        }
+
+        if (exists) {
+            throw new Exception("Ya existe un usuario con ese ID");
+        }
+
+        data.getAdministradores().add(a);
+        stop();
+    }
+
+    public Administrador readAdministrador(String id) throws Exception {
+        Administrador result = data.getAdministradores().stream()
+                .filter(i -> i.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+
+        if (result != null) return result;
+        else throw new Exception("Administrador con id " + id + " no existe");
+    }
+
+    public void updateAdministrador(Administrador a) throws Exception {
+        Administrador result = this.readAdministrador(a.getId());
+        data.getAdministradores().remove(result);
+        data.getAdministradores().add(a);
+        stop();
+    }
+
+    public void deleteAdministrador(String id) throws Exception {
+        Administrador result = this.readAdministrador(id);
+        data.getAdministradores().remove(result);
+        stop();
+    }
+
+    public List<Administrador> searchAdministradores(String nombre) {
+        return data.getAdministradores().stream()
+                .filter(i -> i.getNombre().toLowerCase().contains(nombre.toLowerCase()))
+                .sorted(Comparator.comparing(Administrador::getNombre))
+                .collect(Collectors.toList());
+    }
+
+    public List<Administrador> getAdministradores() {
+        return data.getAdministradores();
+    }
+
+// ====================== MÉTODOS DE AUTENTICACIÓN ======================
+
+    public Usuario authenticate(String id, String clave) throws Exception {
+        if (id == null || id.trim().isEmpty()) {
+            throw new Exception("ID requerido");
+        }
+        if (clave == null || clave.trim().isEmpty()) {
+            throw new Exception("Clave requerida");
+        }
+
+        // Buscar en médicos
+        try {
+            Medico medico = readMedico(id);
+            if (medico.getClave() != null && medico.getClave().equals(clave)) {
+                return medico;
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            Farmaceuta farmaceuta = readFarmaceuta(id);
+            if (farmaceuta.getClave() != null && farmaceuta.getClave().equals(clave)) {
+                return farmaceuta;
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            Administrador admin = readAdministrador(id);
+            if (admin.getClave() != null && admin.getClave().equals(clave)) {
+                return admin;
+            }
+        } catch (Exception e) {
+        }
+
+        throw new Exception("Usuario o clave incorrectos");
+    }
 }

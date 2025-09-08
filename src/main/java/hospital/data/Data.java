@@ -26,6 +26,10 @@ public class Data {
     @XmlElement(name = "medicamento")
     private List<Medicamento> medicamentos;
 
+    @XmlElementWrapper(name = "administradores")
+    @XmlElement(name = "administrador")
+    private List<Administrador> administradores;
+
     @XmlElementWrapper(name = "recetas")
     @XmlElement(name = "receta")
     private List<Receta> recetas;
@@ -37,6 +41,10 @@ public class Data {
         this.farmaceutas = new ArrayList<>();
         this.medicamentos = new ArrayList<>();
         this.recetas = new ArrayList<>();
+        this.administradores = new ArrayList<>();
+        if (administradores.isEmpty()) {
+            administradores.add(new Administrador("admin", "Administrador", "admin"));
+        }
     }
 
 
@@ -47,5 +55,6 @@ public class Data {
     public List<Farmaceuta> getFarmaceutas() { return farmaceutas; }
     public List<Medicamento> getMedicamentos() { return medicamentos; }
     public List<Receta> getRecetas() { return recetas; }
+    public List<Administrador> getAdministradores() { return administradores; }
 
 }

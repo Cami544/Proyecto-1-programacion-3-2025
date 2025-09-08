@@ -25,7 +25,13 @@ public class View implements PropertyChangeListener {
     private Model model;
     private Controller controller;
 
-    public JPanel getPanel() { return panel; }
+    public View() {
+        setupEventHandlers();
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
 
     public void setModel(Model model) {
         this.model = model;
@@ -37,7 +43,6 @@ public class View implements PropertyChangeListener {
     }
 
     private void setupEventHandlers() {
-
         buscarButton.addActionListener(e -> {
             try {
                 String idPaciente = buscarIdText.getText().trim();
@@ -52,7 +57,6 @@ public class View implements PropertyChangeListener {
             try {
                 int row = list.getSelectedRow();
                 if (row >= 0) {
-                    // Selecciona la receta en el model (dispara RECETA_SELECCIONADO)
                     controller.seleccionarRecetaPaciente(row);
 
                     String farmaceutaNombre = (String) farmaceutaComboBox.getSelectedItem();
@@ -67,7 +71,6 @@ public class View implements PropertyChangeListener {
                 JOptionPane.showMessageDialog(panel, "Error al guardar cambios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
 
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -85,10 +88,17 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
+
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                buscarIdText.setText("");
+                try {
+                    controller.refrecarDatos();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel, "Error al refrescar datos: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -110,12 +120,23 @@ public class View implements PropertyChangeListener {
         Receta receta = model.getRecetaSeleccionada();
         if (receta != null) {
             buscarIdText.setText(receta.getPacienteId());
+
+            // Seleccionar farmaceuta actual
+            if (receta.getFarmaceutaId() != null) {
+                farmaceutaComboBox.setSelectedItem(receta.getFarmaceutaId());
+            }
+
+            // Seleccionar estado actual
+            if (receta.getEstadoReceta() != null) {
+                recetaComboBox.setSelectedItem(receta.getEstadoReceta());
+            }
         }
     }
 
     private void actualizarTabla() {
         int[] cols = {TableModel.FARNACEUTA, TableModel.ID_RECETA, TableModel.PACIENTE,
                 TableModel.FECHA_RETIRO, TableModel.ESTADO};
+
         // Si hay recetas filtradas, las mostramos; si no, mostramos todas
         if (model.getRecetasFiltradasPaciente() != null && !model.getRecetasFiltradasPaciente().isEmpty()) {
             list.setModel(new TableModel(cols, model.getRecetasFiltradasPaciente()));
@@ -147,7 +168,7 @@ public class View implements PropertyChangeListener {
                 actualizarCombos();
                 break;
             case Model.RECETA_SELECCIONADO:
-               actualizarDetalleReceta();
+                actualizarDetalleReceta();
                 break;
         }
         this.panel.revalidate();

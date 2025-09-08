@@ -50,6 +50,19 @@ public class View implements PropertyChangeListener {
         model.addPropertyChangeListener(this);
     }
 
+    public void mostrarClaveAsignada(Medico medico) {
+        String mensaje = "Medico creado exitosamente\n\n" +
+                "ID: " + medico.getId() + "\n" +
+                "Clave: " + medico.getClave();
+
+        JOptionPane.showMessageDialog(
+                panel,
+                mensaje,
+                "Clave Asignada",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
     private void setupEventHandlers() {
         guardarButton.addActionListener(new ActionListener() {
             @Override
@@ -58,10 +71,6 @@ public class View implements PropertyChangeListener {
                     Medico medico = take();
                     try {
                         controller.save(medico);
-                        JOptionPane.showMessageDialog(panel,
-                                "Medico guardado exitosamente",
-                                "exito",
-                                JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(panel,
@@ -72,7 +81,6 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
-
 
         limpiarButton.addActionListener(e -> {
             clear();
@@ -122,7 +130,7 @@ public class View implements PropertyChangeListener {
         reporteButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(panel,
                     "Funcion de reporte en desarrollo",
-                    "Información",
+                    "Informacion",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 

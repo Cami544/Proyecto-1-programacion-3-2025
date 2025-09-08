@@ -2,77 +2,134 @@
 <data>
     <pacientes>
         <paciente>
-            <id>111</id>
-            <nombre>Javier</nombre>
-            <fechaNacimiento>2003-12-12</fechaNacimiento>
-            <numeroTelefono>213</numeroTelefono>
+            <id>k87</id>
+            <nombre>fgo</nombre>
+            <rol>PAC</rol>
+            <fechaNacimiento>2004-09-06</fechaNacimiento>
+            <numeroTelefono>5675473</numeroTelefono>
         </paciente>
         <paciente>
-            <id>222</id>
-            <nombre>Diana</nombre>
-            <fechaNacimiento>1998-09-21</fechaNacimiento>
-            <numeroTelefono>123123</numeroTelefono>
+            <id>675</id>
+            <nombre>Luji</nombre>
+            <rol>PAC</rol>
+            <fechaNacimiento>2024-10-16</fechaNacimiento>
+            <numeroTelefono>678678</numeroTelefono>
         </paciente>
     </pacientes>
     <medicos>
         <medico>
-            <id>123</id>
-            <nombre>Fernando</nombre>
-            <clave></clave>
-            <especialidad>Cardiólogo</especialidad>
+            <id>5345</id>
+            <nombre>gertger</nombre>
+            <rol>MED</rol>
+            <clave>5345</clave>
+            <especialidad>grthtr</especialidad>
+        </medico>
+        <medico>
+            <id>5555</id>
+            <nombre>Carlos</nombre>
+            <rol>MED</rol>
+            <clave>5555</clave>
+            <especialidad>MCD</especialidad>
         </medico>
     </medicos>
-    <farmaceutas/>
+    <farmaceutas>
+        <farmaceuta>
+            <id>1563</id>
+            <nombre>Cami</nombre>
+            <rol>FAR</rol>
+            <clave>1563</clave>
+        </farmaceuta>
+        <farmaceuta>
+            <id>586</id>
+            <nombre>JUd</nombre>
+            <rol>FAR</rol>
+            <clave>586</clave>
+        </farmaceuta>
+        <farmaceuta>
+            <id>4444</id>
+            <nombre>Karla</nombre>
+            <rol>FAR</rol>
+            <clave></clave>
+        </farmaceuta>
+        <farmaceuta>
+            <id>6666</id>
+            <nombre>Jose</nombre>
+            <rol>FAR</rol>
+            <clave>6666</clave>
+        </farmaceuta>
+        <farmaceuta>
+            <id>8888</id>
+            <nombre>Gabriela</nombre>
+            <rol>FAR</rol>
+            <clave>8888</clave>
+        </farmaceuta>
+    </farmaceutas>
     <medicamentos>
         <medicamento>
-            <codigo>222</codigo>
-            <nombre>ibuprofeno</nombre>
-            <presentacion>300ml</presentacion>
+            <codigo>3452</codigo>
+            <nombre>greage</nombre>
+            <presentacion>tert</presentacion>
         </medicamento>
     </medicamentos>
+    <administradores>
+        <administrador>
+            <id>admin</id>
+            <nombre>Administrador</nombre>
+            <rol>ADM</rol>
+            <clave>admin</clave>
+        </administrador>
+    </administradores>
     <recetas>
         <receta>
-            <id>REC-20250905-8596</id>
-            <pacienteId>111</pacienteId>
-            <fecha>2025-10-05</fecha>
-            <fechaRetiro>2025-09-26</fechaRetiro>
-            <detalles>
-                <medicamentoCodigo>222</medicamentoCodigo>
-                <cantidad>2</cantidad>
-                <indicaciones>Tomar cada 12 horas</indicaciones>
-            </detalles>
-        </receta>
-        <receta>
-            <id>REC-20250905-8595</id>
-            <pacienteId>111</pacienteId>
-            <fecha>2025-09-05</fecha>
-            <fechaRetiro>2025-09-26</fechaRetiro>
-            <detalles>
-                <medicamentoCodigo>222</medicamentoCodigo>
-                <cantidad>33</cantidad>
-                <indicaciones>Tomar cada 12 horas</indicaciones>
-            </detalles>
-        </receta>
-        <receta>
-            <id>REC-20250906-4546</id>
-            <pacienteId>222</pacienteId>
+            <id>REC-20250906-1174</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>JUd</farmaceutaId>
+            <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-06</fecha>
-            <fechaRetiro>2025-11-01</fechaRetiro>
+            <fechaRetiro>2025-09-19</fechaRetiro>
             <detalles>
-                <medicamentoCodigo>222</medicamentoCodigo>
-                <cantidad>2</cantidad>
-                <indicaciones>Tomar cada 24 horas</indicaciones>
-            </detalles>
-        </receta>
-        <receta>
-            <id>REC-20250906-2482</id>
-            <pacienteId>222</pacienteId>
-            <fecha>2025-09-06</fecha>
-            <fechaRetiro>2025-09-25</fechaRetiro>
-            <detalles>
-                <medicamentoCodigo>222</medicamentoCodigo>
+                <medicamentoCodigo>3452</medicamentoCodigo>
                 <cantidad>1</cantidad>
-                <indicaciones>Tomar cada 2 horas</indicaciones>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250906-1913</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Cami</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
+            <fecha>2025-09-06</fecha>
+            <fechaRetiro>2025-09-12</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>2</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250906-2172</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>865</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-06</fecha>
+            <fechaRetiro>2025-09-12</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>1</cantidad>
+                <indicaciones>Tomar cada 10 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250907-3636</id>
+            <pacienteId>675</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-07</fecha>
+            <fechaRetiro>2025-09-08</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>5</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>
     </recetas>

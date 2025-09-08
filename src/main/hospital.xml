@@ -18,7 +18,8 @@
         <medico>
             <id>5345</id>
             <nombre>gertger</nombre>
-            <clave></clave>
+            <rol>MED</rol>
+            <clave>5345</clave>
             <especialidad>grthtr</especialidad>
         </medico>
     </medicos>
@@ -26,12 +27,13 @@
         <farmaceuta>
             <id>1563</id>
             <nombre>Cami</nombre>
-            <clave></clave>
+            <rol>FAR</rol>
+            <clave>med01</clave>
         </farmaceuta>
         <farmaceuta>
             <id>865</id>
-            <nombre>Lili</nombre>
-            <clave></clave>
+            <rol>FAR</rol>
+            <clave>865</clave>
         </farmaceuta>
         <farmaceuta>
             <id>864</id>

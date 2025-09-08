@@ -11,11 +11,17 @@ public class Medico extends Usuario {
     private String especialidad;
 
     public Medico() {
-        this("", "", "", "");
+        this("", "", "", "", "MED");
     }
 
     public Medico(String id, String nombre, String clave, String especialidad) {
-        super(id, nombre);
+        super(id, nombre, "MED");
+        this.clave = clave;
+        this.especialidad = especialidad;
+    }
+
+    public Medico(String id, String nombre, String clave, String especialidad, String rol) {
+        super(id, nombre, rol);
         this.clave = clave;
         this.especialidad = especialidad;
     }

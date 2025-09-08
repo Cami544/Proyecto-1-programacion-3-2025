@@ -22,16 +22,28 @@ public class Controller {
     }
 
     public void save(Medico medico) throws Exception {
+        boolean esNuevo = false;
+
         try {
+            // Verificar si ya existe
             Medico existing = Service.instance().readMedico(medico.getId());
+            // Si existe, actualizar pero mantener la clave actual
+            medico.setClave(existing.getClave());
             Service.instance().updateMedico(medico);
         } catch (Exception e) {
+            // No existe, crear nuevo y asignar clave = ID
+            medico.setClave(medico.getId());
             Service.instance().createMedico(medico);
+            esNuevo = true;
         }
 
         model.setCurrent(new Medico());
         model.setList(Service.instance().getMedicos());
         model.setFiltered(Service.instance().getMedicos());
+
+        if (esNuevo) {
+            view.mostrarClaveAsignada(medico);
+        }
     }
 
     public void search(String id) throws Exception {
