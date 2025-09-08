@@ -22,10 +22,13 @@ public class Controller {
         cargarMedicamentos();
 
         try {
-            actualizarEstadisticas();
+            // Copia de las recetas del Service
+            List<Receta> recetasOriginales = Service.instance().getRecetas();
+            model.setRecetasDashboard(new ArrayList<>(recetasOriginales));
         } catch (Exception e) {
-            System.err.println("Error generando estadísticas iniciales: " + e.getMessage());
+            model.setRecetasDashboard(new ArrayList<>());
         }
+
     }
 
     public void setFechaDesde(LocalDate fecha) throws Exception {
@@ -77,7 +80,9 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
         try {
-            List<Receta> recetas = Service.instance().getRecetas();
+          //  model.setRecetasDashboard(Service.instance().getRecetas());
+           List<Receta> recetas = model.getRecetasDashboard();
+           // List<Receta> recetas = Service.instance().getRecetas();
 
             List<Receta> recetasFiltradas = recetas.stream()
                     .filter(r -> !r.getFecha().isBefore(desde) && !r.getFecha().isAfter(hasta))
@@ -134,11 +139,12 @@ public class Controller {
     }
 
     private Map<String, Integer> generarEstadisticasRecetas() {
-      
+
         Map<String, Integer> estadisticas = new HashMap<>();
 
         try {
-            List<Receta> todasRecetas = Service.instance().getRecetas();
+           // model.setRecetasDashboard(Service.instance().getRecetas());
+            List<Receta> todasRecetas = model.getRecetasDashboard();
 
             LocalDate desde = model.getFechaDesde();
             LocalDate hasta = model.getFechaHasta();

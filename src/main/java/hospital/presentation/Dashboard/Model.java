@@ -1,6 +1,7 @@
 package hospital.presentation.Dashboard;
 
 import hospital.logic.Medicamento;
+import hospital.logic.Receta;
 import hospital.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;
@@ -15,6 +16,7 @@ public class Model extends AbstractModel {
     private Medicamento medicamentoSeleccionado;
     private List<Medicamento> medicamentosDisponibles;
     private List<Object[]> datosEstadisticas;
+    private List<Receta> recetasDashboard;
     private Map<String, Integer> estadisticasRecetas;
 
     public static final String FECHA_DESDE = "fechaDesde";
@@ -23,6 +25,7 @@ public class Model extends AbstractModel {
     public static final String MEDICAMENTOS_DISPONIBLES = "medicamentosDisponibles";
     public static final String DATOS_ESTADISTICAS = "datosEstadisticas";
     public static final String ESTADISTICAS_RECETAS = "estadisticasRecetas";
+    public static final String RECETAS_DASHBOARD = "recetasDashboard";
 
     public Model() {
         this.fechaDesde = LocalDate.now().minusMonths(6);
@@ -93,8 +96,16 @@ public class Model extends AbstractModel {
         return estadisticasRecetas;
     }
 
-    public void setEstadisticasRecetas(Map<String, Integer> estadisticasRecetas) {
+    public void setEstadisticasRecetas(Map<String, Integer> estadisticasRecetas) { //consultar
         this.estadisticasRecetas = estadisticasRecetas;
         firePropertyChange(ESTADISTICAS_RECETAS);
+    }
+    public List<Receta> getRecetasDashboard() {
+        return recetasDashboard;
+    }
+
+    public void setRecetasDashboard(List<Receta> recetasDashboard) {
+        this.recetasDashboard = recetasDashboard;
+        firePropertyChange(RECETAS_DASHBOARD);
     }
 }

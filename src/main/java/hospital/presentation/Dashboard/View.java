@@ -1,6 +1,7 @@
 package hospital.presentation.Dashboard;
 
 import hospital.logic.Medicamento;
+import hospital.logic.Receta;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -14,6 +15,9 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class View implements PropertyChangeListener {
@@ -60,28 +64,68 @@ public class View implements PropertyChangeListener {
                 actualizarDashboard();
             }
         });
-        borrarTodoButton.addActionListener(new ActionListener() {
+        seleccionarTodoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+            }
+        });
+        borrarUnoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int row = table1.getSelectedRow();
+                    if (row >= 0) {
+                        Receta receta = model.getRecetasDashboard().get(row);
+
+                        // Clonar la lista para no modificar directamente
+                        List<Receta> nuevas = new ArrayList<>(model.getRecetasDashboard());
+                        nuevas.remove(receta);
+
+                        // Actualizar el modelo con la lista nueva
+                        model.setRecetasDashboard(nuevas);
+
+                        JOptionPane.showMessageDialog(panel,
+                                "La receta se eliminó de la vista del Dashboard.\n(No se eliminó del sistema).",
+                                "Información", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(panel,
+                                "Debe seleccionar una receta en la tabla para borrar.",
+                                "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al borrar receta: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        borrarTodoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int confirm = JOptionPane.showConfirmDialog(panel,
+                            "¿Seguro que desea limpiar todas las recetas del Dashboard?\n(Esta acción no afecta al sistema).",
+                            "Confirmación", JOptionPane.YES_NO_OPTION);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        model.setRecetasDashboard(new ArrayList<>());
+
+                        JOptionPane.showMessageDialog(panel,
+                                "Se limpiaron todas las recetas del Dashboard.\n(No se eliminaron del sistema).",
+                                "Información", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al limpiar recetas: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         medicamentoBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 seleccionarMedicamento();
-            }
-        });
-        borrarUnoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        seleccionarTodoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
             }
         });
     }
@@ -186,16 +230,20 @@ public class View implements PropertyChangeListener {
             case Model.DATOS_ESTADISTICAS:
                 actualizarTablaEstadisticas();
                 actualizarGraficoLineas();
+                //Actualizar graficoPastel
                 break;
             case Model.ESTADISTICAS_RECETAS:
                 actualizarGraficoPastel();
+                break;
+
+            case Model.RECETAS_DASHBOARD:
+                actualizarTablaEstadisticas();
                 break;
         }
         if (panel != null) {
             this.panel.revalidate();
         }
     }
-
 
     private void actualizarComboMedicamentos() {
         medicamentoBox.removeAllItems();
@@ -224,7 +272,7 @@ public class View implements PropertyChangeListener {
                 "Cantidad",
                 dataset
         );
-
+       // ChartPanel chartPanel= new ChartPanel(320,400,390,310,420,330,true,true,true,true,true,true)
         panelGraficoLineas.removeAll();
         panelGraficoLineas.add(new ChartPanel(chart));
         panelGraficoLineas.revalidate();
@@ -245,7 +293,8 @@ public class View implements PropertyChangeListener {
                 true,
                 false
         );
-
+        //revisar parametros
+      //  ChartPanel chartPanel = new ChartPanel(400,320,320,400,320,400);
         panelGraficoBarras.removeAll();
         panelGraficoBarras.add(new ChartPanel(chart));
         panelGraficoBarras.revalidate();

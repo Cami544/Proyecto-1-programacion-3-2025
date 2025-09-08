@@ -31,19 +31,22 @@
             <clave>med01</clave>
         </farmaceuta>
         <farmaceuta>
-            <id>865</id>
-            <rol>FAR</rol>
-            <clave>865</clave>
-        </farmaceuta>
-        <farmaceuta>
             <id>864</id>
             <nombre>Kilu</nombre>
+            <rol>FAR</rol>
             <clave></clave>
         </farmaceuta>
         <farmaceuta>
             <id>586</id>
             <nombre>JUd</nombre>
+            <rol>FAR</rol>
             <clave></clave>
+        </farmaceuta>
+        <farmaceuta>
+            <id>865</id>
+            <nombre>Fer</nombre>
+            <rol>FAR</rol>
+            <clave>865</clave>
         </farmaceuta>
     </farmaceutas>
     <medicamentos>
@@ -52,7 +55,20 @@
             <nombre>greage</nombre>
             <presentacion>tert</presentacion>
         </medicamento>
+        <medicamento>
+            <codigo>1563</codigo>
+            <nombre>Aceto</nombre>
+            <presentacion>pastilla</presentacion>
+        </medicamento>
     </medicamentos>
+    <administradores>
+        <administrador>
+            <id>admin</id>
+            <nombre>Administrador</nombre>
+            <rol>ADM</rol>
+            <clave>admin</clave>
+        </administrador>
+    </administradores>
     <recetas>
         <receta>
             <id>REC-20250906-1174</id>
@@ -71,7 +87,7 @@
             <id>REC-20250906-1913</id>
             <pacienteId>k87</pacienteId>
             <farmaceutaId>Cami</farmaceutaId>
-            <estadoReceta>Entregada</estadoReceta>
+            <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-06</fecha>
             <fechaRetiro>2025-09-12</fechaRetiro>
             <detalles>
@@ -103,6 +119,19 @@
             <detalles>
                 <medicamentoCodigo>3452</medicamentoCodigo>
                 <cantidad>5</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250908-7063</id>
+            <pacienteId>675</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-08</fecha>
+            <fechaRetiro>2025-10-01</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>1</cantidad>
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>

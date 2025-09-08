@@ -25,7 +25,7 @@ public class Application {
 
         initializeControllers();
 
-        window.setSize(1000, 600);
+        window.setSize(1200, 600);
         window.setResizable(true);
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("HOSPITAL - Sistema de Prescripcion y Despacho");
@@ -124,7 +124,7 @@ public class Application {
                         System.exit(0);
                     }
                 });
-                window.setSize(1000, 600);
+                window.setSize(1200, 800);
                 window.setResizable(true);
                 window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 window.setTitle("HOSPITAL - Sistema de Prescripcion y Despacho");
