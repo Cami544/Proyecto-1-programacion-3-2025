@@ -63,25 +63,27 @@ public class Controller {
         System.out.println("Recetas encontradas: " + recetasFiltradas.size());
     }
 
-
-    public void guardarCambiosReceta(String farmaceutaNombre, String estado) throws Exception {
+    public void guardarCambiosReceta(Farmaceuta farmaceutaSeleccionado, String estado) throws Exception {
         Receta receta = model.getRecetaSeleccionada();
         if (receta == null) {
             throw new IllegalStateException("No hay receta seleccionada.");
         }
-        if (farmaceutaNombre != null && !farmaceutaNombre.isEmpty()) {
-            receta.setFarmaceutaId(farmaceutaNombre);
+        if (farmaceutaSeleccionado != null) {
+            receta.setFarmaceutaId(farmaceutaSeleccionado.getId());
         }
-        if (estado != null && !estado.isEmpty()) {
+        if (estado != null && !estado.isEmpty()) {    // Actualiza estado
             receta.setEstadoReceta(estado);
         }
-        model.actualizarRecetaEnListas(receta);
+        Service.instance().updateReceta(receta);  // Persistir cambios
+        model.actualizarRecetaEnListas(receta); // Refrescar
     }
+
+
 
     public void seleccionarRecetaPaciente(int index) throws Exception {
         List<Receta> recetasMostradas = model.getRecetasFiltradasPaciente();
-        // si la lista filtrada está vacía, usar la lista completa
-        if (recetasMostradas == null || recetasMostradas.isEmpty()) {
+
+        if (recetasMostradas == null || recetasMostradas.isEmpty()) {   // si la lista filtrada está vacía, usar la lista completa
             recetasMostradas = model.getListRecetas();
         }
         if (index >= 0 && index < recetasMostradas.size()) {

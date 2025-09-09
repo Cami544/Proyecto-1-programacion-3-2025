@@ -1,7 +1,6 @@
 package hospital.presentation.Despacho;
 
 import hospital.logic.Farmaceuta;
-import hospital.logic.Paciente;
 import hospital.logic.Receta;
 
 import javax.swing.*;
@@ -15,7 +14,7 @@ public class View implements PropertyChangeListener {
     private JTextField buscarIdText;
     private JLabel idPacienteLabel;
     private JButton buscarButton;
-    private JComboBox<String> farmaceutaComboBox;
+    private JComboBox<Farmaceuta> farmaceutaComboBox;
     private JLabel estadoRecetaLabel;
     private JComboBox<String> recetaComboBox;
     private JButton guardarButton;
@@ -52,26 +51,27 @@ public class View implements PropertyChangeListener {
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        guardarButton.addActionListener(e -> {
-            try {
-                int row = list.getSelectedRow();
-                if (row >= 0) {
-                    controller.seleccionarRecetaPaciente(row);
-
-                    String farmaceutaNombre = (String) farmaceutaComboBox.getSelectedItem();
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Farmaceuta farmaceuta = (Farmaceuta) farmaceutaComboBox.getSelectedItem();
                     String estado = (String) recetaComboBox.getSelectedItem();
-                    controller.guardarCambiosReceta(farmaceutaNombre, estado);
+                    controller.guardarCambiosReceta(farmaceuta, estado);
 
-                    JOptionPane.showMessageDialog(panel, "Receta actualizada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Debe seleccionar una receta en la tabla", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(panel,
+                            "La receta se actualizó correctamente.",
+                            "Información",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al guardar cambios: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel, "Error al guardar cambios: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -88,7 +88,6 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
-
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,7 +105,7 @@ public class View implements PropertyChangeListener {
     private void actualizarCombos() {
         farmaceutaComboBox.removeAllItems();
         for (Farmaceuta f : model.getListFarmaceutas()) {
-            farmaceutaComboBox.addItem(f.getNombre());
+            farmaceutaComboBox.addItem(f); // directamente el objeto
         }
 
         recetaComboBox.removeAllItems();
@@ -123,13 +122,28 @@ public class View implements PropertyChangeListener {
 
             // Seleccionar farmaceuta actual
             if (receta.getFarmaceutaId() != null) {
-                farmaceutaComboBox.setSelectedItem(receta.getFarmaceutaId());
+                for (int i = 0; i < farmaceutaComboBox.getItemCount(); i++) {
+                    Farmaceuta f = (Farmaceuta) farmaceutaComboBox.getItemAt(i);
+                    if (f != null && receta.getFarmaceutaId().equals(f.getId())) {
+                        farmaceutaComboBox.setSelectedItem(f);
+                        break;
+                    }
+                }
+            } else {
+                farmaceutaComboBox.setSelectedIndex(-1); // Ninguno seleccionado
             }
 
             // Seleccionar estado actual
             if (receta.getEstadoReceta() != null) {
                 recetaComboBox.setSelectedItem(receta.getEstadoReceta());
+            } else {
+                recetaComboBox.setSelectedIndex(-1); // Ninguno seleccionado
             }
+        } else {
+            //limpiar
+            buscarIdText.setText("");
+            farmaceutaComboBox.setSelectedIndex(-1);
+            recetaComboBox.setSelectedIndex(-1);
         }
     }
 
@@ -158,10 +172,7 @@ public class View implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case Model.LIST_RECETA:
-                actualizarTabla();
-                break;
-            case Model.RECETA_FILTRADO:
+            case Model.LIST_RECETA, Model.RECETA_FILTRADO:
                 actualizarTabla();
                 break;
             case Model.LIST_FARMACIA:

@@ -73,7 +73,7 @@
         <receta>
             <id>REC-20250906-1174</id>
             <pacienteId>k87</pacienteId>
-            <farmaceutaId>JUd</farmaceutaId>
+            <farmaceutaId>586</farmaceutaId>
             <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-06</fecha>
             <fechaRetiro>2025-09-19</fechaRetiro>
@@ -86,7 +86,7 @@
         <receta>
             <id>REC-20250906-1913</id>
             <pacienteId>k87</pacienteId>
-            <farmaceutaId>Cami</farmaceutaId>
+            <farmaceutaId>1563</farmaceutaId>
             <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-06</fecha>
             <fechaRetiro>2025-09-12</fechaRetiro>
@@ -112,8 +112,8 @@
         <receta>
             <id>REC-20250907-3636</id>
             <pacienteId>675</pacienteId>
-            <farmaceutaId>Cami</farmaceutaId>
-            <estadoReceta>Lista</estadoReceta>
+            <farmaceutaId>864</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
             <fecha>2025-09-07</fecha>
             <fechaRetiro>2025-09-08</fechaRetiro>
             <detalles>
@@ -125,8 +125,8 @@
         <receta>
             <id>REC-20250908-7063</id>
             <pacienteId>675</pacienteId>
-            <farmaceutaId>Sin asignar</farmaceutaId>
-            <estadoReceta>Confeccionada</estadoReceta>
+            <farmaceutaId>865</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
             <fecha>2025-09-08</fecha>
             <fechaRetiro>2025-10-01</fechaRetiro>
             <detalles>
