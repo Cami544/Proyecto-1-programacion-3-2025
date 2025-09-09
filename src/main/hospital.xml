@@ -13,6 +13,18 @@
             <fechaNacimiento>2024-10-16</fechaNacimiento>
             <numeroTelefono>678678</numeroTelefono>
         </paciente>
+        <paciente>
+            <id>2651</id>
+            <nombre>Fabricio</nombre>
+            <fechaNacimiento>2003-09-10</fechaNacimiento>
+            <numeroTelefono>16516</numeroTelefono>
+        </paciente>
+        <paciente>
+            <id>16</id>
+            <nombre>DER</nombre>
+            <fechaNacimiento>2025-05-07</fechaNacimiento>
+            <numeroTelefono>3636</numeroTelefono>
+        </paciente>
     </pacientes>
     <medicos>
         <medico>
@@ -59,6 +71,16 @@
             <codigo>1563</codigo>
             <nombre>Aceto</nombre>
             <presentacion>pastilla</presentacion>
+        </medicamento>
+        <medicamento>
+            <codigo>1568</codigo>
+            <nombre>Loratadina</nombre>
+            <presentacion>pastilla</presentacion>
+        </medicamento>
+        <medicamento>
+            <codigo>8737</codigo>
+            <nombre>MIg</nombre>
+            <presentacion>Capsula</presentacion>
         </medicamento>
     </medicamentos>
     <administradores>
@@ -113,7 +135,7 @@
             <id>REC-20250907-3636</id>
             <pacienteId>675</pacienteId>
             <farmaceutaId>864</farmaceutaId>
-            <estadoReceta>Confeccionada</estadoReceta>
+            <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-07</fecha>
             <fechaRetiro>2025-09-08</fechaRetiro>
             <detalles>
@@ -126,12 +148,64 @@
             <id>REC-20250908-7063</id>
             <pacienteId>675</pacienteId>
             <farmaceutaId>865</farmaceutaId>
-            <estadoReceta>Lista</estadoReceta>
+            <estadoReceta>Entregada</estadoReceta>
             <fecha>2025-09-08</fecha>
             <fechaRetiro>2025-10-01</fechaRetiro>
             <detalles>
                 <medicamentoCodigo>3452</medicamentoCodigo>
                 <cantidad>1</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250909-237</id>
+            <pacienteId>2651</pacienteId>
+            <farmaceutaId>1563</farmaceutaId>
+            <estadoReceta>En proceso</estadoReceta>
+            <fecha>2025-09-09</fecha>
+            <fechaRetiro>2025-09-10</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>56</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250909-880</id>
+            <pacienteId>2651</pacienteId>
+            <farmaceutaId>1563</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
+            <fecha>2025-09-09</fecha>
+            <fechaRetiro>2025-11-14</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>2</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250909-4778</id>
+            <pacienteId>16</pacienteId>
+            <farmaceutaId>864</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
+            <fecha>2025-09-09</fecha>
+            <fechaRetiro>2025-12-25</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>8737</medicamentoCodigo>
+                <cantidad>6</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250909-2742</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-09</fecha>
+            <fechaRetiro>2025-10-10</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>8737</medicamentoCodigo>
+                <cantidad>58</cantidad>
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>

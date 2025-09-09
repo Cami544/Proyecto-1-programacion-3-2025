@@ -1,7 +1,9 @@
 package hospital.presentation.Dashboard;
 
+import hospital.logic.DetalleReceta;
 import hospital.logic.Medicamento;
 import hospital.logic.Receta;
+import hospital.logic.Service;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -36,10 +38,11 @@ public class View implements PropertyChangeListener {
     private JButton borrarTodoButton;
 
     // MVC
-    private Model model;
-    private Controller controller;
+    private hospital.presentation.Dashboard.Model model;
+    private hospital.presentation.Dashboard.Controller controller;
 
     public View() {
+        //Aqui un actualizar, bueno mejor revisar
         setupEventHandlers();
         inicializarComponentes();
     }
@@ -48,12 +51,12 @@ public class View implements PropertyChangeListener {
         return panel;
     }
 
-    public void setModel(Model model) {
+    public void setModel(hospital.presentation.Dashboard.Model model) {
         this.model = model;
         model.addPropertyChangeListener(this);
     }
 
-    public void setController(Controller controller) {
+    public void setController(hospital.presentation.Dashboard.Controller controller) {
         this.controller = controller;
     }
 
@@ -61,38 +64,149 @@ public class View implements PropertyChangeListener {
         seleccionarUnoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                seleccionarMedicamento();
                 actualizarDashboard();
             }
         });
+
         seleccionarTodoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                try {
+                    // Cargar todo desde Service
+                    List<Receta> todasLasRecetas = Service.instance().getRecetas();
+
+                    if (todasLasRecetas == null || todasLasRecetas.isEmpty()) {
+                        JOptionPane.showMessageDialog(
+                                panel,
+                                "No hay recetas registradas en el sistema.",
+                                "Aviso",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                        return;
+                    }
+
+                    // Poner todas las recetas en la lista temporal
+                    model.setRecetasDashboard(new ArrayList<>(todasLasRecetas));
+
+                    // Asegurar que el filtro de medicamento esté en "Todos"
+                    if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
+                    controller.setMedicamentoSeleccionado(null);
+
+                    // Recalcular estadísticas (usará recetasDashboard + medicamentoSeleccionado == null)
+                    controller.actualizarEstadisticas();
+
+                    JOptionPane.showMessageDialog(
+                            panel,
+                            "Se han cargado todas las recetas al dashboard para mostrar en las estadísticas.",
+                            "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error cargando todas las recetas: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
+
+
         borrarUnoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int row = table1.getSelectedRow();
-                    if (row >= 0) {
-                        Receta receta = model.getRecetasDashboard().get(row);
-
-                        // Clonar la lista para no modificar directamente
-                        List<Receta> nuevas = new ArrayList<>(model.getRecetasDashboard());
-                        nuevas.remove(receta);
-
-                        // Actualizar el modelo con la lista nueva
-                        model.setRecetasDashboard(nuevas);
-
-                        JOptionPane.showMessageDialog(panel,
-                                "La receta se eliminó de la vista del Dashboard.\n(No se eliminó del sistema).",
-                                "Información", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(panel,
-                                "Debe seleccionar una receta en la tabla para borrar.",
-                                "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    int selectedRow = table1.getSelectedRow();
+                    if (selectedRow == -1) {
+                        JOptionPane.showMessageDialog(panel, "Seleccione una fila para borrar.");
+                        return;
                     }
+
+                    Object periodoObj = table1.getValueAt(selectedRow, 0);
+                    Object medicamentoObj = table1.getValueAt(selectedRow, 1);
+                    Object cantidadObj = table1.getValueAt(selectedRow, 2);
+
+                    if (periodoObj == null || medicamentoObj == null || cantidadObj == null) {
+                        JOptionPane.showMessageDialog(panel, "Fila inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    String periodo = periodoObj.toString();
+                    String medicamento = medicamentoObj.toString();
+                    int cantidad;
+                    if (cantidadObj instanceof Number) {
+                        cantidad = ((Number) cantidadObj).intValue();
+                    } else {
+                        try { cantidad = Integer.parseInt(cantidadObj.toString()); }
+                        catch (Exception ex) { cantidad = 0; }
+                    }
+
+                    int confirm = JOptionPane.showConfirmDialog(
+                            panel,
+                            "¿Está seguro de borrar la fila seleccionada?\nPeriodo: " + periodo + "\nMedicamento: " + medicamento,
+                            "Confirmar borrado",
+                            JOptionPane.YES_NO_OPTION
+                    );
+
+                    if (confirm != JOptionPane.YES_OPTION) return;
+
+                    //  fila agregada con 0 recetas ("Sin datos") => eliminar directamente de datosEstadisticas
+                    if (cantidad == 0) {
+                        List<Object[]> datos = model.getDatosEstadisticas() == null
+                                ? new ArrayList<>()
+                                : new ArrayList<>(model.getDatosEstadisticas());
+
+                        boolean removed = datos.removeIf(arr -> periodo.equals(arr[0]) && medicamento.equals(arr[1]));
+                        if (removed) {
+                            model.setDatosEstadisticas(datos); // dispara actualización de tabla y gráfico de líneas
+                            JOptionPane.showMessageDialog(panel, "Fila (sin datos) eliminada de la vista.");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "No se encontró la fila para eliminar.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        return;
+                    }
+
+                    //  cantidad > 0 => eliminar las Receta de recetasDashboard que coincidan con periodo + medicamento
+                    List<Receta> actuales = model.getRecetasDashboard() == null
+                            ? new ArrayList<>()
+                            : new ArrayList<>(model.getRecetasDashboard());
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
+
+                    boolean removedAny = actuales.removeIf(r -> {
+                        try {
+                            // usar fechaRetiro
+                            LocalDate fechaRef = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                            if (fechaRef == null) return false;
+                            if (!fechaRef.format(formatter).equals(periodo)) return false;
+                            if (r.getDetalles() == null) return false;
+
+                            for (DetalleReceta d : r.getDetalles()) {
+                                try {
+                                    String nombreMed = Service.instance().readMedicamento(d.getMedicamentoCodigo()).getNombre();
+                                    if (medicamento.equals(nombreMed)) return true;
+                                } catch (Exception ex) {
+                                    // fallback comparar por código
+                                    if (medicamento.equals(d.getMedicamentoCodigo())) return true;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            return false;
+                        }
+                        return false;
+                    });
+
+                    if (removedAny) { //Señor
+                        // actualiza recetas temporales y recalcula estadísticas desde esas recetas
+                        model.setRecetasDashboard(actuales);
+                        controller.actualizarEstadisticas();
+                        JOptionPane.showMessageDialog(panel, "Recetas eliminadas de la vista y estadísticas recalculadas.");
+                    } else {
+                        JOptionPane.showMessageDialog(panel, "No se encontraron recetas que coincidan con la fila seleccionada.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(panel,
                             "Error al borrar receta: " + ex.getMessage(),
@@ -100,25 +214,46 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
+
         borrarTodoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int confirm = JOptionPane.showConfirmDialog(panel,
+                    int confirm = JOptionPane.showConfirmDialog(
+                            panel,
                             "¿Seguro que desea limpiar todas las recetas del Dashboard?\n(Esta acción no afecta al sistema).",
-                            "Confirmación", JOptionPane.YES_NO_OPTION);
+                            "Confirmación",
+                            JOptionPane.YES_NO_OPTION
+                    );
 
                     if (confirm == JOptionPane.YES_OPTION) {
+                        // Vaciar la lista temporal del Dashboard
                         model.setRecetasDashboard(new ArrayList<>());
 
-                        JOptionPane.showMessageDialog(panel,
+                        // Resetear filtros (fechas y combo medicamentos)
+                        resetFiltrosPorDefecto();
+
+                        // Asegura que no haya filtro de medicamento activo
+                        if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
+                        controller.setMedicamentoSeleccionado(null);
+
+                        // Refresca estadísticas y tabla
+                        controller.actualizarEstadisticas();
+
+                        JOptionPane.showMessageDialog(
+                                panel,
                                 "Se limpiaron todas las recetas del Dashboard.\n(No se eliminaron del sistema).",
-                                "Información", JOptionPane.INFORMATION_MESSAGE);
+                                "Información",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel,
+                    JOptionPane.showMessageDialog(
+                            panel,
                             "Error al limpiar recetas: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });
@@ -146,6 +281,9 @@ public class View implements PropertyChangeListener {
 
     private void actualizarDashboard() {
         try {
+            // aseguramos leer el medicamento seleccionado en el combo
+            seleccionarMedicamento();
+
             LocalDate fechaDesde = obtenerFechaDesde();
             LocalDate fechaHasta = obtenerFechaHasta();
 
@@ -165,6 +303,21 @@ public class View implements PropertyChangeListener {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+
+    private void resetFiltrosPorDefecto() {
+        LocalDate now = LocalDate.now();
+        // Poner los combos a los valores por defecto
+        if (desdeAnio != null) desdeAnio.setSelectedItem(String.valueOf(now.minusMonths(6).getYear()));
+        if (desdeMes != null) desdeMes.setSelectedItem(now.minusMonths(6).getMonthValue() + "-" + obtenerNombreMes(now.minusMonths(6).getMonthValue()));
+        if (hastaAnio != null) hastaAnio.setSelectedItem(String.valueOf(now.getYear()));
+        if (hastaMes != null) hastaMes.setSelectedItem(now.getMonthValue() + "-" + obtenerNombreMes(now.getMonthValue()));
+
+        // limpiar combo de medicamento
+        if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
+        // notificar controlador
+        controller.setMedicamentoSeleccionado(null);
     }
 
     private void seleccionarMedicamento() {
@@ -224,20 +377,25 @@ public class View implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case Model.MEDICAMENTOS_DISPONIBLES:
+            case hospital.presentation.Dashboard.Model.MEDICAMENTOS_DISPONIBLES:
                 actualizarComboMedicamentos();
                 break;
-            case Model.DATOS_ESTADISTICAS:
+            case hospital.presentation.Dashboard.Model.DATOS_ESTADISTICAS:
                 actualizarTablaEstadisticas();
                 actualizarGraficoLineas();
-                //Actualizar graficoPastel
                 break;
-            case Model.ESTADISTICAS_RECETAS:
+            case hospital.presentation.Dashboard.Model.ESTADISTICAS_RECETAS:
+                actualizarTablaEstadisticas();
                 actualizarGraficoPastel();
                 break;
 
-            case Model.RECETAS_DASHBOARD:
-                actualizarTablaEstadisticas();
+            case hospital.presentation.Dashboard.Model.RECETAS_DASHBOARD:
+                try {
+                    controller.actualizarEstadisticas();
+                    actualizarTablaEstadisticas(); // refrescar tabla con la lista actual
+                } catch (Exception ex) {
+                    System.err.println("Error recalculando estadísticas tras cambio en RecetasDashboard: " + ex.getMessage());
+                }
                 break;
         }
         if (panel != null) {
@@ -272,7 +430,7 @@ public class View implements PropertyChangeListener {
                 "Cantidad",
                 dataset
         );
-       // ChartPanel chartPanel= new ChartPanel(320,400,390,310,420,330,true,true,true,true,true,true)
+        // ChartPanel chartPanel= new ChartPanel(320,400,390,310,420,330,true,true,true,true,true,true)
         panelGraficoLineas.removeAll();
         panelGraficoLineas.add(new ChartPanel(chart));
         panelGraficoLineas.revalidate();
@@ -294,7 +452,7 @@ public class View implements PropertyChangeListener {
                 false
         );
         //revisar parametros
-      //  ChartPanel chartPanel = new ChartPanel(400,320,320,400,320,400);
+        //  ChartPanel chartPanel = new ChartPanel(400,320,320,400,320,400);
         panelGraficoBarras.removeAll();
         panelGraficoBarras.add(new ChartPanel(chart));
         panelGraficoBarras.revalidate();
