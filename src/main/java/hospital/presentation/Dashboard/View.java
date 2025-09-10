@@ -63,8 +63,25 @@ public class View implements PropertyChangeListener {
         seleccionarUnoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    // Validar que el usuario haya seleccionado un medicamento
+                    if (medicamentoBox.getSelectedIndex() == -1 ||
+                            medicamentoBox.getSelectedItem() == null ||
+                            medicamentoBox.getSelectedItem().toString().trim().isEmpty()) {
+
+                        JOptionPane.showMessageDialog(panel,
+                                "Debe seleccionar un medicamento antes de continuar.",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE);
+                        return; // No ejecutar nada más si no hay selección
+                    }
                 seleccionarMedicamento();
                 actualizarDashboard();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al seleccionar medicamento: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -425,7 +442,7 @@ public class View implements PropertyChangeListener {
 
     private void actualizarComboMedicamentos() {
         medicamentoBox.removeAllItems();
-        medicamentoBox.addItem("Sin seleccionar");
+        medicamentoBox.addItem("");
 
         for (Medicamento med : model.getMedicamentosDisponibles()) {
             String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
