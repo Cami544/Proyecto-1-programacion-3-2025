@@ -212,37 +212,62 @@ public class View implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int confirm = JOptionPane.showConfirmDialog(panel,
+                    int confirm = JOptionPane.showConfirmDialog(
+                            panel,
                             "¿Seguro que desea limpiar todas las recetas del Dashboard?\n(Esta acción no afecta al sistema).",
-                            "Confirmación", JOptionPane.YES_NO_OPTION);
+                            "Confirmación",
+                            JOptionPane.YES_NO_OPTION
+                    );
 
                     if (confirm == JOptionPane.YES_OPTION) {
+                        // Vaciar la lista temporal del Dashboard
                         model.setRecetasDashboard(new ArrayList<>());
+
+                        // Resetear filtros por defecto (ej: fechas, combos)
+                        resetFiltrosPorDefecto();
+
+                        // Asegura que no haya medicamento seleccionado
                         controller.setMedicamentoSeleccionado(null);
+
+                        // Recargar medicamentos en el combo
                         controller.cargarMedicamentos();
 
-                        if (medicamentoBox.getItemCount() > 0) {
-                            medicamentoBox.setSelectedIndex(0); // Sin seleccionar
+                        if (medicamentoBox != null && medicamentoBox.getItemCount() > 0) {
+                            medicamentoBox.setSelectedIndex(0); // Deja en "sin seleccionar"
                         }
 
-                        JOptionPane.showMessageDialog(panel,
+                        // Refrescar estadísticas del Dashboard
+                        controller.actualizarEstadisticas();
+
+                        // Mensaje confirmando la acción
+                        JOptionPane.showMessageDialog(
+                                panel,
                                 "Se limpiaron todas las recetas del Dashboard.\n(No se eliminaron del sistema).",
-                                "Información", JOptionPane.INFORMATION_MESSAGE);
+                                "Información",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel,
+                    JOptionPane.showMessageDialog(
+                            panel,
                             "Error al limpiar recetas: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });
 
-        medicamentoBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                seleccionarMedicamento();
-            }
-        });
+// Listener para seleccionar medicamento desde el combo
+        if (medicamentoBox != null) {
+            medicamentoBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seleccionarMedicamento();
+                }
+            });
+        }
+
     }
 
     private void inicializarComponentes() {
@@ -313,18 +338,31 @@ public class View implements PropertyChangeListener {
                 return;
             }
 
+            // Esperamos formato "COD - Nombre Presentación"
+            String codigoSeleccion = seleccion.split(" - ")[0].trim();
+
+            for (Medicamento med : controller.obtenerMedicamentos()) {
+                if (med.getCodigo() != null && med.getCodigo().equalsIgnoreCase(codigoSeleccion)) {
+                    controller.setMedicamentoSeleccionado(med);
+                    return;
+                }
+            }
+            // fallback: no encontré por código -> intentar buscar por nombre completo
             for (Medicamento med : controller.obtenerMedicamentos()) {
                 String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
-                if (item.equals(seleccion)) {
+                if (item.equalsIgnoreCase(seleccion)) {
                     controller.setMedicamentoSeleccionado(med);
-                    break;
+                    return;
                 }
             }
 
+            // si no se encontró, limpiar selección
+            controller.setMedicamentoSeleccionado(null);
         } catch (Exception ex) {
             System.err.println("Error seleccionando medicamento: " + ex.getMessage());
         }
     }
+
 
     private LocalDate obtenerFechaDesde() throws Exception {
         try {

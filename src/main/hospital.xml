@@ -227,5 +227,18 @@
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>
+        <receta>
+            <id>REC-20250910-7132</id>
+            <pacienteId>16</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-09-11</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>4</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
     </recetas>
 </data>
