@@ -82,6 +82,11 @@
             <nombre>MIg</nombre>
             <presentacion>Capsula</presentacion>
         </medicamento>
+        <medicamento>
+            <codigo>21651</codigo>
+            <nombre>Clorfe</nombre>
+            <presentacion>Pastilla</presentacion>
+        </medicamento>
     </medicamentos>
     <administradores>
         <administrador>
@@ -206,6 +211,19 @@
             <detalles>
                 <medicamentoCodigo>8737</medicamentoCodigo>
                 <cantidad>58</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250909-7201</id>
+            <pacienteId>16</pacienteId>
+            <farmaceutaId>1563</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-09</fecha>
+            <fechaRetiro>2025-11-14</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>21651</medicamentoCodigo>
+                <cantidad>4</cantidad>
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>

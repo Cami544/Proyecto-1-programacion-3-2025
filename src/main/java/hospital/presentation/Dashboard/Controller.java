@@ -122,11 +122,14 @@ public class Controller {
             for (Map.Entry<String, Map<String, Integer>> entryMes : estadisticasPorMes.entrySet()) {
                 String periodo = entryMes.getKey();
                 Map<String, Integer> medicamentosPorMes = entryMes.getValue();
-
                 if (medicamentosPorMes.isEmpty()) {
-                    String nombreMed = medicamento != null ? medicamento.getNombre() : "Sin datos";
-                    estadisticas.add(new Object[]{periodo, nombreMed, 0, 0});
-                } else {
+                    if (medicamento != null) {
+                        // Solo si hay un medicamento filtrado mostramos "Sin datos"
+                        estadisticas.add(new Object[]{periodo, medicamento.getNombre(), 0, 0});
+                    }
+                    // Si es seleccionar todo (medicamento == null), no agregamos nada
+                    }
+                else {
                     for (Map.Entry<String, Integer> entryMed : medicamentosPorMes.entrySet()) {
                         estadisticas.add(new Object[]{
                                 periodo,
@@ -207,7 +210,7 @@ public class Controller {
         }
     }
 
-    private void cargarMedicamentos() {
+    public void cargarMedicamentos() {
         try {
             List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             model.setMedicamentosDisponibles(medicamentos);
@@ -217,5 +220,31 @@ public class Controller {
             model.setMedicamentosDisponibles(new ArrayList<>());
         }
     }
+
+    public List<Receta> obtenerRecetasEnRango(LocalDate desde, LocalDate hasta) {
+        return Service.instance().getRecetas().stream()
+                .filter(r -> {
+                    LocalDate fecha = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                    return (fecha != null && !fecha.isBefore(desde) && !fecha.isAfter(hasta));
+                })
+                .collect(Collectors.toList());
+    }
+    public List<Receta> obtenerRecetasFiltradas(LocalDate desde, LocalDate hasta, Medicamento medicamento) {
+        return Service.instance().getRecetas().stream()
+                .filter(r -> {
+                    LocalDate fecha = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                    if (fecha == null) return false;
+                    if (fecha.isBefore(desde) || fecha.isAfter(hasta)) return false;
+
+                    if (medicamento != null) {
+                        // verificar que la receta contenga ese medicamento
+                        return r.getDetalles().stream()
+                                .anyMatch(d -> d.getMedicamentoCodigo().equals(medicamento.getCodigo()));
+                    }
+                    return true; // si no hay filtro de medicamento
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }
