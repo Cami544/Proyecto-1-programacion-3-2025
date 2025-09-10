@@ -251,25 +251,22 @@ public class Service {
         for (DetalleReceta detalle : receta.getDetalles()) {
             readMedicamento(detalle.getMedicamentoCodigo());
         }
-
         Receta result = data.getRecetas().stream()
                 .filter(i -> i.getId().equals(receta.getId()))
                 .findFirst()
                 .orElse(null);
 
         if (result == null) {
-            receta.setFecha(LocalDate.now());
-            receta.setFechaRetiro(fechaRetiro);
-
+            if (receta.getFecha() == null) {  // setea fecha si no viene
+                receta.setFecha(LocalDate.now());
+            }
+            if (fechaRetiro != null) {  // fechaRetiro
+                receta.setFechaRetiro(fechaRetiro);
+            } else if (receta.getFechaRetiro() == null) {
+                receta.setFechaRetiro(receta.getFecha().plusDays(1));
+            }
             data.getRecetas().add(receta);
             stop();
-
-            System.out.println("Receta guardada en XML:");
-            System.out.println("  - ID: " + receta.getId());
-            System.out.println("  - Paciente: " + receta.getPacienteId());
-            System.out.println("  - Fecha confección: " + receta.getFecha());
-            System.out.println("  - Fecha retiro: " + receta.getFechaRetiro());
-            System.out.println("  - Medicamentos: " + receta.getDetalles().size());
         } else {
             throw new Exception("Receta con id " + receta.getId() + " ya existe");
         }
@@ -284,12 +281,6 @@ public class Service {
         else throw new Exception("Receta no existe");
     }
 
-    /*public void updateReceta(Receta r) throws Exception {
-        Receta result = this.readReceta(r);
-        data.getRecetas().remove(result);
-        data.getRecetas().add(r);
-        stop();
-    }*/
     public Receta updateReceta(Receta r) throws Exception {
         Receta result = this.readReceta(r);
         if (result == null) {
@@ -304,7 +295,6 @@ public class Service {
         stop();
         return result;
     }
-
 
     public void deleteReceta(Receta r) throws Exception {
         Receta result = this.readReceta(r);

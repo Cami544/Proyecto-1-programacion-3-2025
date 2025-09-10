@@ -165,12 +165,15 @@ public class Controller {
 
         Service.instance().createReceta(receta, model.getFechaRetiro());
 
-        if (hospital.Application.historicoController != null) {
+        if (hospital.Application.historicoController != null && hospital.Application.despachoController != null) {
             try {
                 hospital.Application.historicoController.refrescarRecetas();
                 System.out.println("Historico actualizado despues de guardar receta");
+                hospital.Application.despachoController.refrecarDatos();
+                System.out.println("Despacho actualizado después de crear receta.");
             } catch (Exception e) {
                 System.err.println("Error actualizando histórico: " + e.getMessage());
+                System.err.println("Error actualizando despacho: " + e.getMessage());
             }
         }
 

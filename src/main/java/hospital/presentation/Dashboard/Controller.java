@@ -10,10 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
-    private View view;
-    private Model model;
+    private hospital.presentation.Dashboard.View view;
+    private hospital.presentation.Dashboard.Model model;
 
-    public Controller(View view, Model model) {
+    public Controller(hospital.presentation.Dashboard.View view, hospital.presentation.Dashboard.Model model) {
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -80,12 +80,19 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
         try {
-          //  model.setRecetasDashboard(Service.instance().getRecetas());
-           List<Receta> recetas = model.getRecetasDashboard();
-           // List<Receta> recetas = Service.instance().getRecetas();
+            List<Receta> recetas = model.getRecetasDashboard();
+            if (recetas == null || recetas.isEmpty()) {
+                recetas = Service.instance().getRecetas();
+            }
 
+            if (desde == null || hasta == null || recetas == null) return estadisticas;
+
+            // 🔹 Usar fecha de retiro si existe
             List<Receta> recetasFiltradas = recetas.stream()
-                    .filter(r -> !r.getFecha().isBefore(desde) && !r.getFecha().isAfter(hasta))
+                    .filter(r -> {
+                        LocalDate fechaRef = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                        return !fechaRef.isBefore(desde) && !fechaRef.isAfter(hasta);
+                    })
                     .collect(Collectors.toList());
 
             Map<String, Map<String, Integer>> estadisticasPorMes = new LinkedHashMap<>();
@@ -98,13 +105,14 @@ public class Controller {
             }
 
             for (Receta receta : recetasFiltradas) {
-                String periodo = receta.getFecha().format(formatter);
+                LocalDate fechaRef = (receta.getFechaRetiro() != null) ? receta.getFechaRetiro() : receta.getFecha();
+                String periodo = fechaRef.format(formatter);
 
                 if (receta.getDetalles() != null) {
                     for (hospital.logic.DetalleReceta detalle : receta.getDetalles()) {
                         if (medicamento == null || medicamento.getCodigo().equals(detalle.getMedicamentoCodigo())) {
                             String nombreMed = obtenerNombreMedicamento(detalle.getMedicamentoCodigo());
-
+                            estadisticasPorMes.computeIfAbsent(periodo, k -> new HashMap<>());
                             estadisticasPorMes.get(periodo).merge(nombreMed, detalle.getCantidad(), Integer::sum);
                         }
                     }
@@ -139,28 +147,17 @@ public class Controller {
     }
 
     private Map<String, Integer> generarEstadisticasRecetas() {
-
         Map<String, Integer> estadisticas = new HashMap<>();
 
         try {
-           // model.setRecetasDashboard(Service.instance().getRecetas());
-            List<Receta> todasRecetas = model.getRecetasDashboard();
+            List<Receta> todasRecetas = Service.instance().getRecetas();
 
-            LocalDate desde = model.getFechaDesde();
-            LocalDate hasta = model.getFechaHasta();
-
-            // Filtrar por rango de fechas
-            List<Receta> recetasFiltradas = todasRecetas.stream()
-                    .filter(r -> !r.getFecha().isBefore(desde) && !r.getFecha().isAfter(hasta))
-                    .collect(Collectors.toList());
-
-            // Contadores por estado
             int confeccionadas = 0;
             int enProceso = 0;
             int listas = 0;
             int entregadas = 0;
 
-            for (Receta r : recetasFiltradas) {
+            for (Receta r : todasRecetas) {
                 switch (r.getEstadoReceta()) {
                     case "Confeccionada" -> confeccionadas++;
                     case "En proceso" -> enProceso++;
@@ -169,24 +166,19 @@ public class Controller {
                 }
             }
 
-            // Guardar en el Map
             estadisticas.put("Confeccionadas", confeccionadas);
             estadisticas.put("En Proceso", enProceso);
             estadisticas.put("Listas", listas);
             estadisticas.put("Entregadas", entregadas);
 
         } catch (Exception e) {
-            // fallback si algo falla
-            estadisticas.put("Confeccionadas", 0);
-            estadisticas.put("En Proceso", 0);
-            estadisticas.put("Listas", 0);
-            estadisticas.put("Entregadas", 0);
             System.err.println("Error generando estadísticas de recetas: " + e.getMessage());
         }
 
         return estadisticas;
-
     }
+
+
 
     private List<Object[]> generarDatosSimulados(LocalDate desde, LocalDate hasta, Medicamento medicamento) {
         List<Object[]> datos = new ArrayList<>();
@@ -226,7 +218,4 @@ public class Controller {
         }
     }
 
-    public void exportarEstadisticas() throws Exception {
-        throw new Exception("en desarrollo...");
-    }
 }
