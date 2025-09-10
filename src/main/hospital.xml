@@ -240,5 +240,70 @@
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>
+        <receta>
+            <id>REC-20250910-6386</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-09-11</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>4</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250910-9497</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-12-20</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>8</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250910-4631</id>
+            <pacienteId>2651</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-12-20</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>21651</medicamentoCodigo>
+                <cantidad>6</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250910-6317</id>
+            <pacienteId>675</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-10-17</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1563</medicamentoCodigo>
+                <cantidad>23</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250910-7983</id>
+            <pacienteId>2651</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-10</fecha>
+            <fechaRetiro>2025-10-16</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1568</medicamentoCodigo>
+                <cantidad>1</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
     </recetas>
 </data>

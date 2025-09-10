@@ -18,10 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class View implements PropertyChangeListener {
     private JComboBox<String> desdeAnio;
@@ -443,7 +440,7 @@ public class View implements PropertyChangeListener {
         Map<String, Map<String, Integer>> agrupado = new HashMap<>();
 
         for (Object[] fila : model.getDatosEstadisticas()) {
-            String periodo = (String) fila[0];
+            String periodo = (String) fila[0]; // formato "MM/yyyy"
             String medicamento = (String) fila[1];
             Integer cantidad = (Integer) fila[2];
 
@@ -451,10 +448,15 @@ public class View implements PropertyChangeListener {
             agrupado.get(periodo).merge(medicamento, cantidad, Integer::sum);
         }
 
-        // 🔹 Paso 2: cargar al dataset ya agrupado
-        for (Map.Entry<String, Map<String, Integer>> entryPeriodo : agrupado.entrySet()) {
-            String periodo = entryPeriodo.getKey();
-            for (Map.Entry<String, Integer> entryMed : entryPeriodo.getValue().entrySet()) {
+        // 🔹 Paso 2: ordenar por fecha (usar YearMonth)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
+        List<String> periodosOrdenados = agrupado.keySet().stream()
+                .sorted(Comparator.comparing(p -> java.time.YearMonth.parse(p, formatter)))
+                .toList();
+
+        // 🔹 Paso 3: cargar dataset ya ordenado
+        for (String periodo : periodosOrdenados) {
+            for (Map.Entry<String, Integer> entryMed : agrupado.get(periodo).entrySet()) {
                 dataset.addValue(entryMed.getValue(), entryMed.getKey(), periodo);
             }
         }
@@ -472,6 +474,7 @@ public class View implements PropertyChangeListener {
         panelGraficoLineas.revalidate();
         panelGraficoLineas.repaint();
     }
+
 
 
     private void actualizarGraficoPastel() {

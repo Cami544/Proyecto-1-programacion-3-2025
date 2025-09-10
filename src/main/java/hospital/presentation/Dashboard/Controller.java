@@ -10,10 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
-    private hospital.presentation.Dashboard.View view;
-    private hospital.presentation.Dashboard.Model model;
+    private View view;
+    private Model model;
 
-    public Controller(hospital.presentation.Dashboard.View view, hospital.presentation.Dashboard.Model model) {
+    public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -80,12 +80,11 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
         try {
-            // 1) Tomar recetas (dashboard o todas si dashboard vacío)
+            // 🔹 Usar SIEMPRE lo que está en el modelo
             List<Receta> recetas = model.getRecetasDashboard();
-            if (recetas == null || recetas.isEmpty()) {
-                recetas = Service.instance().getRecetas();
-            }
-            if (desde == null || hasta == null || recetas == null) return estadisticas;
+            if (recetas == null) recetas = new ArrayList<>();
+
+            if (desde == null || hasta == null) return estadisticas;
 
             // 2) Filtrar por rango de fechas
             List<Receta> recetasFiltradas = recetas.stream()
