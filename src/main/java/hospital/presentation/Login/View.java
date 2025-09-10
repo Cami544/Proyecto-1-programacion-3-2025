@@ -1,7 +1,7 @@
 package hospital.presentation.Login;
 
 import hospital.Application;
-import hospital.logic.Usuario;
+import hospital.logic.Sesion;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,8 +14,8 @@ public class View implements PropertyChangeListener {
     private JTextField idText;
     private JPasswordField claveText;
     private JButton loginButton;
-    private JButton accesoDevButton;
     private JButton cancelarButton;
+    private JButton cambiarClaveButton;
     private JLabel IDLabel;
     private JLabel CLAVELabel;
     private JDialog dialog;
@@ -31,10 +31,17 @@ public class View implements PropertyChangeListener {
     private void setupDialog() {
         dialog = new JDialog(Application.window, "Login", true);
         dialog.setContentPane(panel);
-        dialog.setSize(350, 180);
+        dialog.setSize(350, 220);
         dialog.setLocationRelativeTo(Application.window);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setResizable(false);
+
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
     }
 
     private void setupEventHandlers() {
@@ -45,18 +52,17 @@ public class View implements PropertyChangeListener {
             }
         });
 
-        accesoDevButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-                Application.doRun();
-            }
-        });
-
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
+            }
+        });
+
+        cambiarClaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarCambiarClave();
             }
         });
 
@@ -79,6 +85,32 @@ public class View implements PropertyChangeListener {
             claveText.setText("");
             idText.requestFocus();
         }
+    }
+
+    private void mostrarCambiarClave() {
+        String idUsuario = idText.getText().trim();
+
+        if (idUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(dialog,
+                    "Debe ingresar su ID de usuario primero",
+                    "ID Requerido",
+                    JOptionPane.WARNING_MESSAGE);
+            idText.requestFocus();
+            return;
+        }
+
+        hospital.presentation.Login.Contrasena.View contrasenaView =
+                new hospital.presentation.Login.Contrasena.View();
+
+        contrasenaView.setModel(model);
+        contrasenaView.setController(controller);
+        contrasenaView.setUsuarioId(idUsuario);
+
+        dialog.setVisible(false);
+
+        contrasenaView.showDialog();
+
+        dialog.setVisible(true);
     }
 
     public void setModel(Model model) {

@@ -98,7 +98,7 @@ public class View implements PropertyChangeListener {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(panel,
-                        "¿Está seguro de eliminar al farmaceuta " + model.getCurrent().getNombre() + "?",
+                        "Esta seguro de eliminar al farmaceuta " + model.getCurrent().getNombre() + "?",
                         "Confirmar eliminación",
                         JOptionPane.YES_NO_OPTION);
 
@@ -107,7 +107,7 @@ public class View implements PropertyChangeListener {
                         controller.delete();
                         JOptionPane.showMessageDialog(panel,
                                 "Farmaceuta eliminado exitosamente",
-                                "Éxito",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {

@@ -22,7 +22,7 @@ public class Controller {
         cargarMedicamentos();
 
         try {
-            // Copia de las recetas del Service
+
             List<Receta> recetasOriginales = Service.instance().getRecetas();
             model.setRecetasDashboard(new ArrayList<>(recetasOriginales));
         } catch (Exception e) {

@@ -119,7 +119,6 @@ public class View implements PropertyChangeListener {
             String nombrePaciente = controller.obtenerNombrePaciente(receta.getPacienteId());
             String detallesMedicamentos = controller.obtenerDetallesMedicamentos(receta);
 
-            // Formatear las fechas
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String fechaConfeccion = receta.getFecha() != null ?
                     receta.getFecha().format(formatter) : "Sin fecha";
@@ -186,7 +185,6 @@ public class View implements PropertyChangeListener {
                 actualizarTabla();
                 break;
             case Model.CRITERIO_FILTRO:
-                // Actualizar el campo de búsqueda si es necesario
                 break;
         }
         this.panel1.revalidate();

@@ -25,13 +25,10 @@ public class Controller {
         boolean esNuevo = false;
 
         try {
-            // Verificar si ya existe
             Medico existing = Service.instance().readMedico(medico.getId());
-            // Si existe, actualizar pero mantener la clave actual
             medico.setClave(existing.getClave());
             Service.instance().updateMedico(medico);
         } catch (Exception e) {
-            // No existe, crear nuevo y asignar clave = ID
             medico.setClave(medico.getId());
             Service.instance().createMedico(medico);
             esNuevo = true;

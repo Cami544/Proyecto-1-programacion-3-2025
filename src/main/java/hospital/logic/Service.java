@@ -410,7 +410,6 @@ public class Service {
             throw new Exception("Clave requerida");
         }
 
-        // Buscar en médicos
         try {
             Medico medico = readMedico(id);
             if (medico.getClave() != null && medico.getClave().equals(clave)) {
@@ -436,5 +435,39 @@ public class Service {
         }
 
         throw new Exception("Usuario o clave incorrectos");
+    }
+
+
+
+
+
+    public void cambiarClave(String id, String claveActual, String claveNueva) throws Exception {
+        if (id == null || id.trim().isEmpty()) {
+            throw new Exception("ID requerido");
+        }
+        if (claveActual == null || claveActual.trim().isEmpty()) {
+            throw new Exception("Contraseña actual requerida");
+        }
+        if (claveNueva == null || claveNueva.trim().isEmpty()) {
+            throw new Exception("Nueva contraseña requerida");
+        }
+
+        Usuario usuario = authenticate(id, claveActual);
+
+        if (usuario instanceof Medico) {
+            Medico medico = (Medico) usuario;
+            medico.setClave(claveNueva);
+            updateMedico(medico);
+        } else if (usuario instanceof Farmaceuta) {
+            Farmaceuta farmaceuta = (Farmaceuta) usuario;
+            farmaceuta.setClave(claveNueva);
+            updateFarmaceuta(farmaceuta);
+        } else if (usuario instanceof Administrador) {
+            Administrador admin = (Administrador) usuario;
+            admin.setClave(claveNueva);
+            updateAdministrador(admin);
+        } else {
+            throw new Exception("Tipo de usuario no valido para cambio de contraseña");
+        }
     }
 }

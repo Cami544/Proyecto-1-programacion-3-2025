@@ -53,23 +53,19 @@ public class Controller {
         List<Receta> todasLasRecetas = model.getRecetas();
         List<Receta> recetasFiltradas = new ArrayList<>();
 
-        // Primero buscar por ID de receta directamente
         for (Receta receta : todasLasRecetas) {
             if (receta.getId().toLowerCase().contains(criterioBusqueda)) {
                 recetasFiltradas.add(receta);
             }
         }
 
-        // Si no encontró por ID de receta, buscar por paciente
         if (recetasFiltradas.isEmpty()) {
-            // Buscar por ID exacto de paciente
             for (Receta receta : todasLasRecetas) {
                 if (receta.getPacienteId().toLowerCase().equals(criterioBusqueda)) {
                     recetasFiltradas.add(receta);
                 }
             }
 
-            // Si aún no encuentra, buscar por nombre de paciente
             if (recetasFiltradas.isEmpty()) {
                 try {
                     List<Paciente> pacientesEncontrados = Service.instance().searchPacientes(criterioBusqueda);
@@ -91,8 +87,7 @@ public class Controller {
 
         model.setRecetasFiltradas(recetasFiltradas);
 
-        // Debug: mostrar información sobre la búsqueda
-        System.out.println("Criterio de búsqueda: " + criterio);
+        System.out.println("Criterio de busqueda: " + criterio);
         System.out.println("Total recetas en sistema: " + todasLasRecetas.size());
         System.out.println("Recetas encontradas: " + recetasFiltradas.size());
 

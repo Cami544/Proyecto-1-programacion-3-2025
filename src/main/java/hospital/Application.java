@@ -78,7 +78,7 @@ public class Application {
                 break;
 
             default:
-                tabbedPane.addTab("Médicos", medicoView.getPanel());
+                tabbedPane.addTab("Medicos", medicoView.getPanel());
                 tabbedPane.addTab("Pacientes", pacienteView.getPanel());
                 tabbedPane.addTab("Farmaceutas", farmaceutaView.getPanel());
                 tabbedPane.addTab("Medicamentos", medicamentoView.getPanel());
@@ -95,15 +95,35 @@ public class Application {
     private static void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu usuarioMenu = new JMenu("Usuario");
+        JMenu usuarioMenu = getJMenu();
 
-        JMenuItem cambiarClaveItem = new JMenuItem("Cambiar Clave");
-        cambiarClaveItem.addActionListener(e -> {
+        JMenu ayudaMenu = new JMenu("Ayuda");
+
+        JMenuItem acercaDeItem = new JMenuItem("Acerca de...");
+        acercaDeItem.addActionListener(e -> {
+            String rolDescripcion = getRolDescripcion(Sesion.getUsuario().getRol());
             JOptionPane.showMessageDialog(window,
-                    "Funcion de cambiar clave no implementada aun",
-                    "En desarrollo",
+                    "Sistema de Prescripcion y Despacho de Recetas\n" +
+                            "Hospital Nacional\n" +
+                            "Version 1.0\n\n" +
+                            "Usuario: " + Sesion.getUsuario().getNombre() + "\n" +
+                            "ID: " + Sesion.getUsuario().getId() + "\n" +
+                            "Rol: " + rolDescripcion,
+                    "Acerca de",
                     JOptionPane.INFORMATION_MESSAGE);
         });
+
+        ayudaMenu.add(acercaDeItem);
+
+        menuBar.add(usuarioMenu);
+        menuBar.add(ayudaMenu);
+
+        window.setJMenuBar(menuBar);
+    }
+
+    private static JMenu getJMenu() {
+        JMenu usuarioMenu = new JMenu("Usuario");
+
 
         JMenuItem logoutItem = new JMenuItem("Cerrar Sesion");
         logoutItem.addActionListener(e -> {
@@ -134,32 +154,9 @@ public class Application {
             }
         });
 
-        usuarioMenu.add(cambiarClaveItem);
-        usuarioMenu.addSeparator();
+
         usuarioMenu.add(logoutItem);
-
-        JMenu ayudaMenu = new JMenu("Ayuda");
-
-        JMenuItem acercaDeItem = new JMenuItem("Acerca de...");
-        acercaDeItem.addActionListener(e -> {
-            String rolDescripcion = getRolDescripcion(Sesion.getUsuario().getRol());
-            JOptionPane.showMessageDialog(window,
-                    "Sistema de Prescripcion y Despacho de Recetas\n" +
-                            "Hospital Nacional\n" +
-                            "Version 1.0\n\n" +
-                            "Usuario: " + Sesion.getUsuario().getNombre() + "\n" +
-                            "ID: " + Sesion.getUsuario().getId() + "\n" +
-                            "Rol: " + rolDescripcion,
-                    "Acerca de",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
-
-        ayudaMenu.add(acercaDeItem);
-
-        menuBar.add(usuarioMenu);
-        menuBar.add(ayudaMenu);
-
-        window.setJMenuBar(menuBar);
+        return usuarioMenu;
     }
 
     private static String getRolDescripcion(String rol) {

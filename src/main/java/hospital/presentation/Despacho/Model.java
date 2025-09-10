@@ -88,7 +88,6 @@ public class Model  extends AbstractModel {
 
     public void actualizarRecetaEnListas(Receta receta) {
         boolean changed = false;
-        // reemplazar en la lista principal
         if (recetas != null) {
             for (int i = 0; i < recetas.size(); i++) {
                 if (recetas.get(i).getId().equals(receta.getId())) {
@@ -98,7 +97,7 @@ public class Model  extends AbstractModel {
                 }
             }
         }
-        // reemplazar en la lista filtrada
+
         if (recetasFiltradasPaciente != null) {
             for (int i = 0; i < recetasFiltradasPaciente.size(); i++) {
                 if (recetasFiltradasPaciente.get(i).getId().equals(receta.getId())) {

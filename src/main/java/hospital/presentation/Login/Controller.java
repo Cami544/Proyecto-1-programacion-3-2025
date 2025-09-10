@@ -23,17 +23,14 @@ public class Controller {
 
         Usuario usuario = null;
 
-        // Buscar en médicos
         try {
             Medico medico = Service.instance().readMedico(id);
             if (medico.getClave().equals(clave)) {
                 usuario = medico;
             }
         } catch (Exception e) {
-            // Continúa buscando
         }
 
-        // Buscar en farmaceutas si no se encontró
         if (usuario == null) {
             try {
                 Farmaceuta farmaceuta = Service.instance().readFarmaceuta(id);
@@ -41,11 +38,9 @@ public class Controller {
                     usuario = farmaceuta;
                 }
             } catch (Exception e) {
-                // Continúa buscando
             }
         }
 
-        // Buscar en administradores si no se encontró
         if (usuario == null) {
             try {
                 Administrador admin = Service.instance().readAdministrador(id);
@@ -53,7 +48,6 @@ public class Controller {
                     usuario = admin;
                 }
             } catch (Exception e) {
-                // No se encontró
             }
         }
 
@@ -68,5 +62,15 @@ public class Controller {
     public void logout() {
         Sesion.logout();
         model.setCurrent(null);
+    }
+
+    public void cambiarClave(String id, String claveActual, String claveNueva) throws Exception {
+        Service.instance().cambiarClave(id, claveActual, claveNueva);
+
+        if (Sesion.getUsuario() != null && Sesion.getUsuario().getId().equals(id)) {
+            Usuario usuarioActualizado = Service.instance().authenticate(id, claveNueva);
+            Sesion.setUsuario(usuarioActualizado);
+            model.setCurrent(usuarioActualizado);
+        }
     }
 }

@@ -42,7 +42,7 @@ public class Controller {
 
     public void buscarRecetasPorPaciente(String criterio) {
         model.setCriterioFiltro(criterio);
-        // Si no hay criterio → mostrar todas
+
         if (criterio == null || criterio.trim().isEmpty()) {
             model.setListRecetaPacienteFiltrado(model.getListRecetas());
             return;
@@ -50,15 +50,15 @@ public class Controller {
         String criterioBusqueda = criterio.toLowerCase().trim();
         List<Receta> todasLasRecetas = model.getListRecetas();
         List<Receta> recetasFiltradas = new ArrayList<>();
-        // Busca ID de paciente
+
         for (Receta receta : todasLasRecetas) {
             if (receta.getPacienteId() != null && receta.getPacienteId().equalsIgnoreCase(criterioBusqueda)) {
                 recetasFiltradas.add(receta);
             }
         }
-        // actualizar modelo
+
         model.setListRecetaPacienteFiltrado(recetasFiltradas);
-        // Debug para asegurarse
+
         System.out.println("Criterio de búsqueda: " + criterio);
         System.out.println("Recetas encontradas: " + recetasFiltradas.size());
     }
@@ -80,7 +80,6 @@ public class Controller {
 
     public void seleccionarRecetaPaciente(int index) throws Exception {
         List<Receta> recetasMostradas = model.getRecetasFiltradasPaciente();
-        // si la lista filtrada está vacía, usar la lista completa
         if (recetasMostradas == null || recetasMostradas.isEmpty()) {
             recetasMostradas = model.getListRecetas();
         }
