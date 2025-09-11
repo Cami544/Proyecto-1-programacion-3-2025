@@ -10,10 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
-    private hospital.presentation.Dashboard.View view;
-    private hospital.presentation.Dashboard.Model model;
+    private View view;
+    private Model model;
 
-    public Controller(hospital.presentation.Dashboard.View view, hospital.presentation.Dashboard.Model model) {
+    public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -22,7 +22,6 @@ public class Controller {
         cargarMedicamentos();
 
         try {
-
             List<Receta> recetasOriginales = Service.instance().getRecetas();
             model.setRecetasDashboard(new ArrayList<>(recetasOriginales));
         } catch (Exception e) {
@@ -80,61 +79,90 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
         try {
+            // Usar SIEMPRE del modelo
             List<Receta> recetas = model.getRecetasDashboard();
-            if (recetas == null || recetas.isEmpty()) {
-                recetas = Service.instance().getRecetas();
-            }
+            if (recetas == null) recetas = new ArrayList<>();
 
-            if (desde == null || hasta == null || recetas == null) return estadisticas;
+            if (desde == null || hasta == null) return estadisticas;
 
-            // 🔹 Usar fecha de retiro si existe
+            // Filtrar por rango de fechas
             List<Receta> recetasFiltradas = recetas.stream()
                     .filter(r -> {
                         LocalDate fechaRef = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
-                        return !fechaRef.isBefore(desde) && !fechaRef.isAfter(hasta);
+                        return fechaRef != null && !fechaRef.isBefore(desde) && !fechaRef.isAfter(hasta);
                     })
-                    .collect(Collectors.toList());
+                    .collect(java.util.stream.Collectors.toList());
 
-            Map<String, Map<String, Integer>> estadisticasPorMes = new LinkedHashMap<>();
-
-            LocalDate fechaActual = desde.withDayOfMonth(1);
-            while (!fechaActual.isAfter(hasta)) {
-                String periodo = fechaActual.format(formatter);
-                estadisticasPorMes.put(periodo, new HashMap<>());
-                fechaActual = fechaActual.plusMonths(1);
-            }
+            // Mapas: cantidades por periodo->codigoMedicamento  y recetasUnicas por periodo->codigoMedicamento
+            Map<String, Map<String, Integer>> cantidadesPorMes = new LinkedHashMap<>();
+            Map<String, Map<String, java.util.Set<String>>> recetasPorMes = new LinkedHashMap<>();
 
             for (Receta receta : recetasFiltradas) {
                 LocalDate fechaRef = (receta.getFechaRetiro() != null) ? receta.getFechaRetiro() : receta.getFecha();
                 String periodo = fechaRef.format(formatter);
+                cantidadesPorMes.computeIfAbsent(periodo, k -> new HashMap<>());
+                recetasPorMes.computeIfAbsent(periodo, k -> new HashMap<>());
 
-                if (receta.getDetalles() != null) {
-                    for (hospital.logic.DetalleReceta detalle : receta.getDetalles()) {
-                        if (medicamento == null || medicamento.getCodigo().equals(detalle.getMedicamentoCodigo())) {
-                            String nombreMed = obtenerNombreMedicamento(detalle.getMedicamentoCodigo());
-                            estadisticasPorMes.computeIfAbsent(periodo, k -> new HashMap<>());
-                            estadisticasPorMes.get(periodo).merge(nombreMed, detalle.getCantidad(), Integer::sum);
-                        }
+                if (receta.getDetalles() == null) continue;
+
+                // id de la receta para contar recetas únicas
+                String recetaId = null;
+                try {
+                    recetaId = String.valueOf(receta.getId());
+                } catch (Exception ex) {
+                    // fallback: usar hashcode si no hay id disponible
+                    recetaId = String.valueOf(System.identityHashCode(receta));
+                }
+
+                for (hospital.logic.DetalleReceta detalle : receta.getDetalles()) {
+                    if (detalle == null) continue;
+
+                    // Resolver el "codigo real" del medicamento
+                    String codigoDetalle = detalle.getMedicamentoCodigo();
+                    String codigoReal = resolveMedicamentoCodigo(codigoDetalle);
+
+                    // Si hay filtro por medicamento: compararlo por código
+                    if (medicamento != null && (medicamento.getCodigo() == null || !medicamento.getCodigo().equals(codigoReal))) {
+                        continue;
                     }
+
+                    // sumar cantidades por codigo
+                    cantidadesPorMes.get(periodo).merge(codigoReal, detalle.getCantidad(), Integer::sum);
+
+                    // agregar id de receta al set para ese periodo+medicamento
+                    recetasPorMes.get(periodo).computeIfAbsent(codigoReal, k -> new java.util.HashSet<>()).add(recetaId);
                 }
             }
 
-            for (Map.Entry<String, Map<String, Integer>> entryMes : estadisticasPorMes.entrySet()) {
-                String periodo = entryMes.getKey();
-                Map<String, Integer> medicamentosPorMes = entryMes.getValue();
+            // Construir lista final.  código -> nombre para mostrar
+            for (Map.Entry<String, Map<String, Integer>> entryPeriodo : cantidadesPorMes.entrySet()) {
+                String periodo = entryPeriodo.getKey();
+                Map<String, Integer> mapMedCant = entryPeriodo.getValue();
 
-                if (medicamentosPorMes.isEmpty()) {
-                    String nombreMed = medicamento != null ? medicamento.getNombre() : "Sin datos";
-                    estadisticas.add(new Object[]{periodo, nombreMed, 0, 0});
-                } else {
-                    for (Map.Entry<String, Integer> entryMed : medicamentosPorMes.entrySet()) {
-                        estadisticas.add(new Object[]{
-                                periodo,
-                                entryMed.getKey(),
-                                entryMed.getValue(),
-                                1
-                        });
+                if (mapMedCant.isEmpty()) {
+                    if (medicamento != null) {
+                        estadisticas.add(new Object[]{periodo, medicamento.getNombre(), 0, 0});
                     }
+                    continue;
+                }
+
+                for (Map.Entry<String, Integer> entryMed : mapMedCant.entrySet()) {
+                    String codigoMed = entryMed.getKey();
+                    int cantidad = entryMed.getValue();
+                    int recetasCount = 0;
+                    if (recetasPorMes.get(periodo) != null && recetasPorMes.get(periodo).get(codigoMed) != null) {
+                        recetasCount = recetasPorMes.get(periodo).get(codigoMed).size();
+                    }
+
+                    String nombreMed = codigoMed;
+                    try {
+                        hospital.logic.Medicamento m = Service.instance().readMedicamento(codigoMed);
+                        if (m != null && m.getNombre() != null) nombreMed = m.getNombre();
+                    } catch (Exception ex) {
+                        // fallback: quedarse con el codigo si no se puede leer
+                    }
+
+                    estadisticas.add(new Object[]{periodo, nombreMed, cantidad, recetasCount});
                 }
             }
 
@@ -145,6 +173,34 @@ public class Controller {
 
         return estadisticas;
     }
+
+    private String resolveMedicamentoCodigo(String stored) {
+        if (stored == null) return null;
+        String s = stored.trim();
+
+        //  Intentar como código (readMedicamento)
+        try {
+            hospital.logic.Medicamento m = Service.instance().readMedicamento(s);
+            if (m != null && m.getCodigo() != null && !m.getCodigo().isEmpty()) {
+                return m.getCodigo();
+            }
+        } catch (Exception ignored) { }
+
+        //  Intentar buscar por nombre entre los medicamentos cargados
+        try {
+            List<hospital.logic.Medicamento> meds = Service.instance().getMedicamentos();
+            if (meds != null) {
+                for (hospital.logic.Medicamento mm : meds) {
+                    if (mm.getNombre() != null && mm.getNombre().trim().equalsIgnoreCase(s)) {
+                        return mm.getCodigo(); // devolvemos el código que encontramos
+                    }
+                }
+            }
+        } catch (Exception ignored) { }
+
+        return s;
+    }
+
 
     private Map<String, Integer> generarEstadisticasRecetas() {
         Map<String, Integer> estadisticas = new HashMap<>();
@@ -199,15 +255,30 @@ public class Controller {
     }
 
     private String obtenerNombreMedicamento(String codigo) {
+        if (codigo == null) return "Desconocido";
         try {
-            return Service.instance().readMedicamento(codigo).getNombre();
+            hospital.logic.Medicamento m = Service.instance().readMedicamento(codigo);
+            if (m != null && m.getNombre() != null && !m.getNombre().isEmpty()) {
+                return m.getNombre();
+            }
         } catch (Exception e) {
-            System.err.println("Error obteniendo medicamento con código: " + codigo);
-            return codigo;
+            //darle msj
         }
+
+        //  intentar buscar por coincidencia de nombre
+        try {
+            for (hospital.logic.Medicamento mm : Service.instance().getMedicamentos()) {
+                if (mm.getCodigo().equalsIgnoreCase(codigo) || (mm.getNombre() != null && mm.getNombre().equalsIgnoreCase(codigo))) {
+                    return mm.getNombre();
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return codigo;
     }
 
-    private void cargarMedicamentos() {
+
+    public void cargarMedicamentos() {
         try {
             List<Medicamento> medicamentos = Service.instance().getMedicamentos();
             model.setMedicamentosDisponibles(medicamentos);
@@ -218,4 +289,28 @@ public class Controller {
         }
     }
 
+    public List<Receta> obtenerRecetasEnRango(LocalDate desde, LocalDate hasta) {
+        return Service.instance().getRecetas().stream()
+                .filter(r -> {
+                    LocalDate fecha = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                    return (fecha != null && !fecha.isBefore(desde) && !fecha.isAfter(hasta));
+                })
+                .collect(Collectors.toList());
+    }
+    public List<Receta> obtenerRecetasFiltradas(LocalDate desde, LocalDate hasta, Medicamento medicamento) {
+        return Service.instance().getRecetas().stream()
+                .filter(r -> {
+                    LocalDate fecha = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
+                    if (fecha == null) return false;
+                    if (fecha.isBefore(desde) || fecha.isAfter(hasta)) return false;
+
+                    if (medicamento != null) {
+                        // verificar que la receta contenga ese medicamento
+                        return r.getDetalles().stream()
+                                .anyMatch(d -> d.getMedicamentoCodigo().equals(medicamento.getCodigo()));
+                    }
+                    return true; // si no hay filtro de medicamento
+                })
+                .collect(Collectors.toList());
+    }
 }

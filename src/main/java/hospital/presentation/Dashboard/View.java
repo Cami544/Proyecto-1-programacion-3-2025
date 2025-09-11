@@ -18,9 +18,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class View implements PropertyChangeListener {
     private JComboBox<String> desdeAnio;
@@ -38,8 +36,8 @@ public class View implements PropertyChangeListener {
     private JButton borrarTodoButton;
 
     // MVC
-    private hospital.presentation.Dashboard.Model model;
-    private hospital.presentation.Dashboard.Controller controller;
+    private Model model;
+    private Controller controller;
 
     public View() {
         //Aqui un actualizar, bueno mejor revisar
@@ -51,68 +49,72 @@ public class View implements PropertyChangeListener {
         return panel;
     }
 
-    public void setModel(hospital.presentation.Dashboard.Model model) {
+    public void setModel(Model model) {
         this.model = model;
         model.addPropertyChangeListener(this);
     }
 
-    public void setController(hospital.presentation.Dashboard.Controller controller) {
+    public void setController(Controller controller) {
         this.controller = controller;
+        this.controller.cargarMedicamentos();
     }
 
     private void setupEventHandlers() {
         seleccionarUnoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                seleccionarMedicamento();
-                actualizarDashboard();
+                try {
+                    // Validar que el usuario haya seleccionado un medicamento
+                    if (medicamentoBox.getSelectedIndex() == -1 ||
+                            medicamentoBox.getSelectedItem() == null ||
+                            medicamentoBox.getSelectedItem().toString().trim().isEmpty()) {
+
+                        JOptionPane.showMessageDialog(panel,
+                                "Debe seleccionar un medicamento antes de continuar.",
+                                "Advertencia",
+                                JOptionPane.WARNING_MESSAGE);
+                        return; // No ejecutar nada más si no hay selección
+                    }
+                    seleccionarMedicamento();
+                    actualizarDashboard();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(panel,
+                            "Error al seleccionar medicamento: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         seleccionarTodoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 try {
-                    // Cargar todo desde Service
-                    List<Receta> todasLasRecetas = Service.instance().getRecetas();
+                    LocalDate fechaDesde = obtenerFechaDesde();
+                    LocalDate fechaHasta = obtenerFechaHasta();
 
-                    if (todasLasRecetas == null || todasLasRecetas.isEmpty()) {
-                        JOptionPane.showMessageDialog(
-                                panel,
-                                "No hay recetas registradas en el sistema.",
-                                "Aviso",
-                                JOptionPane.INFORMATION_MESSAGE
-                        );
-                        return;
+                    controller.setMedicamentoSeleccionado(null);           // selección previa de medicamento
+                    if (medicamentoBox.getItemCount() > 0) {
+                        medicamentoBox.setSelectedIndex(0); // "Sin seleccionar"
                     }
 
-                    // Poner todas las recetas en la lista temporal
-                    model.setRecetasDashboard(new ArrayList<>(todasLasRecetas));
+                    List<Receta> todas = controller.obtenerRecetasEnRango(fechaDesde, fechaHasta);  // todas las recetas en rango de fechas
 
-                    // Asegurar que el filtro de medicamento esté en "Todos"
-                    if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
-                    controller.setMedicamentoSeleccionado(null);
-
-                    // Recalcular estadísticas (usará recetasDashboard + medicamentoSeleccionado == null)
+                    model.setRecetasDashboard(todas);      // Actualiza modelo con todas las recetas
                     controller.actualizarEstadisticas();
 
-                    JOptionPane.showMessageDialog(
-                            panel,
-                            "Se han cargado todas las recetas al dashboard para mostrar en las estadísticas.",
-                            "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
+                    JOptionPane.showMessageDialog(panel,
+                            "Se cargaron todas las recetas del período seleccionado.",
+                            "Información",
+                            JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(panel,
-                            "Error cargando todas las recetas: " + ex.getMessage(),
+                            "Error al seleccionar todo: " + ex.getMessage(),
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-
 
         borrarUnoButton.addActionListener(new ActionListener() {
             @Override
@@ -152,7 +154,7 @@ public class View implements PropertyChangeListener {
 
                     if (confirm != JOptionPane.YES_OPTION) return;
 
-                    //  fila agregada con 0 recetas ("Sin datos") => eliminar directamente de datosEstadisticas
+                    //  fila agregada con 0 recetas, elimina directamente de datosEstadisticas
                     if (cantidad == 0) {
                         List<Object[]> datos = model.getDatosEstadisticas() == null
                                 ? new ArrayList<>()
@@ -168,7 +170,7 @@ public class View implements PropertyChangeListener {
                         return;
                     }
 
-                    //  cantidad > 0 => eliminar las Receta de recetasDashboard que coincidan con periodo + medicamento
+                    //  cantidad > 0  eliminar las Receta de recetasDashboard que coincidan con periodo + medicamento
                     List<Receta> actuales = model.getRecetasDashboard() == null
                             ? new ArrayList<>()
                             : new ArrayList<>(model.getRecetasDashboard());
@@ -227,19 +229,18 @@ public class View implements PropertyChangeListener {
                     );
 
                     if (confirm == JOptionPane.YES_OPTION) {
-                        // Vaciar la lista temporal del Dashboard
-                        model.setRecetasDashboard(new ArrayList<>());
-
-                        // Resetear filtros (fechas y combo medicamentos)
+                        model.setRecetasDashboard(new ArrayList<>());   // Vaciar la lista temporal
                         resetFiltrosPorDefecto();
 
-                        // Asegura que no haya filtro de medicamento activo
-                        if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
-                        controller.setMedicamentoSeleccionado(null);
+                        controller.setMedicamentoSeleccionado(null); // Asegura que no haya medicamento seleccionado
 
-                        // Refresca estadísticas y tabla
+                        controller.cargarMedicamentos();    // Recargar medicamentos en el combo
+
+                        if (medicamentoBox != null && medicamentoBox.getItemCount() > 0) {
+                            medicamentoBox.setSelectedIndex(0);
+                        }
+
                         controller.actualizarEstadisticas();
-
                         JOptionPane.showMessageDialog(
                                 panel,
                                 "Se limpiaron todas las recetas del Dashboard.\n(No se eliminaron del sistema).",
@@ -257,12 +258,15 @@ public class View implements PropertyChangeListener {
                 }
             }
         });
-        medicamentoBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                seleccionarMedicamento();
-            }
-        });
+
+        if (medicamentoBox != null) { // Listener selecciona medicamento desde el combo
+            medicamentoBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seleccionarMedicamento();
+                }
+            });
+        }
     }
 
     private void inicializarComponentes() {
@@ -281,14 +285,17 @@ public class View implements PropertyChangeListener {
 
     private void actualizarDashboard() {
         try {
-            // aseguramos leer el medicamento seleccionado en el combo
-            seleccionarMedicamento();
+            seleccionarMedicamento(); // aseguramos leer el medicamento seleccionado en el combo
 
             LocalDate fechaDesde = obtenerFechaDesde();
             LocalDate fechaHasta = obtenerFechaHasta();
 
             controller.setFechaDesde(fechaDesde);
             controller.setFechaHasta(fechaHasta);
+
+            // recargar recetas filtradas en el dashboard
+            List<Receta> filtradas = controller.obtenerRecetasFiltradas(fechaDesde, fechaHasta, model.getMedicamentoSeleccionado());
+            model.setRecetasDashboard(filtradas);
 
             controller.actualizarEstadisticas();
 
@@ -305,7 +312,6 @@ public class View implements PropertyChangeListener {
         }
     }
 
-
     private void resetFiltrosPorDefecto() {
         LocalDate now = LocalDate.now();
         // Poner los combos a los valores por defecto
@@ -314,32 +320,42 @@ public class View implements PropertyChangeListener {
         if (hastaAnio != null) hastaAnio.setSelectedItem(String.valueOf(now.getYear()));
         if (hastaMes != null) hastaMes.setSelectedItem(now.getMonthValue() + "-" + obtenerNombreMes(now.getMonthValue()));
 
-        // limpiar combo de medicamento
+        // limpiar combo medicamento
         if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
-        // notificar controlador
         controller.setMedicamentoSeleccionado(null);
     }
 
     private void seleccionarMedicamento() {
         try {
             String seleccion = (String) medicamentoBox.getSelectedItem();
-            if (seleccion == null || seleccion.isEmpty()) {
+            if (seleccion == null || seleccion.isEmpty() || seleccion.equals("Sin seleccionar")) {
                 controller.setMedicamentoSeleccionado(null);
                 return;
             }
 
+            String codigoSeleccion = seleccion.split(" - ")[0].trim();
+
+            for (Medicamento med : controller.obtenerMedicamentos()) {
+                if (med.getCodigo() != null && med.getCodigo().equalsIgnoreCase(codigoSeleccion)) {
+                    controller.setMedicamentoSeleccionado(med);
+                    return;
+                }
+            }
+            //alternativa bsuqueda
             for (Medicamento med : controller.obtenerMedicamentos()) {
                 String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
-                if (item.equals(seleccion)) {
+                if (item.equalsIgnoreCase(seleccion)) {
                     controller.setMedicamentoSeleccionado(med);
-                    break;
+                    return;
                 }
             }
 
+            controller.setMedicamentoSeleccionado(null);
         } catch (Exception ex) {
             System.err.println("Error seleccionando medicamento: " + ex.getMessage());
         }
     }
+
 
     private LocalDate obtenerFechaDesde() throws Exception {
         try {
@@ -377,19 +393,19 @@ public class View implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case hospital.presentation.Dashboard.Model.MEDICAMENTOS_DISPONIBLES:
+            case Model.MEDICAMENTOS_DISPONIBLES:
                 actualizarComboMedicamentos();
                 break;
-            case hospital.presentation.Dashboard.Model.DATOS_ESTADISTICAS:
+            case Model.DATOS_ESTADISTICAS:
                 actualizarTablaEstadisticas();
                 actualizarGraficoLineas();
                 break;
-            case hospital.presentation.Dashboard.Model.ESTADISTICAS_RECETAS:
+            case Model.ESTADISTICAS_RECETAS:
                 actualizarTablaEstadisticas();
                 actualizarGraficoPastel();
                 break;
 
-            case hospital.presentation.Dashboard.Model.RECETAS_DASHBOARD:
+            case Model.RECETAS_DASHBOARD:
                 try {
                     controller.actualizarEstadisticas();
                     actualizarTablaEstadisticas(); // refrescar tabla con la lista actual
@@ -405,7 +421,7 @@ public class View implements PropertyChangeListener {
 
     private void actualizarComboMedicamentos() {
         medicamentoBox.removeAllItems();
-        medicamentoBox.addItem("Todos los medicamentos");
+        medicamentoBox.addItem("");
 
         for (Medicamento med : model.getMedicamentosDisponibles()) {
             String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
@@ -416,26 +432,46 @@ public class View implements PropertyChangeListener {
     private void actualizarGraficoLineas() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        for (Object[] fila : model.getDatosEstadisticas()) {
-            String periodo = (String) fila[0];          // MM/yyyy
-            String medicamento = (String) fila[1];      // nombre medicamento
-            Integer cantidad = (Integer) fila[2];       // cantidad prescrita
+        //  agrupa datos
+        Map<String, Map<String, Integer>> agrupado = new HashMap<>();
 
-            dataset.addValue(cantidad, medicamento, periodo);
+        for (Object[] fila : model.getDatosEstadisticas()) {
+            String periodo = (String) fila[0]; // formato "MM/yyyy"
+            String medicamento = (String) fila[1];
+            Integer cantidad = (Integer) fila[2];
+
+            agrupado.putIfAbsent(periodo, new HashMap<>());
+            agrupado.get(periodo).merge(medicamento, cantidad, Integer::sum);
         }
 
+        //  ordena por fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
+        List<String> periodosOrdenados = agrupado.keySet().stream()
+                .sorted(Comparator.comparing(p -> java.time.YearMonth.parse(p, formatter)))
+                .toList();
+
+        //  carga dataset ya ordenado
+        for (String periodo : periodosOrdenados) {
+            for (Map.Entry<String, Integer> entryMed : agrupado.get(periodo).entrySet()) {
+                dataset.addValue(entryMed.getValue(), entryMed.getKey(), periodo);
+            }
+        }
+
+        // Crea gráfico
         JFreeChart chart = ChartFactory.createLineChart(
                 "Medicamentos prescritos por mes",
                 "Mes",
                 "Cantidad",
                 dataset
         );
-        // ChartPanel chartPanel= new ChartPanel(320,400,390,310,420,330,true,true,true,true,true,true)
+
         panelGraficoLineas.removeAll();
         panelGraficoLineas.add(new ChartPanel(chart));
         panelGraficoLineas.revalidate();
-
+        panelGraficoLineas.repaint();
     }
+
+
 
     private void actualizarGraficoPastel() {
         DefaultPieDataset dataset = new DefaultPieDataset();
@@ -447,15 +483,15 @@ public class View implements PropertyChangeListener {
         JFreeChart chart = ChartFactory.createPieChart(
                 "Estados de las Recetas",
                 dataset,
-                true,   // incluir leyenda
+                true,
                 true,
                 false
         );
-        //revisar parametros
-        //  ChartPanel chartPanel = new ChartPanel(400,320,320,400,320,400);
+
         panelGraficoBarras.removeAll();
         panelGraficoBarras.add(new ChartPanel(chart));
         panelGraficoBarras.revalidate();
+        panelGraficoBarras.repaint();
     }
 
     private void actualizarTablaEstadisticas() {
