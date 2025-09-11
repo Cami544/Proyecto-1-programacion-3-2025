@@ -55,6 +55,7 @@ public class Application {
 
         switch (rol) {
             case "ADM":
+
                 tabbedPane.addTab("Medicos", medicosIcon, medicoView.getPanel());
                 tabbedPane.addTab("Farmaceutas", farmaceutasIcon, farmaceutaView.getPanel());
                 tabbedPane.addTab("Pacientes", pacientesIcon, pacienteView.getPanel());
@@ -226,7 +227,7 @@ public class Application {
     private static hospital.presentation.Preescribir.View preescribirView;
     private static hospital.presentation.Despacho.View despachoView;
 
-    private static ImageIcon medicosIcon = null;
+    private static ImageIcon medicosIcon = new ImageIcon(Application.class.getResource("/icons/icons8-care-16.png"));
     private static ImageIcon farmaceutasIcon = null;
     private static ImageIcon pacientesIcon = null;
     private static ImageIcon medicamentosIcon = null;
