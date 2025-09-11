@@ -45,7 +45,7 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <icon value="proyecto 1 icons/icons8-login-24.png"/>
+          <icon value="icons/icons8-login-24.png"/>
           <text value="Login"/>
         </properties>
       </component>
@@ -54,7 +54,7 @@
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <icon value="proyecto 1 icons/icons8-cancel-24.png"/>
+          <icon value="icons/icons8-cancel-24.png"/>
           <text value="Cancelar"/>
         </properties>
       </component>
@@ -70,7 +70,7 @@
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <icon value="proyecto 1 icons/icons8-change-password-24.png"/>
+          <icon value="icons/icons8-change-password-24.png"/>
           <text value="Cambiar Contraseña"/>
         </properties>
       </component>

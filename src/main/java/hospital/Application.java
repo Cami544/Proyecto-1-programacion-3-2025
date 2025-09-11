@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class Application {
     public static void main(String[] args) {
@@ -228,13 +229,13 @@ public class Application {
     private static hospital.presentation.Despacho.View despachoView;
 
     private static ImageIcon medicosIcon = new ImageIcon(Application.class.getResource("/icons/icons8-care-16.png"));
-    private static ImageIcon farmaceutasIcon = new ImageIcon(Application.class.getResource("icons/icons8-pharmacist-16.png"));
-    private static ImageIcon pacientesIcon = new ImageIcon(Application.class.getResource("icons/icons8-sick-16.png"));
-    private static ImageIcon medicamentosIcon = new ImageIcon(Application.class.getResource("icons/icons8-píldora-24.png"));
-    private static ImageIcon estadisticasIcon = new ImageIcon(Application.class.getResource("icons/icons8-health-graph-16.png"));
-    private static ImageIcon historicoIcon = new ImageIcon(Application.class.getResource("icons/icons8-health-graph-16.png"));
-    private static ImageIcon preescribirIcon = new ImageIcon(Application.class.getResource("icons/icons8-treatment-16.png"));
-    private static ImageIcon despachosIcon = new ImageIcon(Application.class.getResource("icons/icons8-checkmark-24.png"));
+    private static ImageIcon farmaceutasIcon = new ImageIcon(Application.class.getResource("/icons/icons8-pharmacist-16.png"));
+    private static ImageIcon pacientesIcon = new ImageIcon(Application.class.getResource("/icons/icons8-sick-16.png"));
+    private static ImageIcon medicamentosIcon = new ImageIcon(Application.class.getResource("/icons/icons8-pill-bottle-16.png"));
+    private static ImageIcon estadisticasIcon = new ImageIcon(Application.class.getResource("/icons/icons8-health-graph-16.png"));
+    private static ImageIcon historicoIcon = new ImageIcon(Application.class.getResource("/icons/icons8-medical-history-16.png"));
+    private static ImageIcon preescribirIcon = new ImageIcon(Application.class.getResource("/icons/icons8-treatment-16.png"));
+    private static ImageIcon despachosIcon = new ImageIcon(Application.class.getResource("/icons/icons8-check-16.png"));
 
     public static JFrame window;
     public final static int MODE_CREATE = 1;
