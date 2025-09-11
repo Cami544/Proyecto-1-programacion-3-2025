@@ -90,10 +90,10 @@
     </medicamentos>
     <administradores>
         <administrador>
-            <id>admin</id>
+            <id>a</id>
             <nombre>Administrador</nombre>
             <rol>ADM</rol>
-            <clave>admin</clave>
+            <clave>a</clave>
         </administrador>
     </administradores>
     <recetas>
