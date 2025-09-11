@@ -47,7 +47,7 @@ public class View implements PropertyChangeListener {
                 String idPaciente = buscarIdText.getText().trim();
                 controller.buscarRecetasPorPaciente(idPaciente);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panel, "Error en búsqueda: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(panel, "Error en busqueda: " + ex.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -57,10 +57,11 @@ public class View implements PropertyChangeListener {
                 try {
                     Farmaceuta farmaceuta = (Farmaceuta) farmaceutaComboBox.getSelectedItem();
                     String estado = (String) recetaComboBox.getSelectedItem();
-                    controller.guardarCambiosReceta(farmaceuta, estado);
+                    String farmaceutaId = farmaceuta != null ? farmaceuta.getId() : null;
+                    controller.guardarCambiosReceta(farmaceutaId, estado);
 
                     JOptionPane.showMessageDialog(panel,
-                            "La receta se actualizó correctamente.",
+                            "La receta se actualizo correctamente.",
                             "Información",
                             JOptionPane.INFORMATION_MESSAGE);
 
@@ -105,7 +106,7 @@ public class View implements PropertyChangeListener {
     private void actualizarCombos() {
         farmaceutaComboBox.removeAllItems();
         for (Farmaceuta f : model.getListFarmaceutas()) {
-            farmaceutaComboBox.addItem(f); // directamente el objeto
+            farmaceutaComboBox.addItem(f);
         }
 
         recetaComboBox.removeAllItems();
@@ -120,7 +121,6 @@ public class View implements PropertyChangeListener {
         if (receta != null) {
             buscarIdText.setText(receta.getPacienteId());
 
-            // Seleccionar farmaceuta actual
             if (receta.getFarmaceutaId() != null) {
                 for (int i = 0; i < farmaceutaComboBox.getItemCount(); i++) {
                     Farmaceuta f = (Farmaceuta) farmaceutaComboBox.getItemAt(i);
@@ -130,17 +130,15 @@ public class View implements PropertyChangeListener {
                     }
                 }
             } else {
-                farmaceutaComboBox.setSelectedIndex(-1); // Ninguno seleccionado
+                farmaceutaComboBox.setSelectedIndex(-1);
             }
 
-            // Seleccionar estado actual
             if (receta.getEstadoReceta() != null) {
                 recetaComboBox.setSelectedItem(receta.getEstadoReceta());
             } else {
-                recetaComboBox.setSelectedIndex(-1); // Ninguno seleccionado
+                recetaComboBox.setSelectedIndex(-1);
             }
         } else {
-            //limpiar
             buscarIdText.setText("");
             farmaceutaComboBox.setSelectedIndex(-1);
             recetaComboBox.setSelectedIndex(-1);
@@ -151,7 +149,6 @@ public class View implements PropertyChangeListener {
         int[] cols = {TableModel.FARNACEUTA, TableModel.ID_RECETA, TableModel.PACIENTE,
                 TableModel.FECHA_RETIRO, TableModel.ESTADO};
 
-        // Si hay recetas filtradas, las mostramos; si no, mostramos todas
         if (model.getRecetasFiltradasPaciente() != null && !model.getRecetasFiltradasPaciente().isEmpty()) {
             list.setModel(new TableModel(cols, model.getRecetasFiltradasPaciente()));
         } else {
@@ -161,11 +158,11 @@ public class View implements PropertyChangeListener {
         list.setRowHeight(30);
         if (list.getColumnModel().getColumnCount() > 0) {
             TableColumnModel columnModel = list.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(150); // farmaceuta
-            columnModel.getColumn(1).setPreferredWidth(80);  // id
-            columnModel.getColumn(2).setPreferredWidth(150); // paciente
-            columnModel.getColumn(3).setPreferredWidth(80);  // fecha
-            columnModel.getColumn(4).setPreferredWidth(150); // estado
+            columnModel.getColumn(0).setPreferredWidth(150);
+            columnModel.getColumn(1).setPreferredWidth(80);
+            columnModel.getColumn(2).setPreferredWidth(150);
+            columnModel.getColumn(3).setPreferredWidth(80);
+            columnModel.getColumn(4).setPreferredWidth(150);
         }
     }
 

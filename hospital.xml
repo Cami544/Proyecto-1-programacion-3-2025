@@ -83,8 +83,8 @@
         <receta>
             <id>REC-20250906-1174</id>
             <pacienteId>k87</pacienteId>
-            <farmaceutaId>JUd</farmaceutaId>
-            <estadoReceta>En proceso</estadoReceta>
+            <farmaceutaId>4444</farmaceutaId>
+            <estadoReceta>Lista</estadoReceta>
             <fecha>2025-09-06</fecha>
             <fechaRetiro>2025-09-19</fechaRetiro>
             <detalles>
@@ -122,8 +122,8 @@
         <receta>
             <id>REC-20250907-3636</id>
             <pacienteId>675</pacienteId>
-            <farmaceutaId>Sin asignar</farmaceutaId>
-            <estadoReceta>Confeccionada</estadoReceta>
+            <farmaceutaId>4444</farmaceutaId>
+            <estadoReceta>En proceso</estadoReceta>
             <fecha>2025-09-07</fecha>
             <fechaRetiro>2025-09-08</fechaRetiro>
             <detalles>
