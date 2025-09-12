@@ -195,7 +195,7 @@ public class View implements PropertyChangeListener {
             try {
                 controller.refrescarRecetas();
             } catch (Exception e) {
-                System.err.println("Error refrescando histórico: " + e.getMessage());
+                System.err.println("Error refrescando historico: " + e.getMessage());
             }
         }
     }

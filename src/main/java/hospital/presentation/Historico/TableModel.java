@@ -53,7 +53,7 @@ public class TableModel extends AbstractTableModel<Receta> implements javax.swin
         colNames = new String[6];
         colNames[ID_RECETA] = "ID Receta";
         colNames[PACIENTE] = "Paciente";
-        colNames[FECHA_CONFECCION] = "Fecha Confección";
+        colNames[FECHA_CONFECCION] = "Fecha Confeccion";
         colNames[FECHA_RETIRO] = "Fecha Retiro";
         colNames[ESTADO] = "Estado";
         colNames[NUM_MEDICAMENTOS] = "Medicamentos";

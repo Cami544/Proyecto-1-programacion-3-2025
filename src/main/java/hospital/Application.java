@@ -26,7 +26,7 @@ public class Application {
 
         initializeControllers();
 
-        window.setSize(1200, 600);
+        window.setSize(1350, 600);
         window.setResizable(true);
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("HOSPITAL - Sistema de Prescripcion y Despacho");
@@ -38,8 +38,7 @@ public class Application {
     private static void doLogin() {
         hospital.presentation.Login.Model loginModel = new hospital.presentation.Login.Model();
         hospital.presentation.Login.View loginView = new hospital.presentation.Login.View();
-        hospital.presentation.Login.Controller loginController =
-                new hospital.presentation.Login.Controller(loginView, loginModel);
+        hospital.presentation.Login.Controller loginController = new hospital.presentation.Login.Controller(loginView, loginModel);
 
         loginView.showDialog();
     }
@@ -101,7 +100,7 @@ public class Application {
 
         JMenu ayudaMenu = new JMenu("Ayuda");
 
-        JMenuItem acercaDeItem = new JMenuItem("Acerca de...");
+        JMenuItem acercaDeItem = new JMenuItem("Acerca de");
         acercaDeItem.addActionListener(e -> {
             String rolDescripcion = getRolDescripcion(Sesion.getUsuario().getRol());
             JOptionPane.showMessageDialog(window,

@@ -21,7 +21,7 @@ public class View {
 
     private hospital.presentation.Login.Model model;
     private hospital.presentation.Login.Controller controller;
-    private String usuarioId; // ID del usuario para cambiar contraseña
+    private String usuarioId;
 
     public View() {
         setupEventHandlers();

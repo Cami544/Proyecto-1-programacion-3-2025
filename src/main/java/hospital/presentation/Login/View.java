@@ -31,7 +31,7 @@ public class View implements PropertyChangeListener {
     private void setupDialog() {
         dialog = new JDialog(Application.window, "Login", true);
         dialog.setContentPane(panel);
-        dialog.setSize(350, 220);
+        dialog.setSize(435, 220);
         dialog.setLocationRelativeTo(Application.window);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setResizable(false);

@@ -70,6 +70,11 @@
             <nombre>greage</nombre>
             <presentacion>tert</presentacion>
         </medicamento>
+        <medicamento>
+            <codigo>1234</codigo>
+            <nombre>ibuprofeno</nombre>
+            <presentacion>capsula</presentacion>
+        </medicamento>
     </medicamentos>
     <administradores>
         <administrador>
@@ -129,6 +134,97 @@
             <detalles>
                 <medicamentoCodigo>3452</medicamentoCodigo>
                 <cantidad>5</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-8177</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-09-17</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>2</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-5196</id>
+            <pacienteId>675</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-10-16</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>5</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-4665</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-12-19</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>3452</medicamentoCodigo>
+                <cantidad>1</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-6983</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-10-29</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1234</medicamentoCodigo>
+                <cantidad>3</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-9516</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-11-21</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1234</medicamentoCodigo>
+                <cantidad>30</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-5323</id>
+            <pacienteId>675</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2025-12-31</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1234</medicamentoCodigo>
+                <cantidad>15</cantidad>
+                <indicaciones>Tomar cada 8 horas</indicaciones>
+            </detalles>
+        </receta>
+        <receta>
+            <id>REC-20250911-8613</id>
+            <pacienteId>k87</pacienteId>
+            <farmaceutaId>Sin asignar</farmaceutaId>
+            <estadoReceta>Confeccionada</estadoReceta>
+            <fecha>2025-09-11</fecha>
+            <fechaRetiro>2026-02-12</fechaRetiro>
+            <detalles>
+                <medicamentoCodigo>1234</medicamentoCodigo>
+                <cantidad>50</cantidad>
                 <indicaciones>Tomar cada 8 horas</indicaciones>
             </detalles>
         </receta>

@@ -82,6 +82,11 @@ public class View implements PropertyChangeListener {
             }
         });
 
+        limpiarButton.addActionListener(e -> {
+            clear();
+            controller.clear();
+        });
+
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

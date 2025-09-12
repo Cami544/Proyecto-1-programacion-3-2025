@@ -64,7 +64,6 @@ public class View implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Validar que el usuario haya seleccionado un medicamento
                     if (medicamentoBox.getSelectedIndex() == -1 ||
                             medicamentoBox.getSelectedItem() == null ||
                             medicamentoBox.getSelectedItem().toString().trim().isEmpty()) {
@@ -73,7 +72,7 @@ public class View implements PropertyChangeListener {
                                 "Debe seleccionar un medicamento antes de continuar.",
                                 "Advertencia",
                                 JOptionPane.WARNING_MESSAGE);
-                        return; // No ejecutar nada más si no hay selección
+                        return;
                     }
                     seleccionarMedicamento();
                     actualizarDashboard();
@@ -92,14 +91,14 @@ public class View implements PropertyChangeListener {
                     LocalDate fechaDesde = obtenerFechaDesde();
                     LocalDate fechaHasta = obtenerFechaHasta();
 
-                    controller.setMedicamentoSeleccionado(null);           // selección previa de medicamento
+                    controller.setMedicamentoSeleccionado(null);
                     if (medicamentoBox.getItemCount() > 0) {
-                        medicamentoBox.setSelectedIndex(0); // "Sin seleccionar"
+                        medicamentoBox.setSelectedIndex(0);
                     }
 
-                    List<Receta> todas = controller.obtenerRecetasEnRango(fechaDesde, fechaHasta);  // todas las recetas en rango de fechas
+                    List<Receta> todas = controller.obtenerRecetasEnRango(fechaDesde, fechaHasta);
 
-                    model.setRecetasDashboard(todas);      // Actualiza modelo con todas las recetas
+                    model.setRecetasDashboard(todas);
                     controller.actualizarEstadisticas();
 
                     JOptionPane.showMessageDialog(panel,
@@ -147,14 +146,13 @@ public class View implements PropertyChangeListener {
 
                     int confirm = JOptionPane.showConfirmDialog(
                             panel,
-                            "¿Está seguro de borrar la fila seleccionada?\nPeriodo: " + periodo + "\nMedicamento: " + medicamento,
+                            "Esta seguro de borrar la fila seleccionada?\nPeriodo: " + periodo + "\nMedicamento: " + medicamento,
                             "Confirmar borrado",
                             JOptionPane.YES_NO_OPTION
                     );
 
                     if (confirm != JOptionPane.YES_OPTION) return;
 
-                    //  fila agregada con 0 recetas, elimina directamente de datosEstadisticas
                     if (cantidad == 0) {
                         List<Object[]> datos = model.getDatosEstadisticas() == null
                                 ? new ArrayList<>()
@@ -162,15 +160,14 @@ public class View implements PropertyChangeListener {
 
                         boolean removed = datos.removeIf(arr -> periodo.equals(arr[0]) && medicamento.equals(arr[1]));
                         if (removed) {
-                            model.setDatosEstadisticas(datos); // dispara actualización de tabla y gráfico de líneas
+                            model.setDatosEstadisticas(datos);
                             JOptionPane.showMessageDialog(panel, "Fila (sin datos) eliminada de la vista.");
                         } else {
-                            JOptionPane.showMessageDialog(panel, "No se encontró la fila para eliminar.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(panel, "No se encontro la fila para eliminar.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                         }
                         return;
                     }
 
-                    //  cantidad > 0  eliminar las Receta de recetasDashboard que coincidan con periodo + medicamento
                     List<Receta> actuales = model.getRecetasDashboard() == null
                             ? new ArrayList<>()
                             : new ArrayList<>(model.getRecetasDashboard());
@@ -179,7 +176,6 @@ public class View implements PropertyChangeListener {
 
                     boolean removedAny = actuales.removeIf(r -> {
                         try {
-                            // usar fechaRetiro
                             LocalDate fechaRef = (r.getFechaRetiro() != null) ? r.getFechaRetiro() : r.getFecha();
                             if (fechaRef == null) return false;
                             if (!fechaRef.format(formatter).equals(periodo)) return false;
@@ -190,7 +186,6 @@ public class View implements PropertyChangeListener {
                                     String nombreMed = Service.instance().readMedicamento(d.getMedicamentoCodigo()).getNombre();
                                     if (medicamento.equals(nombreMed)) return true;
                                 } catch (Exception ex) {
-                                    // fallback comparar por código
                                     if (medicamento.equals(d.getMedicamentoCodigo())) return true;
                                 }
                             }
@@ -200,11 +195,10 @@ public class View implements PropertyChangeListener {
                         return false;
                     });
 
-                    if (removedAny) { //Señor
-                        // actualiza recetas temporales y recalcula estadísticas desde esas recetas
+                    if (removedAny) {
                         model.setRecetasDashboard(actuales);
                         controller.actualizarEstadisticas();
-                        JOptionPane.showMessageDialog(panel, "Recetas eliminadas de la vista y estadísticas recalculadas.");
+                        JOptionPane.showMessageDialog(panel, "Recetas eliminadas de la vista y estadisticas recalculadas.");
                     } else {
                         JOptionPane.showMessageDialog(panel, "No se encontraron recetas que coincidan con la fila seleccionada.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -229,12 +223,12 @@ public class View implements PropertyChangeListener {
                     );
 
                     if (confirm == JOptionPane.YES_OPTION) {
-                        model.setRecetasDashboard(new ArrayList<>());   // Vaciar la lista temporal
+                        model.setRecetasDashboard(new ArrayList<>());
                         resetFiltrosPorDefecto();
 
-                        controller.setMedicamentoSeleccionado(null); // Asegura que no haya medicamento seleccionado
+                        controller.setMedicamentoSeleccionado(null);
 
-                        controller.cargarMedicamentos();    // Recargar medicamentos en el combo
+                        controller.cargarMedicamentos();
 
                         if (medicamentoBox != null && medicamentoBox.getItemCount() > 0) {
                             medicamentoBox.setSelectedIndex(0);
@@ -259,7 +253,7 @@ public class View implements PropertyChangeListener {
             }
         });
 
-        if (medicamentoBox != null) { // Listener selecciona medicamento desde el combo
+        if (medicamentoBox != null) {
             medicamentoBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -285,7 +279,7 @@ public class View implements PropertyChangeListener {
 
     private void actualizarDashboard() {
         try {
-            seleccionarMedicamento(); // aseguramos leer el medicamento seleccionado en el combo
+            seleccionarMedicamento();
 
             LocalDate fechaDesde = obtenerFechaDesde();
             LocalDate fechaHasta = obtenerFechaHasta();
@@ -293,7 +287,6 @@ public class View implements PropertyChangeListener {
             controller.setFechaDesde(fechaDesde);
             controller.setFechaHasta(fechaHasta);
 
-            // recargar recetas filtradas en el dashboard
             List<Receta> filtradas = controller.obtenerRecetasFiltradas(fechaDesde, fechaHasta, model.getMedicamentoSeleccionado());
             model.setRecetasDashboard(filtradas);
 
@@ -301,7 +294,7 @@ public class View implements PropertyChangeListener {
 
             JOptionPane.showMessageDialog(panel,
                     "Dashboard actualizado correctamente",
-                    "Información",
+                    "Informacion",
                     JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
@@ -314,13 +307,11 @@ public class View implements PropertyChangeListener {
 
     private void resetFiltrosPorDefecto() {
         LocalDate now = LocalDate.now();
-        // Poner los combos a los valores por defecto
         if (desdeAnio != null) desdeAnio.setSelectedItem(String.valueOf(now.minusMonths(6).getYear()));
         if (desdeMes != null) desdeMes.setSelectedItem(now.minusMonths(6).getMonthValue() + "-" + obtenerNombreMes(now.minusMonths(6).getMonthValue()));
         if (hastaAnio != null) hastaAnio.setSelectedItem(String.valueOf(now.getYear()));
         if (hastaMes != null) hastaMes.setSelectedItem(now.getMonthValue() + "-" + obtenerNombreMes(now.getMonthValue()));
 
-        // limpiar combo medicamento
         if (medicamentoBox != null) medicamentoBox.setSelectedIndex(0);
         controller.setMedicamentoSeleccionado(null);
     }
@@ -341,7 +332,6 @@ public class View implements PropertyChangeListener {
                     return;
                 }
             }
-            //alternativa bsuqueda
             for (Medicamento med : controller.obtenerMedicamentos()) {
                 String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
                 if (item.equalsIgnoreCase(seleccion)) {
@@ -373,7 +363,7 @@ public class View implements PropertyChangeListener {
             int mes = extraerNumeroMes((String) hastaMes.getSelectedItem());
             return LocalDate.of(anio, mes, 1).plusMonths(1).minusDays(1);
         } catch (Exception e) {
-            throw new Exception("Fecha hasta inválida");
+            throw new Exception("Fecha hasta invalida");
         }
     }
 
@@ -408,7 +398,7 @@ public class View implements PropertyChangeListener {
             case Model.RECETAS_DASHBOARD:
                 try {
                     controller.actualizarEstadisticas();
-                    actualizarTablaEstadisticas(); // refrescar tabla con la lista actual
+                    actualizarTablaEstadisticas();
                 } catch (Exception ex) {
                     System.err.println("Error recalculando estadísticas tras cambio en RecetasDashboard: " + ex.getMessage());
                 }
@@ -432,11 +422,10 @@ public class View implements PropertyChangeListener {
     private void actualizarGraficoLineas() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        //  agrupa datos
         Map<String, Map<String, Integer>> agrupado = new HashMap<>();
 
         for (Object[] fila : model.getDatosEstadisticas()) {
-            String periodo = (String) fila[0]; // formato "MM/yyyy"
+            String periodo = (String) fila[0];
             String medicamento = (String) fila[1];
             Integer cantidad = (Integer) fila[2];
 
@@ -444,20 +433,17 @@ public class View implements PropertyChangeListener {
             agrupado.get(periodo).merge(medicamento, cantidad, Integer::sum);
         }
 
-        //  ordena por fecha
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
         List<String> periodosOrdenados = agrupado.keySet().stream()
                 .sorted(Comparator.comparing(p -> java.time.YearMonth.parse(p, formatter)))
                 .toList();
 
-        //  carga dataset ya ordenado
         for (String periodo : periodosOrdenados) {
             for (Map.Entry<String, Integer> entryMed : agrupado.get(periodo).entrySet()) {
                 dataset.addValue(entryMed.getValue(), entryMed.getKey(), periodo);
             }
         }
 
-        // Crea gráfico
         JFreeChart chart = ChartFactory.createLineChart(
                 "Medicamentos prescritos por mes",
                 "Mes",

@@ -60,7 +60,7 @@ public class View implements PropertyChangeListener {
                         controller.save(medicamento);
                         JOptionPane.showMessageDialog(panel,
                                 "Medicamento guardado exitosamente",
-                                "Éxito",
+                                "exito",
                                 JOptionPane.INFORMATION_MESSAGE);
                         clear();
                     } catch (Exception ex) {
@@ -121,7 +121,7 @@ public class View implements PropertyChangeListener {
         reporteButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(panel,
                     "Funcion de reporte en desarrollo",
-                    "Información",
+                    "Informacion",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
