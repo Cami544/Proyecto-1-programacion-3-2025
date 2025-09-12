@@ -21,40 +21,7 @@ public class Controller {
             throw new Exception("Clave requerida");
         }
 
-        Usuario usuario = null;
-
-        try {
-            Medico medico = Service.instance().readMedico(id);
-            if (medico.getClave().equals(clave)) {
-                usuario = medico;
-            }
-        } catch (Exception e) {
-        }
-
-        if (usuario == null) {
-            try {
-                Farmaceuta farmaceuta = Service.instance().readFarmaceuta(id);
-                if (farmaceuta.getClave().equals(clave)) {
-                    usuario = farmaceuta;
-                }
-            } catch (Exception e) {
-            }
-        }
-
-        if (usuario == null) {
-            try {
-                Administrador admin = Service.instance().readAdministrador(id);
-                if (admin.getClave().equals(clave)) {
-                    usuario = admin;
-                }
-            } catch (Exception e) {
-            }
-        }
-
-        if (usuario == null) {
-            throw new Exception("Usuario o clave incorrectos");
-        }
-
+        Usuario usuario = Service.instance().authenticate(id, clave);
         Sesion.setUsuario(usuario);
         model.setCurrent(usuario);
     }

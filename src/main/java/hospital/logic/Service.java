@@ -100,10 +100,7 @@ public class Service {
     // ========================= MEDICOS ========================
 
     public void createMedico(Medico m) throws Exception {
-        Medico result = data.getMedicos().stream()
-                .filter(i -> i.getId().equals(m.getId()))
-                .findFirst()
-                .orElse(null);
+        Medico result = data.getMedicos().stream().filter(i -> i.getId().equals(m.getId())).findFirst().orElse(null);
         if (result == null) {
             data.getMedicos().add(m);
             stop();

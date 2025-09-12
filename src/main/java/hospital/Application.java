@@ -95,11 +95,8 @@ public class Application {
 
     private static void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-
         JMenu usuarioMenu = getJMenu();
-
         JMenu ayudaMenu = new JMenu("Ayuda");
-
         JMenuItem acercaDeItem = new JMenuItem("Acerca de");
         acercaDeItem.addActionListener(e -> {
             String rolDescripcion = getRolDescripcion(Sesion.getUsuario().getRol());
@@ -122,9 +119,9 @@ public class Application {
         window.setJMenuBar(menuBar);
     }
 
+
     private static JMenu getJMenu() {
         JMenu usuarioMenu = new JMenu("Usuario");
-
 
         JMenuItem logoutItem = new JMenuItem("Cerrar Sesion");
         logoutItem.addActionListener(e -> {

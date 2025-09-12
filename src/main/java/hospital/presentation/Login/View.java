@@ -70,6 +70,7 @@ public class View implements PropertyChangeListener {
         claveText.addActionListener(e -> doLogin());
     }
 
+
     private void doLogin() {
         try {
             String id = idText.getText().trim();
