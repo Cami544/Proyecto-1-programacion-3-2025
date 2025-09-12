@@ -96,25 +96,7 @@ public class Application {
     private static void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu usuarioMenu = getJMenu();
-        JMenu ayudaMenu = new JMenu("Ayuda");
-        JMenuItem acercaDeItem = new JMenuItem("Acerca de");
-        acercaDeItem.addActionListener(e -> {
-            String rolDescripcion = getRolDescripcion(Sesion.getUsuario().getRol());
-            JOptionPane.showMessageDialog(window,
-                    "Sistema de Prescripcion y Despacho de Recetas\n" +
-                            "Hospital Nacional\n" +
-                            "Version 1.0\n\n" +
-                            "Usuario: " + Sesion.getUsuario().getNombre() + "\n" +
-                            "ID: " + Sesion.getUsuario().getId() + "\n" +
-                            "Rol: " + rolDescripcion,
-                    "Acerca de",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
-
-        ayudaMenu.add(acercaDeItem);
-
         menuBar.add(usuarioMenu);
-        menuBar.add(ayudaMenu);
 
         window.setJMenuBar(menuBar);
     }
