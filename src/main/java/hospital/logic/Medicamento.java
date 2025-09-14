@@ -44,4 +44,7 @@ public class Medicamento {
     public void setPresentacion(String presentacion) {
         this.presentacion = presentacion;
     }
+
+    @Override
+    public String toString() {return codigo + " - " + nombre;}
 }

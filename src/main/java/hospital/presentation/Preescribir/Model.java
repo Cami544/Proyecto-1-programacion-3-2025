@@ -70,6 +70,17 @@ public class Model extends AbstractModel {
     }
 
     public void agregarDetalle(DetalleReceta detalle) {
+        for (DetalleReceta existente : this.detallesReceta) {
+            if (existente.getMedicamentoCodigo().equals(detalle.getMedicamentoCodigo())) {
+                int nuevaCantidad = existente.getCantidad() + detalle.getCantidad();
+                existente.setCantidad(nuevaCantidad);
+                String nuevasIndicaciones = existente.getIndicaciones() + "; " + detalle.getIndicaciones();
+                existente.setIndicaciones(nuevasIndicaciones.trim());
+                firePropertyChange(DETALLES_RECETA);
+                return;
+            }
+        }
+
         this.detallesReceta.add(detalle);
         firePropertyChange(DETALLES_RECETA);
     }

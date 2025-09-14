@@ -25,7 +25,7 @@ public class View implements PropertyChangeListener {
     private JComboBox<String> desdeMes;
     private JComboBox<String> hastaAnio;
     private JComboBox<String> hastaMes;
-    private JComboBox<String> medicamentoBox;
+    private JComboBox<Medicamento> medicamentoBox;
     private JButton seleccionarUnoButton;
     private JTable table1;
     private JPanel panel;
@@ -64,18 +64,19 @@ public class View implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (medicamentoBox.getSelectedIndex() == -1 ||
-                            medicamentoBox.getSelectedItem() == null ||
-                            medicamentoBox.getSelectedItem().toString().trim().isEmpty()) {
+                    Medicamento seleccionado = (Medicamento) medicamentoBox.getSelectedItem();
 
+                    if (seleccionado == null) {
                         JOptionPane.showMessageDialog(panel,
                                 "Debe seleccionar un medicamento antes de continuar.",
                                 "Advertencia",
                                 JOptionPane.WARNING_MESSAGE);
                         return;
                     }
-                    seleccionarMedicamento();
+
+                    controller.setMedicamentoSeleccionado(seleccionado);
                     actualizarDashboard();
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(panel,
                             "Error al seleccionar medicamento: " + ex.getMessage(),
@@ -91,26 +92,14 @@ public class View implements PropertyChangeListener {
                     LocalDate fechaDesde = obtenerFechaDesde();
                     LocalDate fechaHasta = obtenerFechaHasta();
 
-                    controller.setMedicamentoSeleccionado(null);
-                    if (medicamentoBox.getItemCount() > 0) {
-                        medicamentoBox.setSelectedIndex(0);
-                    }
+                    controller.setFechaDesde(fechaDesde);
+                    controller.setFechaHasta(fechaHasta);
 
                     List<Receta> todas = controller.obtenerRecetasEnRango(fechaDesde, fechaHasta);
-
                     model.setRecetasDashboard(todas);
                     controller.actualizarEstadisticas();
-
-                    JOptionPane.showMessageDialog(panel,
-                            "Se cargaron todas las recetas del período seleccionado.",
-                            "Información",
-                            JOptionPane.INFORMATION_MESSAGE);
-
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel,
-                            "Error al seleccionar todo: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(panel, "Error al seleccionar todas las recetas", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -318,34 +307,18 @@ public class View implements PropertyChangeListener {
 
     private void seleccionarMedicamento() {
         try {
-            String seleccion = (String) medicamentoBox.getSelectedItem();
-            if (seleccion == null || seleccion.isEmpty() || seleccion.equals("Sin seleccionar")) {
+            Medicamento seleccionado = (Medicamento) medicamentoBox.getSelectedItem();
+
+            if (seleccionado == null) {
                 controller.setMedicamentoSeleccionado(null);
                 return;
             }
+            controller.setMedicamentoSeleccionado(seleccionado);
 
-            String codigoSeleccion = seleccion.split(" - ")[0].trim();
-
-            for (Medicamento med : controller.obtenerMedicamentos()) {
-                if (med.getCodigo() != null && med.getCodigo().equalsIgnoreCase(codigoSeleccion)) {
-                    controller.setMedicamentoSeleccionado(med);
-                    return;
-                }
-            }
-            for (Medicamento med : controller.obtenerMedicamentos()) {
-                String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
-                if (item.equalsIgnoreCase(seleccion)) {
-                    controller.setMedicamentoSeleccionado(med);
-                    return;
-                }
-            }
-
-            controller.setMedicamentoSeleccionado(null);
         } catch (Exception ex) {
             System.err.println("Error seleccionando medicamento: " + ex.getMessage());
         }
     }
-
 
     private LocalDate obtenerFechaDesde() throws Exception {
         try {
@@ -411,12 +384,12 @@ public class View implements PropertyChangeListener {
 
     private void actualizarComboMedicamentos() {
         medicamentoBox.removeAllItems();
-        medicamentoBox.addItem("");
+        medicamentoBox.addItem(null);
 
-        for (Medicamento med : model.getMedicamentosDisponibles()) {
-            String item = med.getCodigo() + " - " + med.getNombre() + " " + med.getPresentacion();
-            medicamentoBox.addItem(item);
+        for (Medicamento m : Service.instance().getMedicamentos()) {
+            medicamentoBox.addItem(m);
         }
+
     }
 
     private void actualizarGraficoLineas() {
@@ -450,14 +423,11 @@ public class View implements PropertyChangeListener {
                 "Cantidad",
                 dataset
         );
-
         panelGraficoLineas.removeAll();
         panelGraficoLineas.add(new ChartPanel(chart));
         panelGraficoLineas.revalidate();
         panelGraficoLineas.repaint();
     }
-
-
 
     private void actualizarGraficoPastel() {
         DefaultPieDataset dataset = new DefaultPieDataset();

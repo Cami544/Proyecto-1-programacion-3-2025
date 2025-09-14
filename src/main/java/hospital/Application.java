@@ -221,3 +221,13 @@ public class Application {
 
     public static final Color BACKGROUND_ERROR = new Color(255, 102, 102);
 }
+    /*
+    
+    Grupo de las 8am Progra 3
+
+    Integrantes:
+    Camila Fallas Jiménez  305510256
+    Hermann Hidalgo Araya  118400891
+    Jeancarlo Blanco Mora  703110431
+
+    */
